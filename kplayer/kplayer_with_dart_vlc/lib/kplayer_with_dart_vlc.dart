@@ -4,6 +4,7 @@ import 'dart:io';
 
 import "fake_dart_vlc.dart"
     if (dart.library.ffi) 'package:dart_vlc/dart_vlc.dart' as dart_vlc;
+
 import 'package:flutter/foundation.dart';
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 
@@ -37,6 +38,12 @@ class Player extends PlayerPlatform {
   PlayerStatus get status => _status;
 
   @override
+  set status(PlayerStatus status) {
+    notify(PlayerEvent.status);
+    _status = status;
+  }
+
+  @override
   bool get playing => _status == PlayerStatus.playing;
 
   @override
@@ -48,6 +55,7 @@ class Player extends PlayerPlatform {
   static List<PlayerPlatform> get players => PlayerPlatform.palyers;
   @override
   void init() {
+    notify(PlayerEvent.init);
     // needBoot((){
     //   Player.boot();
     //   print("Player.boot");
@@ -62,6 +70,12 @@ class Player extends PlayerPlatform {
     player.positionStream.listen((dart_vlc.PositionState _state) {
       _position = _state.position ?? _position;
       _duration = _state.duration ?? _duration;
+      notify(PlayerEvent.position);
+    });
+    player.playbackStream.listen((state) {
+      if (state.isCompleted) {
+        status = PlayerStatus.ended;
+      }
     });
     player.generalStream.listen((dart_vlc.GeneralState _state) {
       _volume = _state.volume;
@@ -71,8 +85,8 @@ class Player extends PlayerPlatform {
 
   @override
   void play() {
-    _notify();
-    if (_status != PlayerStatus.playing) {
+    notify(PlayerEvent.play);
+    if (!playing) {
       _status = PlayerStatus.playing;
       player.play();
       if (once) {
@@ -88,41 +102,44 @@ class Player extends PlayerPlatform {
   @override
   void replay() {
     seek(Duration.zero);
+    notify(PlayerEvent.replay);
     play();
   }
 
   @override
   void pause() {
-    _notify();
     _status = PlayerStatus.paused;
     player.pause();
+    notify(PlayerEvent.pause);
   }
 
   @override
   void stop() {
-    _notify();
     _status = PlayerStatus.stopped;
     player.stop();
+    notify(PlayerEvent.stop);
   }
 
   @override
   void seek(Duration position) {
-    _notify();
     player.seek(position);
+    notify(PlayerEvent.position);
   }
 
   @override
   void toggle() {
     _status == PlayerStatus.playing ? pause() : play();
+    notify(PlayerEvent.toggle);
   }
 
   @override
   void dispose() {
-    _notify();
+    notify(PlayerEvent.dispose);
+    super.dispose();
     player.dispose();
   }
 
-  @override
+  // 
   static void boot() {
     if (!kIsWeb &&
         (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
@@ -131,14 +148,15 @@ class Player extends PlayerPlatform {
   }
 
   @override
-  Stream<Duration> get positionStream => player.positionStream.map((event) => event.position ?? Duration.zero);
+  Stream<Duration> get positionStream =>
+      player.positionStream.map((event) => event.position ?? Duration.zero);
   @override
   double get speed => _speed;
 
   @override
   set speed(double speed) {
-    _notify();
     player.setRate(speed);
+    notify(PlayerEvent.speed);
   }
 
   @override
@@ -146,16 +164,14 @@ class Player extends PlayerPlatform {
 
   @override
   set volume(double volume) {
-    _notify();
     player.setVolume(volume);
+    notify(PlayerEvent.volume);
   }
 
   @override
   set position(Duration position) {
     seek(position);
+    notify(PlayerEvent.position);
   }
 
-  void _notify() {
-    callback();
-  }
 }

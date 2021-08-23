@@ -1,6 +1,6 @@
 name: kplayer_with_dart_vlc
-description: A new Flutter package project.
-version: 0.0.1
+description: kplayer wrapper for dart_vlc
+version: 0.0.2
 homepage:
 
 environment:
@@ -10,7 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  kplayer_platform_interface: ^0.0.1
+  kplayer_platform_interface: ^0.0.2
+  # kplayer_platform_interface:
+  #   path: ../kplayer_platform_interface
   
   dart_vlc: ^0.1.5
 

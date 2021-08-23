@@ -5,4 +5,4 @@
 .pub/
 
 build/
-example/
+example/windows/flutter/ephemeral

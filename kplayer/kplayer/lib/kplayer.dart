@@ -8,12 +8,29 @@ import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 export 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 // typedef  = dart_vlc.Player;
 
+/// Object handle create and boot the [PlayerPlatform]
 class Player {
+  /// this need to use in windows,linux
+  /// put this in main
+  ///
+  /// ```dart
+  /// void main() {
+  ///   Player.boot();
+  ///   runApp(const MyApp());
+  /// }
+  /// ```
   static boot() {
     dart_vlc.Player.boot();
     just_audio.Player.boot();
   }
 
+  /// create instance adapted on platform
+  /// ```dart
+  /// var media = PlayerMedia.asset(assets/file.mp3);
+  /// Player.create(id: 1, media: media, autoPlay: false, once: false)
+  ///   ..init();
+  /// player.play();
+  /// ```
   static PlayerPlatform create({
     int? id,
     required PlayerMedia media,
@@ -39,12 +56,22 @@ class Player {
     }
   }
 
-  static PlayerPlatform assets(media, {int? id, bool? autoPlay, bool? once}) {
+  /// create assets instance
+  /// ```dart
+  /// var player = Player.asset("assets/file.mp3");
+  /// player.play();
+  /// ```
+  static PlayerPlatform asset(media, {int? id, bool? autoPlay, bool? once}) {
     return Player.create(
         id: id, media: PlayerMedia.asset(media), autoPlay: autoPlay, once: once)
       ..init();
   }
 
+  /// create network instance
+  /// ```dart
+  /// var player = Player.network("https://example.com/file.mp3");
+  /// player.play();
+  /// ```
   static PlayerPlatform network(media, {int? id, bool? autoPlay, bool? once}) {
     return Player.create(
         id: id,

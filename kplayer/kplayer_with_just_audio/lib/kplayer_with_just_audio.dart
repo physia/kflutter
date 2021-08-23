@@ -1,5 +1,6 @@
 library kplayer_with_just_audio;
 
+import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart' as just_audio;
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 
@@ -10,7 +11,11 @@ class Player extends PlayerPlatform {
     bool? once,
     bool? loop,
   })  : player = just_audio.AudioPlayer(),
-        super(media: media, autoPlay: autoPlay ?? false, once: once ?? false, loop: loop ?? false) {
+        super(
+            media: media,
+            autoPlay: autoPlay ?? false,
+            once: once ?? false,
+            loop: loop ?? false) {
     players.add(this);
   }
 
@@ -25,15 +30,22 @@ class Player extends PlayerPlatform {
   PlayerStatus get status => _status;
 
   @override
-  bool get playing => _status == PlayerStatus.playing;
+  bool get playing => status==PlayerStatus.playing;
+
+  @override
+  set status(PlayerStatus status) {
+    _status = status;
+    notify(PlayerEvent.status);
+  }
 
   @override
   Duration get duration => player.duration ?? Duration.zero;
 
   @override
-  Duration get position => player.position;
+  Duration get position => _position;
 
   static List<PlayerPlatform> get players => PlayerPlatform.palyers;
+
   @override
   void init() async {
     if (media.type == PlayerMediaType.asset) {
@@ -42,102 +54,129 @@ class Player extends PlayerPlatform {
       await player.setUrl(media.resource);
     }
     // player.speedStream.listen((speed) {
-    //   _speed=speed;
+    //   speed = speed;
     // });
     // player.volumeStream.listen((volume) {
-    //   _volume=volume;
+    //   volume = volume;
     // });
+    player.positionStream.listen((positionValue) {
+      notify(PlayerEvent.position);
+      _position = positionValue;
+    });
+    player.playerStateStream.listen((pstate) {
+      switch (pstate.processingState) {
+        // case just_audio.ProcessingState.ready:
+        //   status = PlayerStatus.playing;
+        //   break;
+        // case just_audio.ProcessingState.loading:
+        //   status = PlayerStatus.loading;
+        //   break;
+        // case just_audio.ProcessingState.buffering:
+        //   status = PlayerStatus.buffering;
+        //   break;
+        case just_audio.ProcessingState.completed:
+          status = PlayerStatus.ended;
+          break;
+        default:
+        // status = PlayerStatus.unknown;
+      }
+    });
+
     _status = PlayerStatus.inited;
     players.add(this);
     if (autoPlay) {
       play();
     }
-      if (once) {
-        player.playerStateStream.listen((event) {
-          if (event.processingState == just_audio.ProcessingState.completed) {
-            dispose();
-          }
-        });
-      }
-
-  }
-  _notify(){
-    callback();
+    if (once) {
+      player.playerStateStream.listen((event) {
+        if (event.processingState == just_audio.ProcessingState.completed) {
+          dispose();
+        }
+      });
+    }
   }
 
   @override
   void play() {
-    _notify();
-    if (!player.playing) {
+    if (status == PlayerStatus.ended) {
+      seek(Duration.zero);
+    }
+    if (!playing) {
       player.play();
-      _status = PlayerStatus.playing;
+      status = PlayerStatus.playing;
+      notify(PlayerEvent.play);
     }
   }
 
   @override
   void replay() {
-    // seek(Duration.zero);
-    init();
+    seek(Duration.zero);
     play();
+    notify(PlayerEvent.replay);
   }
 
   @override
   void pause() {
-    _notify();
     player.pause();
-    _status = PlayerStatus.paused;
+    status = PlayerStatus.paused;
   }
 
   @override
   void stop() {
-    _notify();
     player.stop();
-    _status = PlayerStatus.stopped;
-  }
-
-  @override
-  void seek(Duration position) {
-    _notify();
-    player.seek(position);
+    notify(PlayerEvent.stop);
   }
 
   @override
   void toggle() {
-    player.playing ? pause() : play();
+    playing ? pause() : play();
+    notify(PlayerEvent.toggle);
   }
 
   @override
   void dispose() {
+    super.dispose();
+    notify(PlayerEvent.dispose);
     player.dispose();
   }
 
-  @override
+  //
   static void boot() {
-    print("Kplayer: just_audio");
+    debugPrint("Kplayer: just_audio");
   }
 
-  // double _speed = 1.0;
+  Duration _position = Duration.zero;
+  Duration _duration = Duration.zero;
+  double _volume = 1;
+  double _speed = 1;
 
-  double get speed => player.speed;
+  @override
+  double get speed => _speed;
 
+  @override
   set speed(double speed) {
-    _notify();
-    // _speed = speed;
-    player.setSpeed(speed);
+    player.setSpeed(_speed = speed);
+    notify(PlayerEvent.speed);
   }
 
-  // double _volume = 1.0;
+  @override
+  double get volume => _volume;
 
-  double get volume => player.speed;
-
+  @override
   set volume(double volume) {
-    _notify();
-    // _volume = volume;
-    player.setVolume(volume);
+    player.setVolume(_volume = volume);
+    notify(PlayerEvent.volume);
   }
 
   @override
   set position(Duration position) {
-    seek(position);
+    seek(_position = position);
+    notify(PlayerEvent.position);
+  }
+
+  @override
+  void seek(Duration position) {
+    player.seek(_position = position);
+    notify(PlayerEvent.position);
   }
 }

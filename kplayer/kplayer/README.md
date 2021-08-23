@@ -2,9 +2,10 @@
 
 Flutter player (currently only audio)
 
-<img src="image/README/1629644624563.png">
+<img src="https://raw.githubusercontent.com/physia/kflutter/main/kplayer/kplayer/image/README/1629644624563.png">
+<img src="https://raw.githubusercontent.com/physia/kflutter/main/kplayer/kplayer/image/README/1629683134134.png">
 
-### sopport
+## sopport
 
 - windows,linux -> dart_vlc
 - web, ios, android, macos -> just_audio
@@ -27,7 +28,7 @@ void main() {
 Play from assets:
 
 ```dart
-Player.assets("/assets/sound.mp3").play();
+Player.asset("/assets/sound.mp3").play();
 ```
 
 Play from network:
@@ -39,23 +40,30 @@ Player.network("https://example.com/sound.mp3").play();
 or:
 
 ```dart
-Player.create(asset: PlayerMedia.assets("/assets/sound.mp3"), autoPlay: true, once: true).init();
+Player.create(asset: PlayerMedia.asset("/assets/sound.mp3"), autoPlay: true, once: true).init();
 ```
 
 you have also:
 
 ```dart
- var palyer = Player.create(asset: PlayerMedia.assets("/assets/sound.mp3"),autoPlay: true, once: true).init();
+ var palyer = Player.create(asset: PlayerMedia.asset("/assets/sound.mp3"),autoPlay: true, once: true).init();
+
+// callback
+palyer.callback = (PlayerEvent event){};
 
 // info
 var package = player.package; // "just_audio" or "dart_vlc"
 var position= player.position; // setter an getter like seek()
-var duration = player.duration;
-var status= player.status; // { uninitialized, initialized, playing, paused, stopped, completed } 
+var duration = player.duration; // getter
+var status= player.status; // 
 var playing= player.playing;
 ...
 // streams
-var stream= player.positionStream;
+player.streams.playing.stream;
+player.streams.position.stream;
+player.streams.status.stream;
+player.streams.volume.stream;
+player.streams.speed.stream;
 
 // control
 player.play();
