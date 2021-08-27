@@ -162,28 +162,28 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.1.5"
+    version: "0.1.11"
   kplayer_platform_interface:
     dependency: transitive
     description:
       name: kplayer_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.6"
   kplayer_with_dart_vlc:
     dependency: transitive
     description:
       name: kplayer_with_dart_vlc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.6"
   kplayer_with_just_audio:
     dependency: transitive
     description:
       name: kplayer_with_just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.6"
   lints:
     dependency: transitive
     description:

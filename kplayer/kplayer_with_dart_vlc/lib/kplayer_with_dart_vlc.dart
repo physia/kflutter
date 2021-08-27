@@ -8,7 +8,7 @@ import "fake_dart_vlc.dart"
 import 'package:flutter/foundation.dart';
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 
-class Player extends PlayerPlatform {
+class Player extends PlayerController {
   Player({
     int? id,
     required PlayerMedia media,
@@ -33,7 +33,7 @@ class Player extends PlayerPlatform {
   @override
   get package => "dart_vlc";
 
-  PlayerStatus _status = PlayerStatus.created;
+  PlayerStatus _status = PlayerStatus.loading;
   @override
   PlayerStatus get status => _status;
 
@@ -52,7 +52,7 @@ class Player extends PlayerPlatform {
   @override
   Duration get position => _position;
 
-  static List<PlayerPlatform> get players => PlayerPlatform.palyers;
+  static List<PlayerController> get players => PlayerController.palyers;
   @override
   void init() {
     notify(PlayerEvent.init);
@@ -64,7 +64,6 @@ class Player extends PlayerPlatform {
         ? dart_vlc.Media.asset(media.resource)
         : dart_vlc.Media.network(media.resource);
     player.open(_vlcMedia, autoStart: autoPlay);
-    _status = PlayerStatus.created;
     players.add(this);
 
     player.positionStream.listen((dart_vlc.PositionState _state) {
@@ -81,6 +80,8 @@ class Player extends PlayerPlatform {
       _volume = _state.volume;
       _speed = _state.rate;
     });
+    
+    super.init();
   }
 
   @override

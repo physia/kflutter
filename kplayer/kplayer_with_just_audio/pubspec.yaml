@@ -1,6 +1,6 @@
 name: kplayer_with_just_audio
-description: A new Flutter package project.
-version: 0.0.2
+description: kplayer with just_audio.
+version: 0.0.6
 homepage:
 
 environment:
@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   just_audio: ^0.9.7
-  kplayer_platform_interface: ^0.0.2
+  kplayer_platform_interface: ^0.0.6
   # kplayer_platform_interface:
   #   path: ../kplayer_platform_interface
 

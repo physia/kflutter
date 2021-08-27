@@ -2,8 +2,8 @@
 
 Flutter player (currently only audio)
 
-<img src="https://raw.githubusercontent.com/physia/kflutter/main/kplayer/kplayer/image/README/1629644624563.png">
-<img src="https://raw.githubusercontent.com/physia/kflutter/main/kplayer/kplayer/image/README/1629683134134.png">
+<img src="https://raw.githubusercontent.com/physia/kflutter/main/kplayer/kplayer/image/README/1629644624563.png" width='200'>
+<img src="https://raw.githubusercontent.com/physia/kflutter/main/kplayer/kplayer/image/README/1629683134134.png" width='260'>
 
 ## sopport
 
@@ -46,10 +46,13 @@ Player.create(asset: PlayerMedia.asset("/assets/sound.mp3"), autoPlay: true, onc
 you have also:
 
 ```dart
- var palyer = Player.create(asset: PlayerMedia.asset("/assets/sound.mp3"),autoPlay: true, once: true).init();
+ var palyer = Player.create(asset: PlayerMedia.asset("/assets/sound.mp3"),autoPlay: true, once: true)..init();
 
 // callback
-palyer.callback = (PlayerEvent event){};
+palyer.callback = (PlayerEvent event){
+   // just example
+   setState((){});
+};
 
 // info
 var package = player.package; // "just_audio" or "dart_vlc"
@@ -77,6 +80,9 @@ player.speed = 1.2; // Rate
 //other
 player.dispose();
 player.player; // the package player instance
+
+// mixins
+PlayerMixin
 
 ```
 

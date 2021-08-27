@@ -1,3 +1,4 @@
+
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -57,7 +58,7 @@ class _MyAppState extends State<MyApp> {
       home: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: StreamBuilder(
-            stream: player.streams.status.stream,
+            stream: player.streams.status,
             builder: (context, snapshot) {
               return Text(snapshot.data.toString());
             },
@@ -74,15 +75,14 @@ class _MyAppState extends State<MyApp> {
                     width: 150,
                     height: 150,
                     child: StreamBuilder(
-                      stream: player.streams.status.stream,
+                      stream: player.streams.status,
                       builder: (context,AsyncSnapshot<PlayerStatus> snapshot) {
                         return CircularProgressIndicator(
                           strokeWidth: 1,
                           color: Colors.teal,
                           value: loading
                               ? null
-                              : player.position.inSeconds /
-                                  max(player.duration.inSeconds, 0.01),
+                              : player.position.inSeconds / max(player.duration.inSeconds, 0.01),
                         );
                       },
                     ),
@@ -103,7 +103,7 @@ class _MyAppState extends State<MyApp> {
                       child: DefaultTextStyle(
                         style: const TextStyle(color: Colors.black87),
                         child: StreamBuilder(
-                          stream: player.streams.playing.stream,
+                          stream: player.streams.playing,
                           builder: (context, snapshot) {
                             return player.playing
                                 ? const Icon(
@@ -131,7 +131,7 @@ class _MyAppState extends State<MyApp> {
                 child: DefaultTextStyle(
                         style: const TextStyle(color: Colors.black38, fontSize: 12),
                         child: StreamBuilder(
-                          stream: player.streams.position.stream,
+                          stream: player.streams.position,
                           builder: (context, snapshot) {
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,7 +148,7 @@ class _MyAppState extends State<MyApp> {
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 width: double.infinity,
                 child: StreamBuilder(
-                    stream: player.streams.position.stream,
+                    stream: player.streams.position,
                     builder: (context, AsyncSnapshot<Duration> snapshot) {
                       loading = false;
                       return CupertinoSlider(
@@ -180,7 +180,7 @@ class _MyAppState extends State<MyApp> {
                     const Icon(Icons.volume_up),
                     Expanded(
                       child: StreamBuilder(
-                        stream: player.streams.volume.stream,
+                        stream: player.streams.volume,
                         builder: (context, AsyncSnapshot<double> snapshot) {
                           return CupertinoSlider(
                             value: player.volume * 100,
@@ -205,7 +205,7 @@ class _MyAppState extends State<MyApp> {
                     const Icon(Icons.speed),
                     Expanded(
                       child: StreamBuilder(
-                        stream: player.streams.speed.stream,
+                        stream: player.streams.speed,
                         builder: (context, AsyncSnapshot<double> snapshot) {
                           return CupertinoSlider(
                             value: player.speed * 5,
@@ -226,7 +226,7 @@ class _MyAppState extends State<MyApp> {
                 height: 50,
               ),
               StreamBuilder(
-                stream: player.streams.position.stream,
+                stream: player.streams.position,
                 builder: (context, snapshot) {
                   return Center(
                     child: DefaultTextStyle(

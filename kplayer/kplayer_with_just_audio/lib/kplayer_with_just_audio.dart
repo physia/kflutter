@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart' as just_audio;
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 
-class Player extends PlayerPlatform {
+class Player extends PlayerController {
   Player({
     required PlayerMedia media,
     bool? autoPlay,
@@ -25,7 +25,7 @@ class Player extends PlayerPlatform {
 
   @override
   Stream<Duration> get positionStream => player.positionStream;
-  PlayerStatus _status = PlayerStatus.created;
+  PlayerStatus _status = PlayerStatus.loading;
   @override
   PlayerStatus get status => _status;
 
@@ -44,10 +44,11 @@ class Player extends PlayerPlatform {
   @override
   Duration get position => _position;
 
-  static List<PlayerPlatform> get players => PlayerPlatform.palyers;
+  static List<PlayerController> get players => PlayerController.palyers;
 
   @override
   void init() async {
+    super.init();
     if (media.type == PlayerMediaType.asset) {
       await player.setAsset(media.resource);
     } else {
@@ -60,8 +61,8 @@ class Player extends PlayerPlatform {
     //   volume = volume;
     // });
     player.positionStream.listen((positionValue) {
-      notify(PlayerEvent.position);
       _position = positionValue;
+      notify(PlayerEvent.position);
     });
     player.playerStateStream.listen((pstate) {
       switch (pstate.processingState) {
@@ -81,8 +82,6 @@ class Player extends PlayerPlatform {
         // status = PlayerStatus.unknown;
       }
     });
-
-    _status = PlayerStatus.inited;
     players.add(this);
     if (autoPlay) {
       play();
@@ -94,6 +93,7 @@ class Player extends PlayerPlatform {
         }
       });
     }
+    notify(PlayerEvent.init);
   }
 
   @override
@@ -146,7 +146,7 @@ class Player extends PlayerPlatform {
   }
 
   Duration _position = Duration.zero;
-  Duration _duration = Duration.zero;
+  // Duration _duration = Duration.zero;
   double _volume = 1;
   double _speed = 1;
 

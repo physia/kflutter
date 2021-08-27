@@ -1,6 +1,8 @@
 library kplayer_platform_interface;
 
 import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 /// a Player Statuses enum
 enum PlayerEvent {
   /// on created.
@@ -41,22 +43,22 @@ enum PlayerEvent {
 
 /// a Player Statuses enum
 enum PlayerStatus {
-  created,
-  inited,
-  ready,
+  // created,
+  // inited,
+  // ready,
   loading,
   buffering,
   playing,
   paused,
   stopped,
   ended,
-  unknown,
+  // unknown,
 }
 /// a Player Media Types enum
 enum PlayerMediaType {
   asset,
   network,
-  file,
+  file, // comin soon...
 }
 
 // Object handle Player media resources
@@ -76,12 +78,11 @@ class PlayerMedia {
     return PlayerMedia(PlayerMediaType.file, _resource);
   }
 }
-
 /// the player interface
 ///
 /// the interface apis
-abstract class PlayerPlatform {
-  PlayerPlatform({
+abstract class PlayerController {
+  PlayerController({
     int? id,
     required this.media,
     this.autoPlay = false,
@@ -92,7 +93,7 @@ abstract class PlayerPlatform {
   // i know hhh
   // static bool _booted = false;
   // void needBoot(Function bootCallback) {
-  //   if (!PlayerPlatform._booted) {
+  //   if (!PlayerController._booted) {
   //     bootCallback();
   //   }
   // }
@@ -104,22 +105,31 @@ abstract class PlayerPlatform {
       bool? once,
       bool? loop}) {}
 
-  factory PlayerPlatform.assets(media,
+  factory PlayerController.assets(media,
       {int? id, required bool autoPlay, bool? once}) {
-    return PlayerPlatform.create(
+    return PlayerController.create(
         id: id, media: PlayerMedia.asset(media), autoPlay: autoPlay, once: once)
       ..init();
   }
 
-  factory PlayerPlatform.network(media,
+  factory PlayerController.network(media,
       {int? id, required bool autoPlay, bool? once}) {
-    return PlayerPlatform.create(
+    return PlayerController.create(
         id: id,
         media: PlayerMedia.network(media),
         autoPlay: autoPlay,
         once: once)
       ..init();
   }
+  //
+  // bool _ready = false;
+  bool get ready => duration != Duration.zero;
+  bool _created = false;
+  bool get created => _created || inited;
+  bool _inited = false;
+  bool get inited => _inited;
+  bool _disposed = false;
+  bool get disposed => _disposed;
 
   static void boot() {}
 
@@ -128,8 +138,15 @@ abstract class PlayerPlatform {
   final bool loop;
   final PlayerMedia media;
 
-  static List<PlayerPlatform> palyers = <PlayerPlatform>[];
-  void init();
+  static List<PlayerController> palyers = <PlayerController>[];
+  @mustCallSuper
+  void init() {
+    // streams.duration.listen((event) {
+    //   if(event != Duration.zero && !_ready){
+    //     _ready=true;
+    //   }
+    // });
+  }
   void replay();
   void play();
   void pause();
@@ -137,8 +154,9 @@ abstract class PlayerPlatform {
   @Deprecated("use the position setter")
   void seek(Duration position);
   void toggle();
+  // ignore: prefer_function_declarations_over_variables
   Function(PlayerEvent) callback = (PlayerEvent event){
-    print("$event");
+    debugPrint("$event");
   };
 
   get package;
@@ -155,43 +173,72 @@ abstract class PlayerPlatform {
 
   @Deprecated('Use `streams.position` instead.')
   Stream<Duration> get positionStream;
-  PlayerStreams streams = PlayerStreams();
+  final PlayerStreamControllers _streamControllers = PlayerStreamControllers();
+  PlayerStreams get streams => _streamControllers.streams;
 
   void dispose(){
-    streams.dispose();
+    _streamControllers.dispose();
   }
 
   void notify(PlayerEvent event) {
-    streams.status.add(status);
-    streams.playing.add(playing);
+    _streamControllers.status.add(status);
+    _streamControllers.playing.add(playing);
     switch (event) {
       case PlayerEvent.position:
-        streams.position.add(position);
+        _streamControllers.position.add(position);
         break;
       case PlayerEvent.duration:
-        streams.duration.add(duration);
+        _streamControllers.duration.add(duration);
         break;
       case PlayerEvent.volume:
-        streams.volume.add(volume);
+        _streamControllers.volume.add(volume);
         break;
       case PlayerEvent.speed:
-        streams.speed.add(speed);
+        _streamControllers.speed.add(speed);
+        break;
+      case PlayerEvent.create:
+        _created == true;
+        break;
+      case PlayerEvent.init:
+        _inited == true;
+        break;
+      case PlayerEvent.dispose:
+        _disposed == true;
         break;
       default:
     }
+    
     callback(event);
   }
 
 }
 /// All streams to for state managment
 class PlayerStreams {
+  final PlayerStreamControllers playerStreamControllers;
+  PlayerStreams(this.playerStreamControllers);
 
-  StreamController<bool> playing = StreamController.broadcast();
-  StreamController<Duration> position = StreamController.broadcast();
-  StreamController<Duration> duration = StreamController.broadcast();
-  StreamController<double> volume = StreamController.broadcast();
-  StreamController<double> speed = StreamController.broadcast();
-  StreamController<PlayerStatus> status = StreamController.broadcast();
+  Stream<bool> get playing => playerStreamControllers.playing.stream;
+  Stream<Duration> get position => playerStreamControllers.position.stream;
+  Stream<Duration> get duration => playerStreamControllers.duration.stream;
+  Stream<double> get volume => playerStreamControllers.volume.stream;
+  Stream<double> get speed => playerStreamControllers.speed.stream;
+  Stream<PlayerStatus> get status => playerStreamControllers.status.stream;
+
+  void dispose() {
+    playerStreamControllers.dispose();
+  }
+
+}
+class PlayerStreamControllers {
+  
+  final StreamController<bool> playing = StreamController.broadcast();
+  final StreamController<Duration> position = StreamController.broadcast();
+  final StreamController<Duration> duration = StreamController.broadcast();
+  final StreamController<double> volume = StreamController.broadcast();
+  final StreamController<double> speed = StreamController.broadcast();
+  final StreamController<PlayerStatus> status = StreamController.broadcast();
+
+  get streams => PlayerStreams(this);
 
   void dispose() {
     playing.close();

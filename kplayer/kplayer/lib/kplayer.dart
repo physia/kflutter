@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:kplayer_with_dart_vlc/kplayer_with_dart_vlc.dart' as dart_vlc;
 import 'package:kplayer_with_just_audio/kplayer_with_just_audio.dart'
     as just_audio;
@@ -8,11 +9,12 @@ import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 export 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 // typedef  = dart_vlc.Player;
 
-/// Object handle create and boot the [PlayerPlatform]
+/// Object handle create and boot the [PlayerController]
 class Player {
   /// this need to use in windows,linux
   /// put this in main
-  ///
+  /// dynamically loaded native library
+  /// https://api.dart.dev/stable/2.13.4/dart-ffi/DynamicLibrary-class.html
   /// ```dart
   /// void main() {
   ///   Player.boot();
@@ -20,9 +22,15 @@ class Player {
   /// }
   /// ```
   static boot() {
-    dart_vlc.Player.boot();
-    just_audio.Player.boot();
+    if (!Player.booted) {
+      dart_vlc.Player.boot();
+      just_audio.Player.boot();
+      Player._booted = true;
+    }
   }
+
+  static bool _booted = false;
+  static bool get booted => _booted;
 
   /// create instance adapted on platform
   /// ```dart
@@ -31,7 +39,7 @@ class Player {
   ///   ..init();
   /// player.play();
   /// ```
-  static PlayerPlatform create({
+  static PlayerController create({
     int? id,
     required PlayerMedia media,
     bool? autoPlay,
@@ -61,7 +69,7 @@ class Player {
   /// var player = Player.asset("assets/file.mp3");
   /// player.play();
   /// ```
-  static PlayerPlatform asset(media, {int? id, bool? autoPlay, bool? once}) {
+  static PlayerController asset(media, {int? id, bool? autoPlay, bool? once}) {
     return Player.create(
         id: id, media: PlayerMedia.asset(media), autoPlay: autoPlay, once: once)
       ..init();
@@ -72,7 +80,8 @@ class Player {
   /// var player = Player.network("https://example.com/file.mp3");
   /// player.play();
   /// ```
-  static PlayerPlatform network(media, {int? id, bool? autoPlay, bool? once}) {
+  static PlayerController network(media,
+      {int? id, bool? autoPlay, bool? once}) {
     return Player.create(
         id: id,
         media: PlayerMedia.network(media),
@@ -80,4 +89,37 @@ class Player {
         once: once)
       ..init();
   }
+}
+
+/// Mixin handel Player (init,dispose)
+@optionalTypeArgs
+mixin PlayerMixin<T extends StatefulWidget> on State<T> {
+  PlayerController? controller;
+  _initController(PlayerController? controller) {
+    controller?.streams.playing.listen(onPlayingChanged);
+    controller?.streams.position.listen(onPositionChanged);
+    controller?.streams.duration.listen(onDurationChanged);
+    controller?.streams.status.listen(onStatusChanged);
+    controller?.streams.speed.listen(onSpeedChanged);
+    controller?.streams.volume.listen(onVolumeChanged);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initController(controller);
+  }
+  
+  @override
+  void dispose() {
+    super.dispose();
+    controller?.dispose();
+  }
+
+  void onPlayingChanged(bool playing) {}
+  void onPositionChanged(Duration position) {}
+  void onDurationChanged(Duration duration) {}
+  void onStatusChanged(PlayerStatus status) {}
+  void onSpeedChanged(double speed) {}
+  void onVolumeChanged(double volume) {}
 }
