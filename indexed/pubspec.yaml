@@ -1,6 +1,6 @@
 name: indexed
 description: indexed widget, allow you to order the items inside stack, sothing like z-index
-version: 0.0.2
+version: 0.0.3
 repository: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
 homepage: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
 issue_tracker: https://github.com/flutter/flutter/issues?q=is:issue is:open label:"kplayer"

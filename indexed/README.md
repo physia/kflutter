@@ -2,7 +2,9 @@
 
 its a widget allow you to order the items inside stack, sothing like z-index.
 
-<center><video src='doc/assets/demo.mp4'  width=400 autoplay=true/></center>
+Online [demo](https://dartpad.dev/?id=2bbadcf3554cf5d7222b62c639a18e5d&null_safety=true)
+
+<center><video src='https://github.com/physia/kflutter/blob/main/indexed/doc/assets/demo.mp4?raw=true'  width=400 autoplay=true/></center>
 
 ## Getting Started 🚀
 
