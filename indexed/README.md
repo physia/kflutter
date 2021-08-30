@@ -3,8 +3,9 @@
 its a widget allow you to order the items inside stack, sothing like z-index.
 
 Online [demo](https://dartpad.dev/?id=2bbadcf3554cf5d7222b62c639a18e5d&null_safety=true)
+Video [demo](https://user-images.githubusercontent.com/22839194/131275765-9f1c037c-b4c5-4dfe-877f-14d5ee3f16e5.mp4)
 
-<center><video src='https://user-images.githubusercontent.com/22839194/131275765-9f1c037c-b4c5-4dfe-877f-14d5ee3f16e5.mp4'  width=400 autoplay=true/></center>
+<img src="https://raw.githubusercontent.com/physia/kflutter/main/indexed/doc/assets/demo.gif">
 
 ## Getting Started 🚀
 
