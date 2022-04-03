@@ -92,7 +92,6 @@ class Player {
 }
 
 /// Mixin handel Player (init,dispose)
-@optionalTypeArgs
 mixin PlayerMixin<T extends StatefulWidget> on State<T> {
   PlayerController? controller;
   _initController(PlayerController? controller) {
@@ -102,6 +101,7 @@ mixin PlayerMixin<T extends StatefulWidget> on State<T> {
     controller?.streams.status.listen(onStatusChanged);
     controller?.streams.speed.listen(onSpeedChanged);
     controller?.streams.volume.listen(onVolumeChanged);
+    // controller?.streams.loop.listen(onLoopChanged);
   }
 
   @override
@@ -109,7 +109,7 @@ mixin PlayerMixin<T extends StatefulWidget> on State<T> {
     super.initState();
     _initController(controller);
   }
-  
+
   @override
   void dispose() {
     super.dispose();

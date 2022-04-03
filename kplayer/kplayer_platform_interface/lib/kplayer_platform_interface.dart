@@ -3,40 +3,60 @@ library kplayer_platform_interface;
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+
 /// a Player Statuses enum
 enum PlayerEvent {
   /// on created.
   create,
+
   /// on initialized.
   init,
+
   /// on started.
   start,
+
   /// on restarted.
   restart,
+
   /// on playing.
   play,
+
   /// on replay.
   replay,
+
   /// on paused.
   pause,
+
   /// on toggle.
   toggle,
+
   /// on stopped.
   stop,
+
   /// on volume changed.
   volume,
+
   /// on speed changed.
   speed,
+
   /// on status changed.
   status,
+
   /// on position changed.
   position,
+
   /// on position changed, just in case idk
   duration,
+
   /// on dispose.
   dispose,
+
   /// on ended.
   end,
+
+  /// on loop status changes.
+  loop,
+
   /// unknown event. if you get this, probably something wrong
   unknown,
 }
@@ -54,6 +74,7 @@ enum PlayerStatus {
   ended,
   // unknown,
 }
+
 /// a Player Media Types enum
 enum PlayerMediaType {
   asset,
@@ -78,6 +99,7 @@ class PlayerMedia {
     return PlayerMedia(PlayerMediaType.file, _resource);
   }
 }
+
 /// the player interface
 ///
 /// the interface apis
@@ -87,8 +109,8 @@ abstract class PlayerController {
     required this.media,
     this.autoPlay = false,
     this.once = false,
-    this.loop = false,
-  });
+    bool loop = false,
+  }) : _loop = loop;
 
   // i know hhh
   // static bool _booted = false;
@@ -97,7 +119,8 @@ abstract class PlayerController {
   //     bootCallback();
   //   }
   // }
-
+  // list of th StreamSubscription for dispose automatically
+  List<StreamSubscription> subscriptions = [];
   static create(
       {int? id,
       required PlayerMedia media,
@@ -135,11 +158,11 @@ abstract class PlayerController {
 
   final bool autoPlay;
   final bool once;
-  final bool loop;
+  bool _loop;
   final PlayerMedia media;
 
   static List<PlayerController> palyers = <PlayerController>[];
-  @mustCallSuper
+  // @mustCallSuper
   void init() {
     // streams.duration.listen((event) {
     //   if(event != Duration.zero && !_ready){
@@ -155,19 +178,21 @@ abstract class PlayerController {
   void seek(Duration position);
   void toggle();
   // ignore: prefer_function_declarations_over_variables
-  Function(PlayerEvent) callback = (PlayerEvent event){
+  Function(PlayerEvent) callback = (PlayerEvent event) {
     debugPrint("$event");
   };
 
   get package;
   bool get playing;
   Duration get position;
-   set position(Duration duration);
+  set position(Duration duration);
   Duration get duration;
   double get volume;
-   set volume(double volume);
+  set volume(double volume);
   double get speed;
-   set speed(double speed);
+  set speed(double speed);
+  bool get loop;
+  set loop(bool speed);
   PlayerStatus get status;
   set status(PlayerStatus status);
 
@@ -176,8 +201,11 @@ abstract class PlayerController {
   final PlayerStreamControllers _streamControllers = PlayerStreamControllers();
   PlayerStreams get streams => _streamControllers.streams;
 
-  void dispose(){
+  void dispose() {
     _streamControllers.dispose();
+    for (var subscription in subscriptions) {
+      subscription.cancel();
+    }
   }
 
   void notify(PlayerEvent event) {
@@ -196,6 +224,9 @@ abstract class PlayerController {
       case PlayerEvent.speed:
         _streamControllers.speed.add(speed);
         break;
+      case PlayerEvent.loop:
+        _streamControllers.loop.add(loop);
+        break;
       case PlayerEvent.create:
         _created == true;
         break;
@@ -207,11 +238,11 @@ abstract class PlayerController {
         break;
       default:
     }
-    
+
     callback(event);
   }
-
 }
+
 /// All streams to for state managment
 class PlayerStreams {
   final PlayerStreamControllers playerStreamControllers;
@@ -222,20 +253,21 @@ class PlayerStreams {
   Stream<Duration> get duration => playerStreamControllers.duration.stream;
   Stream<double> get volume => playerStreamControllers.volume.stream;
   Stream<double> get speed => playerStreamControllers.speed.stream;
+  Stream<bool> get loop => playerStreamControllers.loop.stream;
   Stream<PlayerStatus> get status => playerStreamControllers.status.stream;
 
   void dispose() {
     playerStreamControllers.dispose();
   }
-
 }
+
 class PlayerStreamControllers {
-  
   final StreamController<bool> playing = StreamController.broadcast();
   final StreamController<Duration> position = StreamController.broadcast();
   final StreamController<Duration> duration = StreamController.broadcast();
   final StreamController<double> volume = StreamController.broadcast();
   final StreamController<double> speed = StreamController.broadcast();
+  final StreamController<bool> loop = StreamController.broadcast();
   final StreamController<PlayerStatus> status = StreamController.broadcast();
 
   get streams => PlayerStreams(this);
@@ -246,9 +278,9 @@ class PlayerStreamControllers {
     duration.close();
     volume.close();
     speed.close();
+    loop.close();
     status.close();
   }
-
 }
 
 class PlayerValue {
@@ -257,6 +289,7 @@ class PlayerValue {
   final Duration duration;
   final double volume;
   final double speed;
+  final double loop;
   final PlayerStatus status;
 
   PlayerValue(
@@ -265,5 +298,6 @@ class PlayerValue {
       required this.duration,
       required this.volume,
       required this.speed,
+      required this.loop,
       required this.status});
 }

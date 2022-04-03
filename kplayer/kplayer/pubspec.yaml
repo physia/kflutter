@@ -1,12 +1,12 @@
 name: kplayer
 description: this package is just wrapper for just_audio and dart_vlc to support all platforms.
-version: 0.1.11
+version: 0.1.12
 repository: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
 homepage: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
 issue_tracker: https://github.com/flutter/flutter/issues?q=is:issue is:open label:"kplayer"
-
+publish_to: none
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0-69.2.beta <3.0.0"
   flutter: ">=1.20.0"
 
 flutter:
@@ -28,9 +28,15 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  kplayer_with_just_audio: ^0.0.6
-  kplayer_with_dart_vlc: ^0.0.6
-  kplayer_platform_interface: ^0.0.6
+  # kplayer_with_just_audio: ^0.0.7
+  # kplayer_with_dart_vlc: ^0.0.7
+  # kplayer_platform_interface: ^0.0.6
+  kplayer_with_just_audio:
+    path: ../kplayer_with_just_audio
+  kplayer_with_dart_vlc:
+    path: ../kplayer_with_dart_vlc
+  kplayer_platform_interface:
+    path: ../kplayer_platform_interface
 
 dev_dependencies:
   flutter_driver:

@@ -28,6 +28,7 @@ class Player extends PlayerController {
   Duration _position = Duration.zero;
   Duration _duration = Duration.zero;
   double _volume = 1;
+  bool _loop = false;
   double _speed = 1;
 
   @override
@@ -65,22 +66,27 @@ class Player extends PlayerController {
         : dart_vlc.Media.network(media.resource);
     player.open(_vlcMedia, autoStart: autoPlay);
     players.add(this);
+    subscriptions.addAll([
+      player.positionStream.listen((dart_vlc.PositionState _state) {
+        _position = _state.position ?? _position;
+        _duration = _state.duration ?? _duration;
+        notify(PlayerEvent.position);
+      }),
+      player.playbackStream.listen((state) {
+        if (state.isCompleted) {
+          status = PlayerStatus.ended;
+          // if loop is true, then restart the video
+          if (loop) {
+            replay();
+          }
+        }
+      }),
+      player.generalStream.listen((dart_vlc.GeneralState _state) {
+        _volume = _state.volume;
+        _speed = _state.rate;
+      }),
+    ]);
 
-    player.positionStream.listen((dart_vlc.PositionState _state) {
-      _position = _state.position ?? _position;
-      _duration = _state.duration ?? _duration;
-      notify(PlayerEvent.position);
-    });
-    player.playbackStream.listen((state) {
-      if (state.isCompleted) {
-        status = PlayerStatus.ended;
-      }
-    });
-    player.generalStream.listen((dart_vlc.GeneralState _state) {
-      _volume = _state.volume;
-      _speed = _state.rate;
-    });
-    
     super.init();
   }
 
@@ -140,7 +146,7 @@ class Player extends PlayerController {
     player.dispose();
   }
 
-  // 
+  //
   static void boot() {
     if (!kIsWeb &&
         (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
@@ -170,9 +176,17 @@ class Player extends PlayerController {
   }
 
   @override
+  bool get loop => _loop;
+
+  @override
+  set loop(bool loop) {
+    _loop = loop;
+    notify(PlayerEvent.loop);
+  }
+
+  @override
   set position(Duration position) {
     seek(position);
     notify(PlayerEvent.position);
   }
-
 }

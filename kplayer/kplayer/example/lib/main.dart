@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
@@ -26,9 +25,8 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-
   @override
-  dispose(){
+  dispose() {
     super.dispose();
     player.dispose();
   }
@@ -76,13 +74,14 @@ class _MyAppState extends State<MyApp> {
                     height: 150,
                     child: StreamBuilder(
                       stream: player.streams.status,
-                      builder: (context,AsyncSnapshot<PlayerStatus> snapshot) {
+                      builder: (context, AsyncSnapshot<PlayerStatus> snapshot) {
                         return CircularProgressIndicator(
                           strokeWidth: 1,
                           color: Colors.teal,
                           value: loading
                               ? null
-                              : player.position.inSeconds / max(player.duration.inSeconds, 0.01),
+                              : player.position.inSeconds /
+                                  max(player.duration.inSeconds, 0.01),
                         );
                       },
                     ),
@@ -98,7 +97,7 @@ class _MyAppState extends State<MyApp> {
                       highlightElevation: 0,
                       backgroundColor: Colors.teal.withOpacity(0.1),
                       onPressed: () {
-                          player.toggle();
+                        player.toggle();
                       },
                       child: DefaultTextStyle(
                         style: const TextStyle(color: Colors.black87),
@@ -129,20 +128,21 @@ class _MyAppState extends State<MyApp> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: DefaultTextStyle(
-                        style: const TextStyle(color: Colors.black38, fontSize: 12),
-                        child: StreamBuilder(
-                          stream: player.streams.position,
-                          builder: (context, snapshot) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("${player.position.inHours%60}:${player.position.inMinutes%60}:${player.position.inSeconds%60}"),
-                                Text("${player.duration.inHours%60}:${player.duration.inMinutes%60}:${player.duration.inSeconds%60}"),
-                              ],
-                            );
-                          }
-                        ),
-                      ),
+                  style: const TextStyle(color: Colors.black38, fontSize: 12),
+                  child: StreamBuilder(
+                      stream: player.streams.position,
+                      builder: (context, snapshot) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                                "${player.position.inHours % 60}:${player.position.inMinutes % 60}:${player.position.inSeconds % 60}"),
+                            Text(
+                                "${player.duration.inHours % 60}:${player.duration.inMinutes % 60}:${player.duration.inSeconds % 60}"),
+                          ],
+                        );
+                      }),
+                ),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
@@ -162,12 +162,12 @@ class _MyAppState extends State<MyApp> {
                           _changingPosition = false;
                         },
                         onChanged: (double value) {
-                            loading = true;
-                            _position = Duration(
-                                seconds:
-                                    ((value / 100) * player.duration.inSeconds)
-                                        .toInt());
-                            player.position = _position;
+                          loading = true;
+                          _position = Duration(
+                              seconds:
+                                  ((value / 100) * player.duration.inSeconds)
+                                      .toInt());
+                          player.position = _position;
                         },
                       );
                     }),
@@ -188,7 +188,7 @@ class _MyAppState extends State<MyApp> {
                             max: 100,
                             // label: player.volume.round().toString(),
                             onChanged: (double value) {
-                                player.volume = value / 100;
+                              player.volume = value / 100;
                             },
                           );
                         },
@@ -213,7 +213,30 @@ class _MyAppState extends State<MyApp> {
                             max: 10,
                             divisions: 10,
                             onChanged: (double value) {
-                                player.speed = value / 5;
+                              player.speed = value / 5;
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // add switch to loop
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                width: double.infinity,
+                child: Row(
+                  children: [
+                    const Icon(Icons.repeat),
+                    Expanded(
+                      child: StreamBuilder(
+                        stream: player.streams.loop,
+                        builder: (context, AsyncSnapshot<bool> snapshot) {
+                          return CupertinoSwitch(
+                            value: player.loop,
+                            onChanged: (bool value) {
+                              player.loop = value;
                             },
                           );
                         },
@@ -226,23 +249,24 @@ class _MyAppState extends State<MyApp> {
                 height: 50,
               ),
               StreamBuilder(
-                stream: player.streams.position,
-                builder: (context, snapshot) {
-                  return Center(
-                    child: DefaultTextStyle(
-                      style: const TextStyle(color: Colors.grey, fontSize: 12),
-                      child: Column(
-                        children: [
-                          Text("Duration: " + player.duration.toString()),
-                          Text("Position: " + player.position.toString()),
-                          Text("Volume: " + player.volume.toString()),
-                          Text("Speed: " + player.speed.toString()),
-                        ],
+                  stream: player.streams.position,
+                  builder: (context, snapshot) {
+                    return Center(
+                      child: DefaultTextStyle(
+                        style:
+                            const TextStyle(color: Colors.grey, fontSize: 12),
+                        child: Column(
+                          children: [
+                            Text("Duration: " + player.duration.toString()),
+                            Text("Position: " + player.position.toString()),
+                            Text("Volume: " + player.volume.toString()),
+                            Text("Speed: " + player.speed.toString()),
+                            Text("Loop: " + player.loop.toString()),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                }
-              )
+                    );
+                  })
             ],
           ),
         ),

@@ -64,4 +64,35 @@ class Indexer extends Stack {
               return _aIndex - _bIndex * _reverser;
             }),
         );
+
+  /// use shadow list to sort items
+  Indexer.shadow({
+    Key? key,
+    AlignmentDirectional alignment = AlignmentDirectional.topStart,
+    TextDirection? textDirection,
+    this.reversed = false,
+    StackFit fit = StackFit.loose,
+    @Deprecated(
+      'Use clipBehavior instead. See the migration guide in flutter.dev/go/clip-behavior. '
+      'This feature was deprecated after v1.22.0-12.0.pre.',
+    )
+        Overflow overflow = Overflow.clip,
+    Clip clipBehavior = Clip.hardEdge,
+    List<Widget> children = const <Widget>[],
+    List<int> shadow = const<int>[],
+  }) :
+  assert(shadow.length == children.length),
+   super(
+          key: key,
+          alignment: alignment,
+          textDirection: textDirection,
+          fit: fit,
+          overflow: overflow,
+          clipBehavior: clipBehavior,
+          children: children
+            ..sort((Widget a, Widget b) {
+              int _reverser = reversed ? -1 : 1;              
+              return shadow[children.indexOf(a)] - shadow[children.indexOf(b)] * _reverser;
+            }),
+        );
 }

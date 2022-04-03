@@ -30,7 +30,7 @@ class Player extends PlayerController {
   PlayerStatus get status => _status;
 
   @override
-  bool get playing => status==PlayerStatus.playing;
+  bool get playing => status == PlayerStatus.playing;
 
   @override
   set status(PlayerStatus status) {
@@ -149,6 +149,7 @@ class Player extends PlayerController {
   // Duration _duration = Duration.zero;
   double _volume = 1;
   double _speed = 1;
+  bool _loop = false;
 
   @override
   double get speed => _speed;
@@ -165,6 +166,17 @@ class Player extends PlayerController {
   @override
   set volume(double volume) {
     player.setVolume(_volume = volume);
+    notify(PlayerEvent.volume);
+  }
+
+  @override
+  bool get loop => _loop;
+
+  @override
+  set loop(bool loop) {
+    _loop = loop;
+    player
+        .setLoopMode(loop ? just_audio.LoopMode.all : just_audio.LoopMode.off);
     notify(PlayerEvent.volume);
   }
 

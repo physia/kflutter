@@ -2,7 +2,7 @@ name: kplayer_platform_interface
 description: kplayer_platform_interface.
 version: 0.0.6
 homepage:
-
+publish_to: none
 environment:
   sdk: ">=2.12.0 <3.0.0"
   flutter: ">=1.17.0"
