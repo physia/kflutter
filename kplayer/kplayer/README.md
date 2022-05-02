@@ -1,7 +1,7 @@
 # kplayer
 
 Flutter player (currently only audio)
-
+> online preview: [Go live](https://physia.github.io/kflutter/kplayer/online_example/index.html)
 <img src="https://user-images.githubusercontent.com/22839194/166224411-dea32c6e-ac47-45ec-ab25-1900e0c0ccb9.png" width='150'>
 <img src="https://user-images.githubusercontent.com/22839194/166224480-a9a0aa1a-54bb-4481-b529-e899e593b37c.png" width='150'>
 <img src="https://user-images.githubusercontent.com/22839194/166224496-55776e1f-fcbd-4ca1-a165-c7417aaa7d1b.png" width='150'>
