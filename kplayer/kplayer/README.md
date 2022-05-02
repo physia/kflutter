@@ -2,12 +2,12 @@
 
 Flutter player (currently only audio)
 
-<img src="https://user-images.githubusercontent.com/22839194/166224411-dea32c6e-ac47-45ec-ab25-1900e0c0ccb9.png" width='260'>
-<img src="https://user-images.githubusercontent.com/22839194/166224480-a9a0aa1a-54bb-4481-b529-e899e593b37c.png" width='260'>
-<img src="https://user-images.githubusercontent.com/22839194/166224496-55776e1f-fcbd-4ca1-a165-c7417aaa7d1b.png" width='260'>
-<img src="https://user-images.githubusercontent.com/22839194/166224505-619b5f64-9d22-4cae-a12f-eab58fb06fc4.png" width='260'>
-<img src="https://user-images.githubusercontent.com/22839194/166224515-7597d04a-32df-4760-ac5d-50ff8c119ba9.png" width='260'>
-<img src="https://user-images.githubusercontent.com/22839194/166224524-4dd28bc3-9506-40d0-a983-79105cc7af4a.png" width='260'>
+<img src="https://user-images.githubusercontent.com/22839194/166224411-dea32c6e-ac47-45ec-ab25-1900e0c0ccb9.png" width='150'>
+<img src="https://user-images.githubusercontent.com/22839194/166224480-a9a0aa1a-54bb-4481-b529-e899e593b37c.png" width='150'>
+<img src="https://user-images.githubusercontent.com/22839194/166224496-55776e1f-fcbd-4ca1-a165-c7417aaa7d1b.png" width='150'>
+<img src="https://user-images.githubusercontent.com/22839194/166224505-619b5f64-9d22-4cae-a12f-eab58fb06fc4.png" width='150'>
+<img src="https://user-images.githubusercontent.com/22839194/166224515-7597d04a-32df-4760-ac5d-50ff8c119ba9.png" width='150'>
+<img src="https://user-images.githubusercontent.com/22839194/166224524-4dd28bc3-9506-40d0-a983-79105cc7af4a.png" width='150'>
 
 ## sopport
 
@@ -32,15 +32,25 @@ void main() {
 Play from assets:
 
 ```dart
-var player = Player.asset("/assets/sound.mp3")
-player..play();
+var player = Player.asset("/assets/sound.mp3");
 ```
 
 Play from network:
 
 ```dart
-var player = Player.network("[/assets/sound.mp3](https://example.com/sound.mp3)")
-player..play();
+var player = Player.network("[/assets/sound.mp3](https://example.com/sound.mp3)");
+```
+
+Play from file:
+
+```dart
+var player = Player.file("C/.../sound.mp3");
+```
+
+Play from bytes: // beta
+
+```dart
+var player = Player.bytes(fileAsBytes);
 ```
 
 or:
@@ -48,7 +58,6 @@ or:
 ```dart
 var player = Player.create(asset: PlayerMedia.asset("/assets/sound.mp3"), autoPlay: true, once: true)
       ..init()
-      ..play();
 ```
 
 you have also:
@@ -91,6 +100,13 @@ player.loop = true; // looping
 //other
 player.dispose();
 player.player; // the package player instance for more option
+
+// Widgets
+PlayerBar(player: player, options: []);
+PlayerBuilder(player: player, builder: (context, player, event){
+  return // TODO
+});
+```
 
 // mixins
 PlayerMixin
