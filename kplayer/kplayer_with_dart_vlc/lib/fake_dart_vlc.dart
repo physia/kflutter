@@ -1,4 +1,6 @@
+import "fake_io.dart" if (dart.library.io) 'dart:io';
 //  Fake player
+
 class Player {
   late Stream<GeneralState> generalStream;
   late Stream<PlaybackState> playbackStream;
@@ -23,12 +25,115 @@ class Player {
   void setVolume(double volume) {}
 }
 
-class Media {
-  static asset(String resource) {}
+class MediaSourceType {}
 
-  static network(String resource) {}
+class MediaSource {}
+
+class MediaType {}
+
+/// A media object to open inside a [Player].
+///
+/// Pass `true` to [parse] for retrieving the metadata of the [Media].
+/// [timeout] sets the time-limit for retriveing metadata.
+/// [Media.metas] can be then, accessed to get the retrived metadata as `Map<String, String>`.
+///
+/// * A [Media] from a [File].
+///
+/// ```dart
+/// Media media = Media.file(File('C:/music.ogg'));
+/// ```
+///
+/// * A [Media] from a [Uri].
+///
+/// ```dart
+/// Media media = Media.network('http://alexmercerind.github.io/music.mp3');
+/// ```
+///
+/// For starting a [Media] at particular time, one can pass `startTime`.
+///
+/// ```dart
+/// Media media = Media.file(
+///   File('C:/music.ogg'),
+///   startTime: Duration(milliseconds: 20),
+/// );
+/// ```
+///
+class Media implements MediaSource {
+  MediaSourceType get mediaSourceType {
+    throw UnimplementedError('The platform is not supported');
+  }
+
+  final MediaType mediaType;
+  final String resource;
+  final Duration startTime;
+  final Duration stopTime;
+  final Map<String, String> metas;
+
+  const Media._({
+    required this.mediaType,
+    required this.resource,
+    required this.metas,
+    this.startTime: Duration.zero,
+    this.stopTime: Duration.zero,
+  });
+
+  /// Makes [Media] object from a [File].
+  factory Media.file(
+    File file, {
+    bool parse: false,
+    Map<String, dynamic>? extras,
+    Duration timeout: const Duration(seconds: 10),
+    startTime: Duration.zero,
+    stopTime: Duration.zero,
+  }) {
+    throw UnimplementedError('The platform is not supported');
+  }
+
+  /// Makes [Media] object from url.
+  factory Media.network(
+    dynamic url, {
+    bool parse: false,
+    Map<String, dynamic>? extras,
+    Duration timeout: const Duration(seconds: 10),
+    startTime: Duration.zero,
+    stopTime: Duration.zero,
+  }) {
+    throw UnimplementedError('The platform is not supported');
+  }
+
+  /// Makes [Media] object from direct show.
+  factory Media.directShow(
+      {String? rawUrl,
+      Map<String, dynamic>? args,
+      String? vdev,
+      String? adev,
+      int? liveCaching}) {
+    throw UnimplementedError('The platform is not supported');
+  }
+
+  /// Makes [Media] object from assets.
+  ///
+  /// **WARNING**
+  ///
+  /// This method only works for Flutter.
+  /// Might result in an exception on Dart CLI.
+  ///
+  factory Media.asset(
+    String asset, {
+    startTime: Duration.zero,
+  }) {
+    throw UnimplementedError('The platform is not supported');
+  }
+
+  /// Parses the [Media] to retrieve [Media.metas].
+  void parse(Duration timeout) {
+    throw UnimplementedError('The platform is not supported');
+  }
+
+  static String _buildDirectShowUrl(Map<String, dynamic> args) {
+    throw UnimplementedError('The platform is not supported');
+  }
 }
-
 
 class PositionState {
   get position => null;
@@ -72,7 +177,6 @@ class GeneralState {
   /// Rate of playback of [Player] instance.
   double rate = 1.0;
 }
-
 
 class DartVLC {
   static void initialize() {}

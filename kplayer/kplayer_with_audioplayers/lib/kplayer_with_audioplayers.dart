@@ -1,10 +1,6 @@
-library kplayer_with_dart_vlc;
+library kplayer_with_audioplayers;
 
-import "fake_io.dart" if (dart.library.io) 'dart:io';
-
-import "fake_dart_vlc.dart"
-    if (dart.library.ffi) 'package:dart_vlc/dart_vlc.dart' as dart_vlc;
-import 'package:flutter/foundation.dart';
+import 'package:audioplayers/audioplayers.dart' as audioplayers;
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 
 class Player extends PlayerController {
@@ -14,7 +10,7 @@ class Player extends PlayerController {
     bool? autoPlay,
     bool? once,
     bool? loop,
-  })  : player = dart_vlc.Player(id: id ?? players.length + 50001),
+  })  : player = audioplayers.AudioPlayer(),
         super(
             media: media,
             autoPlay: autoPlay ?? false,
@@ -23,7 +19,7 @@ class Player extends PlayerController {
     players.add(this);
   }
 
-  final dart_vlc.Player player;
+  final audioplayers.AudioPlayer player;
   Duration _position = Duration.zero;
   Duration _duration = Duration.zero;
   double _volume = 1;
@@ -31,7 +27,7 @@ class Player extends PlayerController {
   double _speed = 1;
 
   @override
-  get package => "dart_vlc";
+  get package => "audioplayers";
 
   PlayerStatus _status = PlayerStatus.loading;
   @override
@@ -61,37 +57,46 @@ class Player extends PlayerController {
     //   Player.boot();
     //   print("Player.boot");
     // });
-    var _vlcMedia;
+    audioplayers.Source apMedia;
     if (media.type == PlayerMediaType.network) {
-      _vlcMedia = dart_vlc.Media.network(media.resource);
+      apMedia = audioplayers.UrlSource(media.resource);
     } else if (media.type == PlayerMediaType.asset) {
-      _vlcMedia = dart_vlc.Media.asset(media.resource);
+      apMedia = audioplayers.AssetSource(media.resource);
     } else if (media.type == PlayerMediaType.file) {
-      _vlcMedia = dart_vlc.Media.file(File(media.resource));
+      apMedia = audioplayers.DeviceFileSource(media.resource);
+    } else if (media.type == PlayerMediaType.bytes) {
+      apMedia = audioplayers.BytesSource(media.resource);
     } else {
       throw Exception("media type not support");
     }
 
-    player.open(_vlcMedia, autoStart: false);
+    player.setSource(apMedia);
     players.add(this);
+
     subscriptions.addAll([
-      player.positionStream.listen((dart_vlc.PositionState _state) {
-        _position = _state.position ?? _position;
-        _duration = _state.duration ?? _duration;
+      player.onPositionChanged.listen((Duration position) async {
+        _position = position;
         notify(PlayerEvent.position);
-      }),
-      player.playbackStream.listen((state) {
-        if (state.isCompleted) {
-          status = PlayerStatus.ended;
-          // if loop is true, then restart the video
-          if (loop) {
-            replay();
-          }
+        if (position == duration) {
+          notify(PlayerEvent.end);
         }
       }),
-      player.generalStream.listen((dart_vlc.GeneralState _state) {
-        _volume = _state.volume;
-        _speed = _state.rate;
+      player.onPlayerStateChanged
+          .listen((audioplayers.PlayerState status) async {
+        if (status == audioplayers.PlayerState.playing) {
+          _status = PlayerStatus.playing;
+        } else if (status == audioplayers.PlayerState.paused) {
+          _status = PlayerStatus.paused;
+        } else if (status == audioplayers.PlayerState.stopped) {
+          _status = PlayerStatus.stopped;
+        } else if (status == audioplayers.PlayerState.completed) {
+          _status = PlayerStatus.ended;
+        }
+        notify(PlayerEvent.status);
+      }),
+      player.onDurationChanged.listen((Duration duration) {
+        _duration = duration;
+        notify(PlayerEvent.duration);
       }),
     ]);
 
@@ -106,20 +111,13 @@ class Player extends PlayerController {
     notify(PlayerEvent.play);
     if (!playing) {
       _status = PlayerStatus.playing;
-      player.play();
-      if (once) {
-        player.playbackStream.listen((event) {
-          if (event.isCompleted) {
-            dispose();
-          }
-        });
-      }
+      player.resume();
     }
   }
 
   @override
-  void replay() {
-    seek(Duration.zero);
+  Future<void> replay() async {
+    await seek(Duration.zero);
     notify(PlayerEvent.replay);
     play();
   }
@@ -139,8 +137,8 @@ class Player extends PlayerController {
   }
 
   @override
-  void seek(Duration position) {
-    player.seek(position);
+  Future<void> seek(Duration position) async {
+    await player.seek(position);
     notify(PlayerEvent.position);
   }
 
@@ -159,21 +157,16 @@ class Player extends PlayerController {
 
   //
   static void boot() {
-    if (!kIsWeb &&
-        (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
-      dart_vlc.DartVLC.initialize();
-    }
+    //
   }
 
-  @override
-  Stream<Duration> get positionStream =>
-      player.positionStream.map((event) => event.position ?? Duration.zero);
   @override
   double get speed => _speed;
 
   @override
   set speed(double speed) {
-    player.setRate(speed);
+    player.setPlaybackRate(speed);
+    _speed = speed;
     notify(PlayerEvent.speed);
   }
 
@@ -183,6 +176,7 @@ class Player extends PlayerController {
   @override
   set volume(double volume) {
     player.setVolume(volume);
+    _volume = volume;
     notify(PlayerEvent.volume);
   }
 

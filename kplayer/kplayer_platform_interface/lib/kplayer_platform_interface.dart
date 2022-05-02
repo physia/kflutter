@@ -1,11 +1,16 @@
 library kplayer_platform_interface;
 
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
+export 'widgets.dart';
 
 /// a Player Statuses enum
 enum PlayerEvent {
+  /// on load.
+  load,
+
   /// on created.
   create,
 
@@ -79,24 +84,75 @@ enum PlayerStatus {
 enum PlayerMediaType {
   asset,
   network,
-  file, // comin soon...
+  file,
+  bytes,
+  stream,
 }
 
 // Object handle Player media resources
-class PlayerMedia {
-  PlayerMedia(this.type, this.resource);
+class PlayerMedia<T> {
+  PlayerMedia(
+      {required this.type,
+      required this.resource,
+      this.headers,
+      this.initial,
+      this.preload = false});
 
   final PlayerMediaType type;
-  final String resource;
+  final T resource;
+  final Map<String, String>? headers;
+  final Duration? initial;
+  final bool preload;
 
-  factory PlayerMedia.asset(String _resource) {
-    return PlayerMedia(PlayerMediaType.asset, _resource);
+  static PlayerMedia<String> asset(String _resource,
+      {Duration? initial, bool? preload}) {
+    return PlayerMedia(
+      type: PlayerMediaType.asset,
+      resource: _resource,
+      preload: preload ?? false,
+      initial: initial,
+    );
   }
-  factory PlayerMedia.network(String _resource) {
-    return PlayerMedia(PlayerMediaType.network, _resource);
+
+  static PlayerMedia<String> network(String _resource,
+      {Map<String, String>? headers, Duration? initial, bool? preload}) {
+    return PlayerMedia(
+      type: PlayerMediaType.network,
+      resource: _resource,
+      headers: headers,
+      preload: preload ?? false,
+      initial: initial,
+    );
   }
-  factory PlayerMedia.file(String _resource) {
-    return PlayerMedia(PlayerMediaType.file, _resource);
+
+  static PlayerMedia<String> file(String _resource,
+      {Duration? initial, bool? preload}) {
+    return PlayerMedia(
+      type: PlayerMediaType.file,
+      resource: _resource,
+      preload: preload ?? false,
+      initial: initial,
+    );
+  }
+
+  static PlayerMedia<Uint8List> bytes(Uint8List _resource,
+      {Duration? initial, bool? preload}) {
+    return PlayerMedia(
+      type: PlayerMediaType.bytes,
+      resource: _resource,
+      preload: preload ?? false,
+      initial: initial,
+    );
+  }
+
+  static PlayerMedia<Stream> stream(Stream _resource,
+      {Duration? initial, bool? preload}) {
+    return PlayerMedia(
+      type: PlayerMediaType.stream,
+      resource: _resource,
+      preload: preload ?? false,
+      initial: initial,
+    );
   }
 }
 
@@ -104,6 +160,8 @@ class PlayerMedia {
 ///
 /// the interface apis
 abstract class PlayerController {
+  // static config
+  static bool enableLog = true;
   PlayerController({
     int? id,
     required this.media,
@@ -149,10 +207,14 @@ abstract class PlayerController {
   bool get ready => duration != Duration.zero;
   bool _created = false;
   bool get created => _created || inited;
+  bool _loading = false;
+  bool get loading => _loading;
   bool _inited = false;
   bool get inited => _inited;
   bool _disposed = false;
   bool get disposed => _disposed;
+  bool _ended = false;
+  bool get ended => _ended;
 
   static void boot() {}
 
@@ -160,6 +222,36 @@ abstract class PlayerController {
   final bool once;
   bool _loop;
   final PlayerMedia media;
+
+  // static functions
+  // the method durationToString is used to convert duration to string and show it on the UI
+  static String durationToString(Duration duration) {
+    List<String> blocks = [];
+    String twoDigits(int n) {
+      if (n >= 10) {
+        return n.toString().substring(0, 2);
+      }
+      return "0$n";
+    }
+
+    if (duration.inHours > 0) {
+      blocks.add(twoDigits(duration.inHours));
+    }
+
+    if (duration.inMinutes > 0) {
+      blocks.add(twoDigits(duration.inMinutes));
+    } else {
+      blocks.add("00");
+    }
+
+    if (duration.inSeconds > 0) {
+      blocks.add(twoDigits(duration.inSeconds));
+    } else {
+      blocks.add("00");
+    }
+
+    return blocks.join(":");
+  }
 
   static List<PlayerController> palyers = <PlayerController>[];
   // @mustCallSuper
@@ -179,10 +271,12 @@ abstract class PlayerController {
   void toggle();
   // ignore: prefer_function_declarations_over_variables
   Function(PlayerEvent) callback = (PlayerEvent event) {
-    debugPrint("$event");
+    if (enableLog) {
+      debugPrint("$event");
+    }
   };
 
-  get package;
+  String get package;
   bool get playing;
   Duration get position;
   set position(Duration duration);
@@ -197,7 +291,8 @@ abstract class PlayerController {
   set status(PlayerStatus status);
 
   @Deprecated('Use `streams.position` instead.')
-  Stream<Duration> get positionStream;
+  Stream<Duration> get positionStream => streams.position;
+
   final PlayerStreamControllers _streamControllers = PlayerStreamControllers();
   PlayerStreams get streams => _streamControllers.streams;
 
@@ -206,6 +301,8 @@ abstract class PlayerController {
     for (var subscription in subscriptions) {
       subscription.cancel();
     }
+    subscriptions.clear();
+    _disposed = true;
   }
 
   void notify(PlayerEvent event) {
@@ -228,13 +325,22 @@ abstract class PlayerController {
         _streamControllers.loop.add(loop);
         break;
       case PlayerEvent.create:
-        _created == true;
+        _created = true;
         break;
       case PlayerEvent.init:
-        _inited == true;
+        _inited = true;
         break;
       case PlayerEvent.dispose:
-        _disposed == true;
+        _disposed = true;
+        break;
+      case PlayerEvent.end:
+        _ended = true;
+        if (loop) {
+          replay();
+        }
+        if (once) {
+          dispose();
+        }
         break;
       default:
     }

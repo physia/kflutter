@@ -1,8 +1,47 @@
 library kplayer_with_just_audio;
 
+import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:just_audio/just_audio.dart' as just_audio;
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
+
+class JustAudioBytesSource extends just_audio.StreamAudioSource {
+  final Uint8List _buffer;
+
+  JustAudioBytesSource(this._buffer) : super(tag: 'MyAudioSource');
+
+  @override
+  Future<just_audio.StreamAudioResponse> request([int? start, int? end]) async {
+    // Returning the stream audio response with the parameters
+    return just_audio.StreamAudioResponse(
+      sourceLength: _buffer.length,
+      contentLength: (start ?? 0) - (end ?? _buffer.length),
+      offset: start ?? 0,
+      stream: Stream.fromIterable([_buffer.sublist(start ?? 0, end)]),
+      contentType: 'audio/wav',
+    );
+  }
+}
+
+class JustAudioStreamSource extends just_audio.StreamAudioSource {
+  final Stream<List<int>> _stream;
+  final int _length;
+
+  JustAudioStreamSource(this._stream, this._length)
+      : super(tag: 'MyAudioSource');
+
+  @override
+  Future<just_audio.StreamAudioResponse> request([int? start, int? end]) async {
+    return just_audio.StreamAudioResponse(
+      sourceLength: _length,
+      contentLength: (start ?? 0) - (end ?? _length),
+      offset: start ?? 0,
+      stream: _stream,
+      contentType: 'audio/wav',
+    );
+  }
+}
 
 class Player extends PlayerController {
   Player({
@@ -50,9 +89,30 @@ class Player extends PlayerController {
   void init() async {
     super.init();
     if (media.type == PlayerMediaType.asset) {
-      await player.setAsset(media.resource);
+      await player.setAsset(
+        media.resource,
+        initialPosition: media.initial,
+        preload: media.preload,
+      );
+    } else if (media.type == PlayerMediaType.network) {
+      await player.setUrl(
+        media.resource,
+        headers: media.headers,
+        initialPosition: media.initial,
+        preload: media.preload,
+      );
+    } else if (media.type == PlayerMediaType.file) {
+      await player.setFilePath(
+        media.resource,
+        initialPosition: media.initial,
+        preload: media.preload,
+      );
+      // } else if (media.type == PlayerMediaType.stream) {
+      //   await player.setAudioSource(JustAudioStreamSource(media.resource, 900));
+      // } else if (media.type == PlayerMediaType.bytes) {
+      //   await player.setAudioSource(JustAudioBytesSource(media.resource));
     } else {
-      await player.setUrl(media.resource);
+      throw Exception("Unsupported media type");
     }
     // player.speedStream.listen((speed) {
     //   speed = speed;
@@ -134,10 +194,10 @@ class Player extends PlayerController {
   }
 
   @override
-  void dispose() {
-    super.dispose();
+  void dispose() async {
+    await player.dispose();
     notify(PlayerEvent.dispose);
-    player.dispose();
+    super.dispose();
   }
 
   //
