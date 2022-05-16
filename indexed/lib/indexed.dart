@@ -11,7 +11,7 @@ class Indexed extends StatelessWidget implements IndexedInterface {
   final int index;
   final Widget child;
   const Indexed({
-    Key? key,
+    super.key,
     this.index = 0,
     required this.child,
   });
