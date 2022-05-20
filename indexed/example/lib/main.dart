@@ -1,6 +1,6 @@
 // Copyright (c) 2021, @mohamadlounnas
 // https://physia.dev
-// 
+//
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file or at
@@ -11,27 +11,25 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:indexed/indexed.dart';
 
-
 void main() async {
   runApp(
     const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body:  IndexPage(),
+        body: IndexPage(),
       ),
     ),
   );
 }
 
 class IndexPage extends StatefulWidget {
-  const IndexPage({Key? key}) : super(key: key);
+  const IndexPage({super.key});
 
   @override
   _IndexPageState createState() => _IndexPageState();
 }
 
 class _IndexPageState extends State<IndexPage> with TickerProviderStateMixin {
-
   var colors = <Color>[
     Colors.amber,
     Colors.amberAccent,
@@ -93,8 +91,10 @@ class _IndexPageState extends State<IndexPage> with TickerProviderStateMixin {
                   duration: const Duration(milliseconds: 500),
                   vsync: this,
                 )..forward();
-                BoxDemo.boxes.add(BoxDemo(
-                    index: rd, color: colors[rd], controller: _controller),);
+                BoxDemo.boxes.add(
+                  BoxDemo(
+                      index: rd, color: colors[rd], controller: _controller),
+                );
               });
             },
             child: const Icon(Icons.add),
@@ -125,14 +125,15 @@ class BoxDemo {
     callback();
   }
 }
+
 class IndexedExtendsDemo extends AnimatedWidget implements IndexedInterface {
   final BoxDemo boxDemo;
   final VoidCallback? callback;
   IndexedExtendsDemo({
-    Key? key,
+    super.key,
     required this.boxDemo,
     this.callback,
-  }) : super(key: key, listenable: boxDemo.controller);
+  }) : super(listenable: boxDemo.controller);
 
   Animation<double> get _progress => listenable as Animation<double>;
 
@@ -171,7 +172,8 @@ class IndexedExtendsDemo extends AnimatedWidget implements IndexedInterface {
                   TextButton.icon(
                     onPressed: () {
                       boxDemo.controller.reverse();
-                      Future.delayed(const Duration(milliseconds: 500)).then((value) {
+                      Future.delayed(const Duration(milliseconds: 500))
+                          .then((value) {
                         BoxDemo.boxes.remove(boxDemo);
                         callback!();
                       });
