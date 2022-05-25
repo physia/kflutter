@@ -9,8 +9,9 @@ Flutter player (currently only audio)
 <div style="display:flex;">
 <img src="https://user-images.githubusercontent.com/22839194/170221879-7eb150e1-fbe0-4f51-a28f-cbde58f51ae1.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170221947-6c4da925-207b-412c-968f-5e4655e71da6.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170222072-8c77270b-a690-4bdc-9e0e-39d1c6f197bc.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170222374-31dd203b-aeb5-4ca2-b940-42efaba417bb.png" width='277'>
 </div>
-## sopport
 
+## sopport
+### windows
 because of this issue: <https://github.com/bluefireteam/audioplayers/issues/1119>
 if want to use kplayer_with_audioplayers, use this on pubspec.yaml:
 
@@ -22,9 +23,20 @@ dependency_overrides:
       path: packages/audioplayers_windows
       ref: 263b4cc648d39a79455c221897a2c699f9d1c4c0
 ```
+thanks to [maintel](https://github.com/maintel)
 
+### macos
+
+on macos if you using just_audio you may need to do some changes
+> I was able to build the project example when macos/Podfile replace platform :osx, '10.11' to platform :osx, '10.15'. Furthermore, adding to macos/Runner/DebugProfile.entitlements and macos/Runner/Release.entitlements:
+> ```xml
+> <key>com.apple.security.network.client</key>
+> <true/>
+> ```
+thanks to [Andresit0](https://github.com/Andresit0) 
+
+### specify platform
 now u can specify the packages u want to use in every platform dynamically
-
 ```dart
 // by default:
 Map<PlatformEnv, PlayerAdaptivePackage?> platforms = {
