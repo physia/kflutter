@@ -312,6 +312,7 @@ abstract class PlayerController {
   }
 
   void notify(PlayerEvent event) {
+    _streamControllers.events.add(event);
     _streamControllers.status.add(status);
     _streamControllers.playing.add(playing);
     switch (event) {
@@ -367,6 +368,7 @@ class PlayerStreams {
   Stream<double> get speed => playerStreamControllers.speed.stream;
   Stream<bool> get loop => playerStreamControllers.loop.stream;
   Stream<PlayerStatus> get status => playerStreamControllers.status.stream;
+  Stream<PlayerEvent> get events => playerStreamControllers.events.stream;
 
   void dispose() {
     playerStreamControllers.dispose();
@@ -381,7 +383,7 @@ class PlayerStreamControllers {
   final StreamController<double> speed = StreamController.broadcast();
   final StreamController<bool> loop = StreamController.broadcast();
   final StreamController<PlayerStatus> status = StreamController.broadcast();
-
+  final StreamController<PlayerEvent> events = StreamController.broadcast();
   get streams => PlayerStreams(this);
 
   void dispose() {
@@ -392,6 +394,7 @@ class PlayerStreamControllers {
     speed.close();
     loop.close();
     status.close();
+    events.close();
   }
 }
 
@@ -502,7 +505,7 @@ extension ToReadableString on Duration {
 }
 
 /// define the player contstructor function type
-typedef PlayerConstructor = PlayerController Function(
+typedef PlayerFactory = PlayerController Function(
     {
     // id
     int? id,

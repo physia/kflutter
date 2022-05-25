@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'kplayer_platform_interface.dart';
+import 'mixins.dart';
 
 /*
  * PlayerBar is a widget that contains the player controls.
@@ -188,18 +191,27 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
-                                StreamBuilder<bool>(
-                                    stream: widget.player.streams.loop,
-                                    builder: (context, snapshot) {
+                                Builder(builder: (
+                                  context,
+                                ) {
+                                  return PlayerBuilder(
+                                    player: widget.player,
+                                    shouldRebuild: (e, o) {
+                                      print(e);
+                                      return true;
+                                    },
+                                    builder: (context, event, child) {
                                       return SwitchListTile(
                                         secondary: const Icon(Icons.repeat),
                                         title: const Text('Loop'),
                                         value: widget.player.loop,
-                                        onChanged: (c) {
-                                          widget.player.loop = c;
+                                        onChanged: (value) {
+                                          widget.player.loop = value;
                                         },
                                       );
-                                    }),
+                                    },
+                                  );
+                                }),
                                 if (widget.options != null) ...?widget.options
                               ],
                             ),
@@ -285,6 +297,8 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
                 stream: widget.player.streams.position
                     .distinct((a, b) => _nextPosition != null),
                 builder: (context, snapshot) {
+                  double value = _nextPosition?.inMilliseconds.toDouble() ??
+                      widget.player.position.inMilliseconds.toDouble();
                   return Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
@@ -296,9 +310,10 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
                       Expanded(
                         child: Slider(
                           min: 0,
-                          max: widget.player.duration.inMilliseconds.toDouble(),
-                          value: _nextPosition?.inMilliseconds.toDouble() ??
-                              widget.player.position.inMilliseconds.toDouble(),
+                          max: max(
+                              widget.player.duration.inMilliseconds.toDouble(),
+                              value),
+                          value: max(value, 0),
                           onChangeStart: (double value) {
                             _nextPosition =
                                 Duration(milliseconds: value.toInt());
@@ -414,10 +429,10 @@ class _PlayerVolumeState extends State<PlayerVolume> {
 /// it will automatically rebuild when the player state changes
 /// also provides functions to control the player
 class PlayerBuilder extends StatefulWidget {
-  // rebuild is a function that will be called when the player state changes
+  // shouldRebuild is a function that will be called when the player state changes
   // return bool to indicate if the widget should be rebuilt
   // it take [PlayerEvent] as parameter
-  final bool Function([PlayerEvent event, PlayerEvent oldEvent])? rebuild;
+  final bool Function(PlayerEvent event, PlayerEvent oldEvent)? shouldRebuild;
   final PlayerController player;
   final Widget? child;
   final Widget Function(BuildContext context, PlayerEvent event, Widget? child)
@@ -427,39 +442,32 @@ class PlayerBuilder extends StatefulWidget {
       this.child,
       required this.player,
       required this.builder,
-      this.rebuild})
+      this.shouldRebuild})
       : super(key: key);
 
   @override
   State<PlayerBuilder> createState() => _PlayerBuilderState();
 }
 
-class _PlayerBuilderState extends State<PlayerBuilder> {
+class _PlayerBuilderState extends State<PlayerBuilder> with PlayerStateMixin {
   // the current event
-  PlayerEvent _event = PlayerEvent.unknown;
   @override
   void initState() {
-    widget.player.callback = (event) {
-      if (_rebuild(event, _event)) {
-        setState(() {
-          _event = event;
-        });
-      } else {
-        _event = event;
-      }
-    };
+    usePlayer(widget.player);
     super.initState();
   }
 
-  bool _rebuild(PlayerEvent event, PlayerEvent oldEvent) {
-    if (widget.rebuild != null) {
-      return widget.rebuild!(event, oldEvent);
+  @override
+  void onEvent(PlayerEvent newEvent) {
+    var shouldRebuild = widget.shouldRebuild ?? this.shouldRebuild;
+    if (shouldRebuild(newEvent, event)) {
+      setState(() {});
     }
-    return event != oldEvent;
+    super.onEvent(event);
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(context, _event, widget.child);
+    return widget.builder(context, event, widget.child);
   }
 }

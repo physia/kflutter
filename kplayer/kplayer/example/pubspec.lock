@@ -65,12 +65,14 @@ packages:
     source: hosted
     version: "1.0.0-rc.3"
   audioplayers_windows:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: audioplayers_windows
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0-rc.3"
+      path: "packages/audioplayers_windows"
+      ref: "263b4cc648d39a79455c221897a2c699f9d1c4c0"
+      resolved-ref: "263b4cc648d39a79455c221897a2c699f9d1c4c0"
+      url: "https://github.com/kflutter/audioplayers"
+    source: git
+    version: "1.0.0-rc.3-tmp"
   boolean_selector:
     dependency: transitive
     description:
@@ -114,12 +116,14 @@ packages:
     source: hosted
     version: "3.0.2"
   dart_vlc:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: dart_vlc
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.9"
+      path: "."
+      ref: master
+      resolved-ref: "966b4502c0d7cfee610e5c19bc81c47f04108bdb"
+      url: "https://github.com/alexmercerind/dart_vlc.git"
+    source: git
+    version: "0.2.0"
   dart_vlc_ffi:
     dependency: transitive
     description:
@@ -167,6 +171,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  flutter_native_view:
+    dependency: transitive
+    description:
+      name: flutter_native_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1+1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -236,30 +247,23 @@ packages:
   kplayer_platform_interface:
     dependency: transitive
     description:
-      name: kplayer_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../../kplayer_platform_interface"
+      relative: true
+    source: path
     version: "0.2.0"
   kplayer_with_audioplayers:
     dependency: transitive
     description:
-      name: kplayer_with_audioplayers
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0"
-  kplayer_with_dart_vlc:
-    dependency: transitive
-    description:
-      name: kplayer_with_dart_vlc
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../../kplayer_with_audioplayers"
+      relative: true
+    source: path
     version: "0.2.0"
   kplayer_with_just_audio:
     dependency: transitive
     description:
-      name: kplayer_with_just_audio
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../../kplayer_with_just_audio"
+      relative: true
+    source: path
     version: "0.2.0"
   lints:
     dependency: transitive
@@ -448,6 +452,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.6.1"
+  window_manager:
+    dependency: transitive
+    description:
+      name: window_manager
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.3"
   xdg_directories:
     dependency: transitive
     description:

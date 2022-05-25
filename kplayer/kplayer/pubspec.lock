@@ -22,13 +22,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.6+1"
-  audio_video_progress_bar:
-    dependency: transitive
-    description:
-      name: audio_video_progress_bar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.10.0"
   audioplayers:
     dependency: transitive
     description:
@@ -120,20 +113,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
-  dart_vlc:
-    dependency: transitive
-    description:
-      name: dart_vlc
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.9"
-  dart_vlc_ffi:
-    dependency: transitive
-    description:
-      name: dart_vlc_ffi
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.7"
   fake_async:
     dependency: transitive
     description:
@@ -245,13 +224,6 @@ packages:
     dependency: "direct main"
     description:
       name: kplayer_with_audioplayers
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0"
-  kplayer_with_dart_vlc:
-    dependency: "direct main"
-    description:
-      name: kplayer_with_dart_vlc
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0"

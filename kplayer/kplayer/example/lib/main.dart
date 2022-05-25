@@ -115,24 +115,31 @@ class _MyAppState extends State<MyApp> {
           ),
           const Divider(),
           // use file picker to load from file
-          ListTile(
-            leading: const Icon(Icons.folder),
-            title: const Text("Load from file"),
-            trailing: IconButton(
-              icon: const Icon(Icons.play_arrow),
-              onPressed: () async {
-                FilePickerResult? result =
-                    await FilePicker.platform.pickFiles();
+          Opacity(
+            opacity: PlatformEnv.isWeb ? 0.3 : 1,
+            child: IgnorePointer(
+              ignoring: PlatformEnv.isWeb,
+              child: ListTile(
+                leading: const Icon(Icons.folder),
+                title: Text(
+                    "Load from file${PlatformEnv.isWeb ? " (Web not sopported currently)" : ""}"),
+                trailing: IconButton(
+                  icon: const Icon(Icons.play_arrow),
+                  onPressed: () async {
+                    FilePickerResult? result =
+                        await FilePicker.platform.pickFiles();
 
-                if (result != null) {
-                  setState(() {
-                    player.dispose();
-                    player = Player.create(
-                        media: PlayerMedia.file(result.files.single.path!))
-                      ..init();
-                  });
-                }
-              },
+                    if (result != null) {
+                      setState(() {
+                        player.dispose();
+                        player = Player.create(
+                            media: PlayerMedia.file(result.files.single.path!))
+                          ..init();
+                      });
+                    }
+                  },
+                ),
+              ),
             ),
           ),
           const Divider(),
@@ -207,7 +214,21 @@ class _MyAppState extends State<MyApp> {
                               const Text("Platform Adaptive Player",
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
-                              Text(Player.platforms.toString()),
+                              // table display the platform adaptive player from the map Player.platforms
+                              Table(
+                                border: TableBorder.all(
+                                    width: 1,
+                                    color: Colors.grey.withOpacity(0.5)),
+                                children: [
+                                  for (var platform in Player.platforms.entries)
+                                    TableRow(children: [
+                                      Text("${platform.key}",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      Text("${platform.value?.name}"),
+                                    ]),
+                                ],
+                              ),
                             ]),
                           ],
                         ),

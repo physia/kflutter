@@ -3,13 +3,11 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:kplayer_with_dart_vlc/kplayer_with_dart_vlc.dart' as dart_vlc;
+// import 'package:kplayer_with_dart_vlc/kplayer_with_dart_vlc.dart' as dart_vlc;
 import 'package:kplayer_with_just_audio/kplayer_with_just_audio.dart'
     as just_audio;
 import 'package:kplayer_with_audioplayers/kplayer_with_audioplayers.dart'
     as audioplayers;
-// import 'package:kplayer_with_audioplayers/kplayer_with_audioplayers.dart'
-//     as audioplayers;
 
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 export 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
@@ -61,6 +59,36 @@ enum PlatformEnv {
       return PlatformEnv.unknown;
     }
   }
+
+  /// [PlatformEnv.isWeb] returns true if the app is running on the web.
+  static bool get isWeb => environment == PlatformEnv.web;
+
+  /// [PlatformEnv.isIOS] returns true if the app is running on the iOS.
+  static bool get isIOS => environment == PlatformEnv.ios;
+
+  /// [PlatformEnv.isAndroid] returns true if the app is running on the Android.
+  static bool get isAndroid => environment == PlatformEnv.android;
+
+  /// [PlatformEnv.isWindows] returns true if the app is running on the Windows.
+  static bool get isWindows => environment == PlatformEnv.windows;
+
+  /// [PlatformEnv.isLinux] returns true if the app is running on the Linux.
+  static bool get isLinux => environment == PlatformEnv.linux;
+
+  /// [PlatformEnv.isMacOS] returns true if the app is running on the MacOS.
+  static bool get isMacOS => environment == PlatformEnv.macos;
+
+  /// [PlatformEnv.isFuchsia] returns true if the app is running on the Fuchsia.
+  static bool get isFuchsia => environment == PlatformEnv.fuchsia;
+
+  /// [PlatformEnv.isUnknown] returns true if the app is running on an unknown platform.
+  static bool get isUnknown => environment == PlatformEnv.unknown;
+
+  /// [PlatformEnv.isDesktop] returns true if the app is running on a desktop platform.
+  static bool get isDesktop => isWindows || isLinux || isMacOS;
+
+  /// [PlatformEnv.isMobile] returns true if the app is running on a mobile platform.
+  static bool get isMobile => isAndroid || isIOS;
 }
 
 /// Object handle create and boot the [PlayerController]
@@ -77,9 +105,9 @@ class Player {
   /// ```
   static boot() {
     if (!Player.booted) {
-      dart_vlc.Player.boot();
+      // dart_vlc.Player.boot();
       just_audio.Player.boot();
-      // audioplayers.Player.boot();
+      audioplayers.Player.boot();
       Player._booted = true;
     }
   }
@@ -88,12 +116,31 @@ class Player {
   static bool get booted => _booted;
 
   /// add property to Player for return Map<PlatformEnv,PlayerContoller> named as platforms
-  static Map<PlatformEnv, PlayerConstructor?> platforms = {
-    PlatformEnv.ios: just_audio.Player.new,
-    PlatformEnv.android: just_audio.Player.new,
-    PlatformEnv.windows: audioplayers.Player.new,
-    PlatformEnv.linux: audioplayers.Player.new,
-    PlatformEnv.macos: audioplayers.Player.new,
+  static Map<PlatformEnv, PlayerAdaptivePackage?> platforms = {
+    PlatformEnv.web: PlayerAdaptivePackage(
+      factory: just_audio.Player.new,
+      name: 'just_audio',
+    ),
+    PlatformEnv.ios: PlayerAdaptivePackage(
+      factory: audioplayers.Player.new,
+      name: 'just_audio',
+    ),
+    PlatformEnv.android: PlayerAdaptivePackage(
+      factory: audioplayers.Player.new,
+      name: 'just_audio',
+    ),
+    PlatformEnv.windows: PlayerAdaptivePackage(
+      factory: just_audio.Player.new,
+      name: 'audioplayers',
+    ),
+    PlatformEnv.linux: PlayerAdaptivePackage(
+      factory: just_audio.Player.new,
+      name: 'audioplayers',
+    ),
+    PlatformEnv.macos: PlayerAdaptivePackage(
+      factory: just_audio.Player.new,
+      name: 'audioplayers',
+    ),
     PlatformEnv.fuchsia: null, // [Hope to add fuchsia support],
   };
 
@@ -112,14 +159,14 @@ class Player {
     bool? loop,
   }) {
     // select player depending on platform
-    final PlayerConstructor? playerConstructor =
+    final PlayerAdaptivePackage? playerFactory =
         platforms[PlatformEnv.environment];
-    if (playerConstructor == null) {
+    if (playerFactory == null) {
       throw UnsupportedError(
-        '[KPlayer] Platform ${Platform.environment.runtimeType} is not supported.',
+        '[KPlayer] Platform ${PlatformEnv.environment} is not supported.',
       );
     }
-    return playerConstructor(
+    return playerFactory.factory(
       id: id,
       media: media,
       autoPlay: autoPlay,
@@ -195,38 +242,12 @@ class Player {
   }
 }
 
-/// Mixin handel Player (init,dispose)
-mixin PlayerStateMixin<T extends StatefulWidget> on State<T> {
-  PlayerController? _controller;
-  usePlayer(PlayerController? controller) {
-    controller?.streams.playing.listen(onPlayingChanged);
-    controller?.streams.position.listen(onPositionChanged);
-    controller?.streams.duration.listen(onDurationChanged);
-    controller?.streams.status.listen(onStatusChanged);
-    controller?.streams.speed.listen(onSpeedChanged);
-    controller?.streams.volume.listen(onVolumeChanged);
-    controller?.streams.loop.listen(onLoopChanged);
-  }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   if (_controller != null) {
-  //     usePlayer(_controller);
-  //   }
-  // }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller?.dispose();
-  }
-
-  void onPlayingChanged(bool playing) {}
-  void onPositionChanged(Duration position) {}
-  void onDurationChanged(Duration duration) {}
-  void onStatusChanged(PlayerStatus status) {}
-  void onSpeedChanged(double speed) {}
-  void onVolumeChanged(double volume) {}
-  void onLoopChanged(bool loop) {}
+/// PlayerAdaptivePackage is a class that contains the player instance
+class PlayerAdaptivePackage {
+  final String name;
+  final PlayerFactory factory;
+  PlayerAdaptivePackage({
+    required this.name,
+    required this.factory,
+  });
 }

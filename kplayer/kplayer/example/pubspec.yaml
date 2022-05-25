@@ -26,7 +26,17 @@ dependencies:
   #   git:
   #     url: https://github.com/alexmercerind/dart_vlc.git
   #     ref: master
-
+dependency_overrides:
+  dart_vlc:
+    git:
+      url: https://github.com/alexmercerind/dart_vlc.git
+      ref: master
+  audioplayers_windows:
+    git:
+      url: https://github.com/kflutter/audioplayers
+      path: packages/audioplayers_windows
+      ref: 263b4cc648d39a79455c221897a2c699f9d1c4c0
+      
 dev_dependencies:
   flutter_test:
     sdk: flutter

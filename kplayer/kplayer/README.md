@@ -6,11 +6,9 @@ Flutter player (currently only audio)
 ![image](https://user-images.githubusercontent.com/22839194/170221947-6c4da925-207b-412c-968f-5e4655e71da6.png)
 ![image](https://user-images.githubusercontent.com/22839194/170222072-8c77270b-a690-4bdc-9e0e-39d1c6f197bc.png)
 ![image](https://user-images.githubusercontent.com/22839194/170222374-31dd203b-aeb5-4ca2-b940-42efaba417bb.png) -->
-<img src="https://user-images.githubusercontent.com/22839194/170221879-7eb150e1-fbe0-4f51-a28f-cbde58f51ae1.png" width='150'>
-<img src="https://user-images.githubusercontent.com/22839194/170221947-6c4da925-207b-412c-968f-5e4655e71da6.png" width='150'>
-<img src="https://user-images.githubusercontent.com/22839194/170222072-8c77270b-a690-4bdc-9e0e-39d1c6f197bc.png" width='150'>
-<img src="https://user-images.githubusercontent.com/22839194/170222374-31dd203b-aeb5-4ca2-b940-42efaba417bb.png" width='150'>
-
+<div style="display:flex;">
+<img src="https://user-images.githubusercontent.com/22839194/170221879-7eb150e1-fbe0-4f51-a28f-cbde58f51ae1.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170221947-6c4da925-207b-412c-968f-5e4655e71da6.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170222072-8c77270b-a690-4bdc-9e0e-39d1c6f197bc.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170222374-31dd203b-aeb5-4ca2-b940-42efaba417bb.png" width='150'>
+</div>
 ## sopport
 
 because of this issue: <https://github.com/bluefireteam/audioplayers/issues/1119>
@@ -29,16 +27,41 @@ now u can specify the packages u want to use in every platform dynamically
 
 ```dart
 // by default:
-  Player.platforms = {
-    PlatformEnv.ios: just_audio.Player.new,
-    PlatformEnv.android: just_audio.Player.new,
-    PlatformEnv.windows: audioplayers.Player.new,
-    PlatformEnv.linux: audioplayers.Player.new,
-    PlatformEnv.macos: audioplayers.Player.new,
-    PlatformEnv.fuchsia: null,
-  };
-// u can changed to something like this:
-Player.platforms[PlatformEnv.ios] = kplayer_with_audioplayers.Player.new;
+static Map<PlatformEnv, PlayerAdaptivePackage?> platforms = {
+  PlatformEnv.web: PlayerAdaptivePackage(
+    factory: just_audio.Player.new,
+    name: 'just_audio',
+  ),
+  PlatformEnv.ios: PlayerAdaptivePackage(
+    factory: audioplayers.Player.new,
+    name: 'just_audio',
+  ),
+  PlatformEnv.android: PlayerAdaptivePackage(
+    factory: audioplayers.Player.new,
+    name: 'just_audio',
+  ),
+  PlatformEnv.windows: PlayerAdaptivePackage(
+    factory: just_audio.Player.new,
+    name: 'audioplayers',
+  ),
+  PlatformEnv.linux: PlayerAdaptivePackage(
+    factory: just_audio.Player.new,
+    name: 'audioplayers',
+  ),
+  PlatformEnv.macos: PlayerAdaptivePackage(
+    factory: just_audio.Player.new,
+    name: 'audioplayers',
+  ),
+  PlatformEnv.fuchsia: null, // [Hope to add fuchsia support],
+};
+```
+### change or add ur own implementation
+learn more [here](https://pub.dev/packages/kplayer_platform_interface)
+```dart
+Player.platforms[PlatformEnv.<platform>] = PlayerAdaptivePackage(
+    factory: <custom_package>.Player.new,
+    name: 'custom_package',
+);
 ```
 
 ### packages has wrapper
@@ -176,6 +199,10 @@ class _MyPageState extends State<MyPage> with PlayerStateMixin {
   }
   @override
   void onStatusChanged(PlayerStatus status) {
+    print('onStatusChanged $status');
+  }
+  @override
+  void onEvent(PlayerStatus status) {
     print('onStatusChanged $status');
   }
 }
