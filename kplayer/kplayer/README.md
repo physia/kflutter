@@ -2,23 +2,52 @@
 
 Flutter player (currently only audio)
 > online preview: [Go live](https://physia.github.io/kflutter/kplayer/online_example/index.html)
-<img src="https://user-images.githubusercontent.com/22839194/166224411-dea32c6e-ac47-45ec-ab25-1900e0c0ccb9.png" width='150'>
-<img src="https://user-images.githubusercontent.com/22839194/166224480-a9a0aa1a-54bb-4481-b529-e899e593b37c.png" width='150'>
-<img src="https://user-images.githubusercontent.com/22839194/166224496-55776e1f-fcbd-4ca1-a165-c7417aaa7d1b.png" width='150'>
-<img src="https://user-images.githubusercontent.com/22839194/166224505-619b5f64-9d22-4cae-a12f-eab58fb06fc4.png" width='150'>
-<img src="https://user-images.githubusercontent.com/22839194/166224515-7597d04a-32df-4760-ac5d-50ff8c119ba9.png" width='150'>
-<img src="https://user-images.githubusercontent.com/22839194/166224524-4dd28bc3-9506-40d0-a983-79105cc7af4a.png" width='150'>
+<!-- ![image](https://user-images.githubusercontent.com/22839194/170221879-7eb150e1-fbe0-4f51-a28f-cbde58f51ae1.png)
+![image](https://user-images.githubusercontent.com/22839194/170221947-6c4da925-207b-412c-968f-5e4655e71da6.png)
+![image](https://user-images.githubusercontent.com/22839194/170222072-8c77270b-a690-4bdc-9e0e-39d1c6f197bc.png)
+![image](https://user-images.githubusercontent.com/22839194/170222374-31dd203b-aeb5-4ca2-b940-42efaba417bb.png) -->
+<img src="https://user-images.githubusercontent.com/22839194/170221879-7eb150e1-fbe0-4f51-a28f-cbde58f51ae1.png" width='150'>
+<img src="https://user-images.githubusercontent.com/22839194/170221947-6c4da925-207b-412c-968f-5e4655e71da6.png" width='150'>
+<img src="https://user-images.githubusercontent.com/22839194/170222072-8c77270b-a690-4bdc-9e0e-39d1c6f197bc.png" width='150'>
+<img src="https://user-images.githubusercontent.com/22839194/170222374-31dd203b-aeb5-4ca2-b940-42efaba417bb.png" width='150'>
 
 ## sopport
 
-- windows,linux -> dart_vlc
-- web, ios, android, macos -> just_audio
+because of this issue: <https://github.com/bluefireteam/audioplayers/issues/1119>
+if want to use kplayer_with_audioplayers, use this on pubspec.yaml:
 
-this package is just wrapper for just_audio and dart_vlc to support all platformsthis packege is just wrapper for`just_audio` and `dart_vlc` to support all platforms
+```yaml
+dependency_overrides:
+  audioplayers_windows:
+    git:
+      url: https://github.com/kflutter/audioplayers
+      path: packages/audioplayers_windows
+      ref: 263b4cc648d39a79455c221897a2c699f9d1c4c0
+```
+
+now u can specify the packages u want to use in every platform dynamically
+
+```dart
+// by default:
+  Player.platforms = {
+    PlatformEnv.ios: just_audio.Player.new,
+    PlatformEnv.android: just_audio.Player.new,
+    PlatformEnv.windows: audioplayers.Player.new,
+    PlatformEnv.linux: audioplayers.Player.new,
+    PlatformEnv.macos: audioplayers.Player.new,
+    PlatformEnv.fuchsia: null,
+  };
+// u can changed to something like this:
+Player.platforms[PlatformEnv.ios] = kplayer_with_audioplayers.Player.new;
+```
+
+### packages has wrapper
+
+- just_audio (kplayer_with_just_audio)
+- audioplayers (kplayer_with_audioplayers)
+- dart_vlc (kplayer_with_dart_vlc)
 
 ## Getting Started
-
-for specific platform configuration visit `just_audio`and `dart_vlc`
 
 main.dart
 
@@ -99,26 +128,71 @@ player.loop = true; // looping
 
 //other
 player.dispose();
-player.player; // the package player instance for more option
+player.player; // the package player instance for more option `dart_vlc`, `audioplayers` , `just_audio`
 
 // Widgets
 PlayerBar(player: player, options: []);
-PlayerBuilder(player: player, builder: (context, player, event){
+PlayerBuilder(
+  player: player,
+  rebuild: (event, oldEvent) => event != oldEvent, // by default it will rebuild when event changed
+  builder: (context, event){
   return // TODO
 });
 ```
 
-// mixins
-PlayerMixin
+## mixins
+
+you can use ```PlayerStateMixin``` on ```State``` to get full access player state and handle streams dispose automatically
+
+```dart
+class MyPage extends StatefulWidget {
+  final PlayerController player;
+  const MyPage({super.key, required this.player});
+  @override
+  _MyPageState createState() => _MyPageState();
+}
+class _MyPageState extends State<MyPage> with PlayerStateMixin {
+  @override
+  void initState() {
+    usePlayer(widget.player);
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return // TODO
+  }
+
+  @override
+  void onPlayingChanged(bool playing) {
+    print('onPlayingChanged $playing');
+  }
+  @override
+  void onPositionChanged(Duration position) {
+    print('onPositionChanged $position');
+  }
+  @override
+  void onDurationChanged(Duration duration) {
+    print('onDurationChanged $duration');
+  }
+  @override
+  void onStatusChanged(PlayerStatus status) {
+    print('onStatusChanged $status');
+  }
+}
 ```
+
 ## Source code
+
 check the repository on github (<https://github.com/physia/kflutter/tree/main/kplayer/kplayer>)
+
 ## Support ☺️
 
-you can buy me a coffee.
+Coffee for my mind:
 
 <a href="https://www.buymeacoffee.com/mohamadlounnas"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=mohamadlounnas&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a>
 
 E n g o j :)
 
-next plan: sopport video...
+## Check list
+
+- soon...
