@@ -4,7 +4,11 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 export 'widgets.dart';
+
+// import dart core
+import 'dart:core';
 
 /// a Player Statuses enum
 enum PlayerEvent {
@@ -225,33 +229,35 @@ abstract class PlayerController {
 
   // static functions
   // the method durationToString is used to convert duration to string and show it on the UI
-  static String durationToString(Duration duration) {
-    List<String> blocks = [];
-    String twoDigits(int n) {
-      if (n >= 10) {
-        return n.toString().substring(0, 2);
-      }
-      return "0$n";
-    }
+  // static String durationToString(Duration duration) {
+  // TimeOfDay time = TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(
+  //     duration.inMilliseconds,
+  //     isUtc: true));
+  //     time.minute
+  // return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:${time..toString().padLeft(2, '0')}';
 
-    if (duration.inHours > 0) {
-      blocks.add(twoDigits(duration.inHours));
-    }
-
-    if (duration.inMinutes > 0) {
-      blocks.add(twoDigits(duration.inMinutes));
-    } else {
-      blocks.add("00");
-    }
-
-    if (duration.inSeconds > 0) {
-      blocks.add(twoDigits(duration.inSeconds));
-    } else {
-      blocks.add("00");
-    }
-
-    return blocks.join(":");
-  }
+  // List<String> blocks = [];
+  // String twoDigits(int n) {
+  //   if (n >= 10) {
+  //     return n.toString().substring(0, 2);
+  //   }
+  //   return "0$n";
+  // }
+  // if (duration.inHours > 0) {
+  //   blocks.add(twoDigits(duration.inHours));
+  // }
+  // if (duration.inMinutes > 0) {
+  //   blocks.add(twoDigits(duration.inMinutes));
+  // } else {
+  //   blocks.add("00");
+  // }
+  // if (duration.inSeconds > 0) {
+  //   blocks.add(twoDigits(duration.inSeconds));
+  // } else {
+  //   blocks.add("00");
+  // }
+  // return blocks.join(":");
+  // }
 
   static List<PlayerController> palyers = <PlayerController>[];
   // @mustCallSuper
@@ -407,3 +413,100 @@ class PlayerValue {
       required this.loop,
       required this.status});
 }
+
+///
+///add extension [humanize] to [Duration]
+///it will return the duration in a human-readable format like "1 minute, 2 seconds"
+///it support multipe languages like "en", "fr", "ar"
+///
+extension HumanizeDuration on Duration {
+  String humanize(
+      {bool abbreviated = false,
+      bool round = false,
+      String language = "en",
+      String locale = "en"}) {
+    final int seconds = round ? roundSeconds() : inSeconds;
+    final int minutes = seconds ~/ 60;
+    final int hours = minutes ~/ 60;
+    final int days = hours ~/ 24;
+    final int years = days ~/ 365;
+
+    if (years > 0) {
+      return years == 1
+          ? "1 year"
+          : "$years ${pluralize(years, "year", language, locale)}";
+    } else if (days > 0) {
+      return days == 1
+          ? "1 day"
+          : "$days ${pluralize(days, "day", language, locale)}";
+    } else if (hours > 0) {
+      return hours == 1
+          ? "1 hour"
+          : "$hours ${pluralize(hours, "hour", language, locale)}";
+    } else if (minutes > 0) {
+      return minutes == 1
+          ? "1 minute"
+          : "$minutes ${pluralize(minutes, "minute", language, locale)}";
+    } else {
+      return seconds == 1
+          ? "1 second"
+          : "$seconds ${pluralize(seconds, "second", language, locale)}";
+    }
+  }
+
+  String pluralize(int number, String word, String language, String locale) {
+    if (language == "en") {
+      return number == 1 ? word : word + "s";
+    } else if (language == "fr") {
+      return number == 1 ? word : word + "s";
+    } else if (language == "ar") {
+      return number == 1 ? word : word + "s";
+    } else {
+      return number == 1 ? word : word + "s";
+    }
+  }
+
+  int roundSeconds() {
+    return (inMilliseconds / 1000).round();
+  }
+}
+
+///
+///add extension [toReadableString] to [Duration]
+///
+extension ToReadableString on Duration {
+  ///
+  ///[toReadableString] will return the duration in a human-readable format like "01:02:03"
+  ///if the "HH" is zero, it will return only minutes and seconds
+  ///example:
+  ///```dart
+  ///Duration(seconds: 123).toReadableString() // 01:02:03
+  ///Duration(seconds: 50034).toReadableString() // 02:04:14
+  ///```
+  ///
+  String toReadableString() {
+    var blocks = <String>[];
+    int hours = inHours.remainder(24);
+    int minutes = inMinutes.remainder(60);
+    int seconds = inSeconds.remainder(60);
+    if (hours > 0) {
+      blocks.add(
+          "${hours.toString().padLeft(2, "0")}:${minutes.toString().padLeft(2, "0")}:${seconds.toString().padLeft(2, "0")}");
+    }
+    blocks.addAll([
+      minutes.toString().padLeft(2, "0"),
+      seconds.toString().padLeft(2, "0")
+    ]);
+    return blocks.join(":");
+  }
+}
+
+/// define the player contstructor function type
+typedef PlayerConstructor = PlayerController Function(
+    {
+    // id
+    int? id,
+    bool? autoPlay,
+    bool? loop,
+    required PlayerMedia<dynamic> media,
+    bool? once});

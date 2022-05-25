@@ -1,9 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'kplayer_platform_interface.dart';
 
+/*
+ * PlayerBar is a widget that contains the player controls.
+ *
+ */
 class PlayerBar extends StatefulWidget {
   final PlayerController player;
   final List<Widget>? options;
@@ -14,7 +16,7 @@ class PlayerBar extends StatefulWidget {
   State<PlayerBar> createState() => _PlayerBarState();
 }
 
-class _PlayerBarState extends State<PlayerBar> {
+class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
   Duration? _nextPosition;
   bool _showVolumeBox = false;
   bool _showSettingsBox = false;
@@ -22,76 +24,115 @@ class _PlayerBarState extends State<PlayerBar> {
   OverlayEntry? settingsBoxOverlayEntry;
   GlobalKey volumeButtonKey = GlobalKey();
   GlobalKey settingsButtonKey = GlobalKey();
+  // Animation controller for Overlays
+  // it responsible for showing/hiding the Overlays with one animation
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+    );
+    _animation = _animationController.drive(
+      CurveTween(
+        curve: Curves.easeInOutSine,
+      ),
+    );
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   void showVolumeBox() {
     volumeBoxOverlayEntry?.remove();
+    var viewPortSize = MediaQuery.of(context).size;
 
     RenderBox box =
         volumeButtonKey.currentContext!.findRenderObject() as RenderBox;
     Offset position = box.localToGlobal(Offset.zero);
-
     volumeBoxOverlayEntry = OverlayEntry(
-      builder: (context) => Stack(
-        children: [
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  hideVolumeBox();
-                });
-              },
-              child: Container(
-                color: Colors.black.withOpacity(0.1),
+      builder: (context) => AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          debugPrint(_animation.value.toString());
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      hideVolumeBox();
+                    });
+                  },
+                  child: Container(
+                    color: Colors.black.withOpacity(0.1 * _animation.value),
+                  ),
+                ),
               ),
-            ),
-          ),
-          Positioned(
-            top: position.dy - 220,
-            left: position.dx,
-            width: box.size.width,
-            height: 200,
-            child: Material(
-              color: Theme.of(context).cardColor,
-              elevation: 10,
-              borderRadius: BorderRadius.circular(100),
-              child: Column(
-                children: <Widget>[
-                  // IconButton(
-                  //   icon: Icon(Icons.volume_up),
-                  //   onPressed: () {
-                  //     setState(() {
-                  //       widget.player.volume += 0.1;
-                  //     });
-                  //   },
-                  // ),
-                  Expanded(
-                    child: RotatedBox(
-                      quarterTurns: 3,
-                      child: PlayerVolume(
-                        player: widget.player,
+              Positioned(
+                bottom: (viewPortSize.height - position.dy) * _animation.value,
+                left: position.dx,
+                width: box.size.width,
+                height:
+                    (200 - box.size.width) * _animation.value + box.size.width,
+                child: Transform.scale(
+                  scale: _animation.value,
+                  child: Opacity(
+                    opacity: _animation.value,
+                    child: Material(
+                      color: Theme.of(context).cardColor,
+                      elevation: 10,
+                      borderRadius: BorderRadius.circular(100),
+                      child: Column(
+                        children: <Widget>[
+                          // IconButton(
+                          //   icon: Icon(Icons.volume_up),
+                          //   onPressed: () {
+                          //     setState(() {
+                          //       widget.player.volume += 0.1;
+                          //     });
+                          //   },
+                          // ),
+                          Expanded(
+                            child: RotatedBox(
+                              quarterTurns: 3,
+                              child: PlayerVolume(
+                                player: widget.player,
+                              ),
+                            ),
+                          ),
+                          // IconButton(
+                          //   icon: Icon(Icons.volume_down),
+                          //   onPressed: () {
+                          //     setState(() {
+                          //       widget.player.volume -= 0.1;
+                          //     });
+                          //   },
+                          // ),
+                        ],
                       ),
                     ),
                   ),
-                  // IconButton(
-                  //   icon: Icon(Icons.volume_down),
-                  //   onPressed: () {
-                  //     setState(() {
-                  //       widget.player.volume -= 0.1;
-                  //     });
-                  //   },
-                  // ),
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
     Overlay.of(context)!.insert(volumeBoxOverlayEntry!);
+    _animationController.forward();
     _showVolumeBox = true;
   }
 
-  void hideVolumeBox() {
+  void hideVolumeBox() async {
+    await _animationController.reverse();
     volumeBoxOverlayEntry?.remove();
     volumeBoxOverlayEntry = null;
     _showVolumeBox = false;
@@ -104,64 +145,82 @@ class _PlayerBarState extends State<PlayerBar> {
     RenderBox box =
         settingsButtonKey.currentContext!.findRenderObject() as RenderBox;
     Offset position = box.localToGlobal(Offset.zero);
+    // create shader mask with gradient, animate it and show it
 
     settingsBoxOverlayEntry = OverlayEntry(
-      builder: (context) => Stack(
-        children: [
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  hideSettingsBox();
-                });
-              },
-              child: Container(
-                color: Colors.black.withOpacity(0.1),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: viewPortSize.height - position.dy,
-            right: position.dx + box.size.width - viewPortSize.width,
-            child: Material(
-              color: Theme.of(context).cardColor,
-              elevation: 10,
-              borderRadius: BorderRadius.circular(4),
-              child: LimitedBox(
-                maxHeight: 300,
-                maxWidth: 250,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      StreamBuilder<bool>(
-                          stream: widget.player.streams.loop,
-                          builder: (context, snapshot) {
-                            return SwitchListTile(
-                              secondary: const Icon(Icons.repeat),
-                              title: const Text('Loop'),
-                              value: widget.player.loop,
-                              onChanged: (c) {
-                                widget.player.loop = c;
-                              },
-                            );
-                          }),
-                      if (widget.options != null) ...?widget.options
-                    ],
+      builder: (context) => AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            return Stack(
+              children: [
+                Positioned.fill(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        hideSettingsBox();
+                      });
+                    },
+                    child: Container(
+                      color: Colors.black
+                          .withOpacity(0.1 * _animationController.value),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ),
-        ],
-      ),
+                Positioned(
+                  bottom:
+                      (viewPortSize.height - position.dy) * _animation.value,
+                  right: position.dx + box.size.width - viewPortSize.width,
+                  child: Transform.scale(
+                    scale: _animation.value,
+                    // the origin of the transform is the button right corner
+                    origin: Offset(150, 0),
+                    child: Opacity(
+                      opacity: _animation.value,
+                      child: Material(
+                        color: Theme.of(context).cardColor,
+                        elevation: 10,
+                        borderRadius: BorderRadius.circular(8),
+                        child: LimitedBox(
+                          maxHeight: 300,
+                          maxWidth: 250,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                StreamBuilder<bool>(
+                                    stream: widget.player.streams.loop,
+                                    builder: (context, snapshot) {
+                                      return SwitchListTile(
+                                        secondary: const Icon(Icons.repeat),
+                                        title: const Text('Loop'),
+                                        value: widget.player.loop,
+                                        onChanged: (c) {
+                                          widget.player.loop = c;
+                                        },
+                                      );
+                                    }),
+                                if (widget.options != null) ...?widget.options
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
     );
     Overlay.of(context)!.insert(settingsBoxOverlayEntry!);
+    _animationController.forward();
+
     _showSettingsBox = true;
   }
 
-  void hideSettingsBox() {
+  void hideSettingsBox() async {
+    await _animationController.reverse();
     settingsBoxOverlayEntry?.remove();
     settingsBoxOverlayEntry = null;
     _showSettingsBox = false;
@@ -178,7 +237,7 @@ class _PlayerBarState extends State<PlayerBar> {
             stream: widget.player.streams.playing,
             builder: (context, snapshot) {
               if (!snapshot.hasData || snapshot.hasError) {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
               return snapshot.data!
                   ? const Icon(Icons.pause)
@@ -198,7 +257,23 @@ class _PlayerBarState extends State<PlayerBar> {
                   showVolumeBox();
                 }
               },
-              icon: const Icon(Icons.volume_up),
+
+              /// icon depends on the current volume
+              /// if volume is 0, the icon is volume_off
+              /// if volume is between 0 and 0.5, the icon is volume_down
+              /// if volume is between 0.5 and 1, the icon is volume_up
+              icon: StreamBuilder<double>(
+                stream: widget.player.streams.volume,
+                builder: (context, snapshot) {
+                  return Icon(
+                    widget.player.volume == 0
+                        ? Icons.volume_off
+                        : widget.player.volume < 0.5
+                            ? Icons.volume_down
+                            : Icons.volume_up,
+                  );
+                },
+              ),
             );
           },
         ),
@@ -214,9 +289,9 @@ class _PlayerBarState extends State<PlayerBar> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        PlayerController.durationToString(_nextPosition != null
-                            ? _nextPosition!
-                            : widget.player.position),
+                        _nextPosition != null
+                            ? _nextPosition!.toReadableString()
+                            : widget.player.position.toReadableString(),
                       ),
                       Expanded(
                         child: Slider(
@@ -241,8 +316,7 @@ class _PlayerBarState extends State<PlayerBar> {
                         ),
                       ),
                       Text(
-                        PlayerController.durationToString(
-                            widget.player.duration),
+                        widget.player.duration.toReadableString(),
                       ),
                       // Positioned(
                       //   bottom: 10,
@@ -345,11 +419,15 @@ class PlayerBuilder extends StatefulWidget {
   // it take [PlayerEvent] as parameter
   final bool Function([PlayerEvent event, PlayerEvent oldEvent])? rebuild;
   final PlayerController player;
-  final Widget Function(
-      BuildContext context, PlayerController player, PlayerEvent event,
-      [Widget? child]) builder;
+  final Widget? child;
+  final Widget Function(BuildContext context, PlayerEvent event, Widget? child)
+      builder;
   const PlayerBuilder(
-      {Key? key, required this.player, required this.builder, this.rebuild})
+      {Key? key,
+      this.child,
+      required this.player,
+      required this.builder,
+      this.rebuild})
       : super(key: key);
 
   @override
@@ -382,6 +460,6 @@ class _PlayerBuilderState extends State<PlayerBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(context, widget.player, _event);
+    return widget.builder(context, _event, widget.child);
   }
 }

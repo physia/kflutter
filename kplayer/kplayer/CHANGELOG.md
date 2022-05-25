@@ -1,3 +1,15 @@
+## 0.2.0
+fixed:
+ - PlayerBar dur bug
+ - Audioplayer bug see 
+add:
+ - rename PlayerMixin to PlayerMixinBase
+ - onLoopChanged to PlayerStateMixin
+ - animation for PlayerBar
+ - more options for Example
+more:
+ - make kplayer_with_audioplayers package default for windows
+ - posiblety to use other package for player on runtime
 ## 0.1.18
 
 add web preview

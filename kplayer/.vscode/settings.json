@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "xstring": "cpp",
+        "memory": "cpp",
+        "iostream": "cpp",
+        "type_traits": "cpp",
+        "vector": "cpp",
+        "map": "cpp",
+        "list": "cpp"
+    }
+}

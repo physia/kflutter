@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:kplayer/kplayer.dart';
+// import 'package:kplayer_with_audioplayers/kplayer_with_audioplayers.dart';
 
 // StreamController for isDarkMode
 final isDarkMode = ValueNotifier(true);
@@ -33,9 +32,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var player = Player.network(
-      "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3",
-      autoPlay: false);
+  var player = Player.create(
+      media: PlayerMedia.network(
+          "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3"),
+      autoPlay: true)
+    ..init();
   final _loadFromNetworkController = TextEditingController(
       text:
           "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3");
@@ -60,6 +61,10 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('KPlayer'),
+        // add action to open Github page
+        actions: <Widget>[
+          IconButton(icon: const Icon(Icons.open_in_new), onPressed: () {}),
+        ],
       ),
       body: ListView(
         children: [
@@ -77,10 +82,11 @@ class _MyAppState extends State<MyApp> {
               onPressed: () {
                 setState(() {
                   player.dispose();
-                  player = Player.network(
-                    "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3",
+                  player = Player.create(
+                    media: PlayerMedia.network(
+                        "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3"),
                     autoPlay: true,
-                  );
+                  )..init();
                 });
               },
             ),
@@ -99,10 +105,10 @@ class _MyAppState extends State<MyApp> {
               onPressed: () {
                 setState(() {
                   player.dispose();
-                  player = Player.asset(
-                    _loadFromAssetController.text,
+                  player = Player.create(
+                    media: PlayerMedia.asset(_loadFromAssetController.text),
                     autoPlay: true,
-                  );
+                  )..init();
                 });
               },
             ),
@@ -121,7 +127,9 @@ class _MyAppState extends State<MyApp> {
                 if (result != null) {
                   setState(() {
                     player.dispose();
-                    player = Player.file(result.files.single.path!);
+                    player = Player.create(
+                        media: PlayerMedia.file(result.files.single.path!))
+                      ..init();
                   });
                 }
               },
@@ -129,33 +137,91 @@ class _MyAppState extends State<MyApp> {
           ),
           const Divider(),
           // widget for log
-          StreamBuilder<PlayerStatus>(
-              stream: player.streams.status,
-              builder: (context, snapshot) {
-                return Column(
-                  children: [
-                    const Text(
-                      "Logs",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    Text("Duration: " + player.duration.toString()),
-                    Text("Position: " + player.position.toString()),
-                    Text("Volume: " + player.volume.toString()),
-                    Text("Speed: " + player.speed.toString()),
-                    Text("Loop: " + player.loop.toString()),
-                    Text("Status: " + player.status.toString()),
-                    Text("Media type: " + player.media.type.toString()),
-                    Text("Media resource: " + player.media.resource.toString()),
-                  ],
-                );
-              }),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: DefaultTextStyle(
+              style: const TextStyle(fontSize: 11, color: Colors.grey),
+              child: PlayerBuilder(
+                  player: player,
+                  builder: (context, event, child) {
+                    return Column(
+                      children: [
+                        const Text(
+                          "Logs",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                        const SizedBox(height: 10),
+                        Table(
+                          border: TableBorder.all(
+                              width: 1, color: Colors.grey.withOpacity(0.5)),
+                          children: [
+                            TableRow(children: [
+                              const Text("Duration",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(player.duration.toString()),
+                            ]),
+                            TableRow(children: [
+                              const Text("Position",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(player.position.toString()),
+                            ]),
+                            TableRow(children: [
+                              const Text("Volume",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(player.volume.toString()),
+                            ]),
+                            TableRow(children: [
+                              const Text("Speed",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(player.speed.toString()),
+                            ]),
+                            TableRow(children: [
+                              const Text("Loop",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(player.loop.toString()),
+                            ]),
+                            TableRow(children: [
+                              const Text("Status",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(player.status.toString()),
+                            ]),
+                            TableRow(children: [
+                              const Text("Media type",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(player.media.type.toString()),
+                            ]),
+                            TableRow(children: [
+                              const Text("Media resource",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(player.media.resource.toString()),
+                            ]),
+                            TableRow(children: [
+                              const Text("Platform Adaptive Player",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Text(Player.platforms.toString()),
+                            ]),
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
         child: SizedBox(
           height: 60,
           child: PlayerBar(player: player, options: [
-            // listTileSw for dark mode
             ValueListenableBuilder(
               valueListenable: isDarkMode,
               builder: (context, snapshot, w) {
@@ -172,6 +238,16 @@ class _MyAppState extends State<MyApp> {
           ]),
         ),
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     MethodChannel channel = const MethodChannel('kplayer_channel');
+      //     var result = await channel.invokeMethod(
+      //         'GetSystemVolume', 'Hello from flutter');
+      //     print("result.toString()");
+      //     print(result);
+      //   },
+      //   child: const Icon(Icons.replay),
+      // ),
     );
   }
 }

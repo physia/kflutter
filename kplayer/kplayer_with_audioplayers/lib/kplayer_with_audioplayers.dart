@@ -1,7 +1,9 @@
 library kplayer_with_audioplayers;
 
 import 'package:audioplayers/audioplayers.dart' as audioplayers;
+import 'package:audioplayers/audioplayers.dart';
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
+export 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 
 class Player extends PlayerController {
   Player({
@@ -13,7 +15,7 @@ class Player extends PlayerController {
   })  : player = audioplayers.AudioPlayer(),
         super(
             media: media,
-            autoPlay: autoPlay ?? false,
+            autoPlay: autoPlay ?? true,
             once: once ?? false,
             loop: loop ?? false) {
     players.add(this);
@@ -67,9 +69,11 @@ class Player extends PlayerController {
     } else if (media.type == PlayerMediaType.bytes) {
       apMedia = audioplayers.BytesSource(media.resource);
     } else {
-      throw Exception("media type not support");
+      throw Exception("media type ${media.type} not support");
     }
-
+    // reset the prefix of assets
+    player.audioCache.prefix = "";
+    player.audioCache.clearAll();
     player.setSource(apMedia);
     players.add(this);
 
@@ -77,9 +81,9 @@ class Player extends PlayerController {
       player.onPositionChanged.listen((Duration position) async {
         _position = position;
         notify(PlayerEvent.position);
-        if (position == duration) {
-          notify(PlayerEvent.end);
-        }
+        // if (position == duration) {
+        //   notify(PlayerEvent.end);
+        // }
       }),
       player.onPlayerStateChanged
           .listen((audioplayers.PlayerState status) async {
@@ -138,7 +142,8 @@ class Player extends PlayerController {
 
   @override
   Future<void> seek(Duration position) async {
-    await player.seek(position);
+    player.seek(position);
+    _position = position;
     notify(PlayerEvent.position);
   }
 

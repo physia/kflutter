@@ -6,7 +6,7 @@ description: Demonstrates how to use the kplayer plugin.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=2.17.0-69.2.beta <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 
 dependencies:
@@ -14,14 +14,24 @@ dependencies:
     sdk: flutter
   kplayer:
     path: ../
-  cupertino_icons: ^1.0.2
+
+  # kplayer_with_audioplayers:
+  #   path: ../../kplayer_with_audioplayers
+  # cupertino_icons: ^1.0.2
   file_picker: ^4.5.1
-  universal_io:
+  # universal_io:
+
+
+  # dart_vlc:
+  #   git:
+  #     url: https://github.com/alexmercerind/dart_vlc.git
+  #     ref: master
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
     
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.1
   
 flutter:
   uses-material-design: true

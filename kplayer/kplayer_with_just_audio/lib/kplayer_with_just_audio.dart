@@ -45,13 +45,13 @@ class JustAudioStreamSource extends just_audio.StreamAudioSource {
 
 class Player extends PlayerController {
   Player({
-    required PlayerMedia media,
+    int? id,
+    required super.media,
     bool? autoPlay,
     bool? once,
     bool? loop,
   })  : player = just_audio.AudioPlayer(),
         super(
-            media: media,
             autoPlay: autoPlay ?? false,
             once: once ?? false,
             loop: loop ?? false) {
