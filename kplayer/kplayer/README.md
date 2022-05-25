@@ -7,7 +7,7 @@ Flutter player (currently only audio)
 ![image](https://user-images.githubusercontent.com/22839194/170222072-8c77270b-a690-4bdc-9e0e-39d1c6f197bc.png)
 ![image](https://user-images.githubusercontent.com/22839194/170222374-31dd203b-aeb5-4ca2-b940-42efaba417bb.png) -->
 <div style="display:flex;">
-<img src="https://user-images.githubusercontent.com/22839194/170221879-7eb150e1-fbe0-4f51-a28f-cbde58f51ae1.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170221947-6c4da925-207b-412c-968f-5e4655e71da6.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170222072-8c77270b-a690-4bdc-9e0e-39d1c6f197bc.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170222374-31dd203b-aeb5-4ca2-b940-42efaba417bb.png" width='150'>
+<img src="https://user-images.githubusercontent.com/22839194/170221879-7eb150e1-fbe0-4f51-a28f-cbde58f51ae1.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170221947-6c4da925-207b-412c-968f-5e4655e71da6.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170222072-8c77270b-a690-4bdc-9e0e-39d1c6f197bc.png" width='150'><img src="https://user-images.githubusercontent.com/22839194/170222374-31dd203b-aeb5-4ca2-b940-42efaba417bb.png" width='277'>
 </div>
 ## sopport
 
