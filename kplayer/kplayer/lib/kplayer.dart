@@ -122,24 +122,24 @@ class Player {
       name: 'just_audio',
     ),
     PlatformEnv.ios: PlayerAdaptivePackage(
-      factory: audioplayers.Player.new,
+      factory: just_audio.Player.new,
       name: 'just_audio',
     ),
     PlatformEnv.android: PlayerAdaptivePackage(
-      factory: audioplayers.Player.new,
+      factory: just_audio.Player.new,
       name: 'just_audio',
     ),
     PlatformEnv.windows: PlayerAdaptivePackage(
-      factory: just_audio.Player.new,
+      factory: audioplayers.Player.new,
       name: 'audioplayers',
     ),
     PlatformEnv.linux: PlayerAdaptivePackage(
-      factory: just_audio.Player.new,
+      factory: audioplayers.Player.new,
       name: 'audioplayers',
     ),
     PlatformEnv.macos: PlayerAdaptivePackage(
       factory: just_audio.Player.new,
-      name: 'audioplayers',
+      name: 'just_audio',
     ),
     PlatformEnv.fuchsia: null, // [Hope to add fuchsia support],
   };

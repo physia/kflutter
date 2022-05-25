@@ -1,4 +1,7 @@
+## 0.2.2
+fix order problem
 ## 0.2.1
+
 fixed:
  - PlayerBar dur bug
  - Audioplayer bug see 
