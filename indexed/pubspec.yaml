@@ -1,6 +1,6 @@
 name: indexed
 description: indexed widget, allow you to order the items inside stack, sothing like z-index
-version: 0.0.6
+version: 0.0.7
 repository: https://github.com/physia/kflutter/tree/main/indexed
 homepage: https://github.com/physia/kflutter/tree/main/indexed
 issue_tracker: https://github.com/physia/kflutter/issues?q=is:issue is:open label:"indexed"
