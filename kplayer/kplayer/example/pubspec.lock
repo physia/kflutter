@@ -243,28 +243,28 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.2.0"
+    version: "0.2.2"
   kplayer_platform_interface:
     dependency: transitive
     description:
-      path: "../../kplayer_platform_interface"
-      relative: true
-    source: path
-    version: "0.2.0"
+      name: kplayer_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.1"
   kplayer_with_audioplayers:
     dependency: transitive
     description:
-      path: "../../kplayer_with_audioplayers"
-      relative: true
-    source: path
-    version: "0.2.0"
+      name: kplayer_with_audioplayers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.2"
   kplayer_with_just_audio:
     dependency: transitive
     description:
-      path: "../../kplayer_with_just_audio"
-      relative: true
-    source: path
-    version: "0.2.0"
+      name: kplayer_with_just_audio
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.2"
   lints:
     dependency: transitive
     description:
