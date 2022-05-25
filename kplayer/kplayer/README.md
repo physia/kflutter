@@ -13,7 +13,7 @@ Flutter player (currently only audio)
 ## sopport
 ### windows
 because of this issue: <https://github.com/bluefireteam/audioplayers/issues/1119>
-if want to use kplayer_with_audioplayers, use this on pubspec.yaml:
+if want to use ```kplayer_with_audioplayers```, use this on ```pubspec.yaml```:
 
 ```yaml
 dependency_overrides:
@@ -23,7 +23,7 @@ dependency_overrides:
       path: packages/audioplayers_windows
       ref: 263b4cc648d39a79455c221897a2c699f9d1c4c0
 ```
-thanks to [maintel](https://github.com/maintel)
+Thanks to [maintel](https://github.com/maintel)
 
 ### macos
 
@@ -33,7 +33,7 @@ on macos if you using just_audio you may need to do some changes
 > <key>com.apple.security.network.client</key>
 > <true/>
 > ```
-thanks to [Andresit0](https://github.com/Andresit0) 
+Thanks to [Andresit0](https://github.com/Andresit0) 
 
 ### specify platform
 now u can specify the packages u want to use in every platform dynamically
