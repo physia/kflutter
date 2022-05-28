@@ -219,6 +219,41 @@ class _MyPageState extends State<MyPage> with PlayerStateMixin {
   }
 }
 ```
+## QA
+
+### how to add options on setting menu?
+Just add widgets to player bar `options`, example:
+```dart
+PlayerBar(player: player, options: [
+       SwitchListTile(
+         secondary: const Icon(Icons.brightness_2),
+         title: const Text("Dark mode"),
+       );
+])
+```
+### how to controll auto playing?
+use `autoPlay` param:
+
+```dart
+var player = Player.asset("/assets/sound.mp3",autoPlay: false);
+```
+
+### use only one player
+currently you need to dispose the previous player
+for example:
+```dart
+var player = Player.asset("/assets/sound.mp3",autoPlay: false);
+player.play()
+// ...
+player.dispose();
+player = Player.network("www.example.com/file.mp3");
+```
+but i plan it to add somthing like `player.reuse()` to re use player by defrent source
+also i will add `Player.disposeAll()` to easly dispose All players
+
+### acces to all players
+you can acces to all players by `PlayerController.players` return `List<PlayerController>`
+
 
 ## Source code
 
@@ -234,4 +269,8 @@ E n g o j :)
 
 ## Check list
 
-- soon...
+- support playLists
+- add `disposeAll`
+- add `reuse` Re-use player for single player use cases
+- add more widget
+- add style option and sub widget
