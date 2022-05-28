@@ -1,5 +1,7 @@
 library kplayer_with_dart_vlc;
 
+import 'dart:typed_data';
+
 import "fake_io.dart" if (dart.library.io) 'dart:io';
 
 import "fake_dart_vlc.dart"
@@ -199,5 +201,94 @@ class Player extends PlayerController {
   set position(Duration position) {
     seek(position);
     notify(PlayerEvent.position);
+  }
+
+  /// create instance adapted on platform
+  /// ```dart
+  /// var media = PlayerMedia.asset(assets/file.mp3);
+  /// Player.create(id: 1, media: media, autoPlay: false, once: false)
+  ///   ..init();
+  /// player.play();
+  /// ```
+  static PlayerController create({
+    int? id,
+    required PlayerMedia media,
+    bool? autoPlay,
+    bool? once,
+    bool? loop,
+  }) {
+    return Player(
+      id: id,
+      media: media,
+      autoPlay: autoPlay,
+      once: once,
+      loop: loop,
+    );
+  }
+
+  /// create assets instance
+  /// ```dart
+  /// var player = Player.asset("assets/file.mp3");
+  /// player.play();
+  /// ```
+  static PlayerController asset(String media,
+      {int? id, bool? autoPlay = true, bool? once}) {
+    return Player.create(
+        id: id, media: PlayerMedia.asset(media), autoPlay: autoPlay, once: once)
+      ..init();
+  }
+
+  /// create network instance
+  /// ```dart
+  /// var player = Player.network("https://example.com/file.mp3");
+  /// player.play();
+  /// ```
+  static PlayerController network(String media,
+      {int? id, bool? autoPlay = true, bool? once}) {
+    return Player.create(
+        id: id,
+        media: PlayerMedia.network(media),
+        autoPlay: autoPlay,
+        once: once)
+      ..init();
+  }
+
+  /// create file instance
+  /// ```dart
+  /// var player = Player.file("/path/to/file.mp3");
+  /// player.play();
+  /// ```
+  static PlayerController file(String media,
+      {int? id, bool? autoPlay = true, bool? once}) {
+    return Player.create(
+        id: id, media: PlayerMedia.file(media), autoPlay: autoPlay, once: once)
+      ..init();
+  }
+
+  /// create file instance
+  /// ```dart
+  /// var player = Player.file("/path/to/file.mp3");
+  /// player.play();
+  /// ```
+  static PlayerController bytes(Uint8List media,
+      {int? id, bool? autoPlay = true, bool? once}) {
+    return Player.create(
+        id: id, media: PlayerMedia.bytes(media), autoPlay: autoPlay, once: once)
+      ..init();
+  }
+
+  /// create file instance
+  /// ```dart
+  /// var player = Player.file("/path/to/file.mp3");
+  /// player.play();
+  /// ```
+  static PlayerController stream(Stream media,
+      {int? id, bool? autoPlay = true, bool? once}) {
+    return Player.create(
+        id: id,
+        media: PlayerMedia.stream(media),
+        autoPlay: autoPlay,
+        once: once)
+      ..init();
   }
 }
