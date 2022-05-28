@@ -259,6 +259,14 @@ you can acces to all players by `PlayerController.players` return `List<PlayerCo
 
 check the repository on github (<https://github.com/physia/kflutter/tree/main/kplayer/kplayer>)
 
+## Check list
+
+- [ ] support playLists
+- [ ] add `disposeAll`
+- [ ] add `reuse` Re-use player for single player use cases
+- [ ] add more widget
+- [ ] add style option and sub widget
+
 ## Support ☺️
 
 Coffee for my mind:
@@ -267,10 +275,3 @@ Coffee for my mind:
 
 E n g o j :)
 
-## Check list
-
-- support playLists
-- add `disposeAll`
-- add `reuse` Re-use player for single player use cases
-- add more widget
-- add style option and sub widget
