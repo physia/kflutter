@@ -105,6 +105,9 @@ class _MyAppState extends State<MyApp> {
               onPressed: () {
                 setState(() {
                   player.dispose();
+                  for (var _player in PlayerController.palyers) {
+                    _player.pause();
+                  }
                   player = Player.create(
                     media: PlayerMedia.asset(_loadFromAssetController.text),
                     autoPlay: true,

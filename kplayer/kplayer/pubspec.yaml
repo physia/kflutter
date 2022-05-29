@@ -1,6 +1,6 @@
 name: kplayer
 description: audio player that support all platforms.
-version: 0.2.3
+version: 0.2.4
 repository: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
 homepage: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
 issue_tracker: https://github.com/flutter/flutter/issues?q=is:issue is:open label:"kplayer"
@@ -31,7 +31,7 @@ dependencies:
   kplayer_with_just_audio: ^0.2.1
   # kplayer_with_dart_vlc: ^0.2.1
   kplayer_with_audioplayers: ^0.2.1
-  kplayer_platform_interface: ^0.2.1
+  kplayer_platform_interface: ^0.2.2
   # kplayer_with_just_audio:
   #   path: ../kplayer_with_just_audio
   # kplayer_with_dart_vlc:

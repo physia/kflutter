@@ -165,6 +165,15 @@ player.loop = true; // looping
 player.dispose();
 player.player; // the package player instance for more option `dart_vlc`, `audioplayers` , `just_audio`
 
+// all players
+PlayerController.players; // List<PlayerController>
+
+// all other players
+player.others; // List<PlayerController>
+
+// example pause all other players
+player.others.forEach((player) => player.pause());
+
 // Widgets
 PlayerBar(player: player, options: []);
 PlayerBuilder(

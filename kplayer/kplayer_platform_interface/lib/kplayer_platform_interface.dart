@@ -260,6 +260,11 @@ abstract class PlayerController {
   // }
 
   static List<PlayerController> palyers = <PlayerController>[];
+
+  /// [others] is a list of other players
+  List<PlayerController> get others =>
+      palyers.where((player) => player != this).toList();
+
   // @mustCallSuper
   void init() {
     // streams.duration.listen((event) {
