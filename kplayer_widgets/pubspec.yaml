@@ -1,6 +1,6 @@
 name: kplayer_widgets
-description: A new Flutter package project.
-version: 0.0.1
+description: widgets for kplayer
+version: 0.0.2
 repository: https://github.com/physia/kflutter/tree/main/kplayer/kplayer_widgets
 homepage: https://github.com/physia/kflutter/tree/main/kplayer/kplayer_widgets
 issue_tracker: https://github.com/flutter/flutter/issues?q=is:issue is:open label:"kplayer_widgets"
@@ -12,13 +12,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  kplayer_platform_interface: 0.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  kplayer_platform_interface:
-    path: ../kplayer_platform_interface
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

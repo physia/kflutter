@@ -234,7 +234,7 @@ class Player extends PlayerController {
 
   @override
   set loop(bool loop) {
-    this.loop = loop;
+    super.loop = loop;
     // player.setLoopMode(loop ? just_audio.LoopMode.all : just_audio.LoopMode.off);
     notify(PlayerEvent.volume);
   }

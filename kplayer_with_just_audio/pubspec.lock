@@ -14,7 +14,7 @@ packages:
       name: audio_session
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.6+1"
+    version: "0.1.10"
   boolean_selector:
     dependency: transitive
     description:
@@ -106,14 +106,14 @@ packages:
       name: just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.21"
+    version: "0.9.28"
   just_audio_platform_interface:
     dependency: transitive
     description:
       name: just_audio_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.2.0"
   just_audio_web:
     dependency: transitive
     description:
@@ -124,10 +124,10 @@ packages:
   kplayer_platform_interface:
     dependency: "direct main"
     description:
-      path: "../kplayer_platform_interface"
-      relative: true
-    source: path
-    version: "0.2.2"
+      name: kplayer_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   lints:
     dependency: transitive
     description:

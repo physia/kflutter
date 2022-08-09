@@ -1,7 +1,6 @@
 library kplayer_with_audioplayers;
 
 import 'package:audioplayers/audioplayers.dart' as audioplayers;
-import 'package:audioplayers/audioplayers.dart';
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 export 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 

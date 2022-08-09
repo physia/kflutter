@@ -21,56 +21,56 @@ packages:
       name: audio_session
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.6+1"
+    version: "0.1.10"
   audioplayers:
     dependency: transitive
     description:
       name: audioplayers
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-rc.4"
+    version: "1.0.1"
   audioplayers_android:
     dependency: transitive
     description:
       name: audioplayers_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-rc.2"
+    version: "1.0.1"
   audioplayers_darwin:
     dependency: transitive
     description:
       name: audioplayers_darwin
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-rc.4"
+    version: "1.0.1"
   audioplayers_linux:
     dependency: transitive
     description:
       name: audioplayers_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-rc.3"
+    version: "1.0.0"
   audioplayers_platform_interface:
     dependency: transitive
     description:
       name: audioplayers_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-rc.2"
+    version: "1.0.0"
   audioplayers_web:
     dependency: transitive
     description:
       name: audioplayers_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-rc.3"
+    version: "1.0.0"
   audioplayers_windows:
     dependency: transitive
     description:
       name: audioplayers_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-rc.3"
+    version: "1.0.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -191,14 +191,14 @@ packages:
       name: just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.21"
+    version: "0.9.28"
   just_audio_platform_interface:
     dependency: transitive
     description:
       name: just_audio_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.2.0"
   just_audio_web:
     dependency: transitive
     description:
@@ -209,31 +209,31 @@ packages:
   kplayer_platform_interface:
     dependency: "direct main"
     description:
-      path: "../kplayer_platform_interface"
-      relative: true
-    source: path
-    version: "0.2.2"
+      name: kplayer_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   kplayer_widgets:
     dependency: "direct main"
     description:
-      path: "../kplayer_widgets"
-      relative: true
-    source: path
-    version: "0.0.1"
+      name: kplayer_widgets
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   kplayer_with_audioplayers:
     dependency: "direct main"
     description:
-      path: "../kplayer_with_audioplayers"
-      relative: true
-    source: path
-    version: "0.2.2"
+      name: kplayer_with_audioplayers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   kplayer_with_just_audio:
     dependency: "direct main"
     description:
-      path: "../kplayer_with_just_audio"
-      relative: true
-    source: path
-    version: "0.2.2"
+      name: kplayer_with_just_audio
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.1"
   lints:
     dependency: transitive
     description:

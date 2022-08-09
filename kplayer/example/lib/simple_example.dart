@@ -6,21 +6,16 @@ void main() {
   runApp(const SimpleExample());
 }
 
-class SimpleExample extends StatefulWidget {
+class SimpleExample extends StatelessWidget {
   const SimpleExample({Key? key}) : super(key: key);
 
   @override
-  State<SimpleExample> createState() => _SimpleExampleState();
-}
-
-class _SimpleExampleState extends State<SimpleExample> {
-  var audioPlayer = Player.asset(
-    'assets/Introducing_flutter.mp3',
-    autoPlay: false,
-    loop: true,
-  );
-  @override
   Widget build(BuildContext context) {
+    final audioPlayer = Player.asset(
+      'assets/Introducing_flutter.mp3',
+      autoPlay: false,
+      loop: false,
+    );
     return MaterialApp(
       home: Scaffold(
         body: Column(
@@ -35,14 +30,14 @@ class _SimpleExampleState extends State<SimpleExample> {
                   }),
               onPressed: () {
                 audioPlayer.play();
-                // audioPlayer.loop = true;
+                audioPlayer.loop = true;
               },
             ),
             ElevatedButton(
-              child: const Text("Set 99%"),
+              child: const Text("Position to 98%"),
               onPressed: () {
                 audioPlayer.position = Duration(
-                    seconds: (audioPlayer.duration.inSeconds * 0.95).round());
+                    seconds: (audioPlayer.duration.inSeconds * 0.98).round());
               },
             ),
           ],
