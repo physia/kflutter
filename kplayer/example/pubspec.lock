@@ -236,35 +236,35 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.3.0"
+    version: "0.3.3"
   kplayer_platform_interface:
     dependency: transitive
     description:
       name: kplayer_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.3"
   kplayer_widgets:
     dependency: transitive
     description:
       name: kplayer_widgets
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   kplayer_with_audioplayers:
     dependency: transitive
     description:
       name: kplayer_with_audioplayers
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.3"
   kplayer_with_just_audio:
     dependency: transitive
     description:
       name: kplayer_with_just_audio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.1"
+    version: "0.3.3"
   lints:
     dependency: transitive
     description:

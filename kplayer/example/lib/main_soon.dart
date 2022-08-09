@@ -37,12 +37,12 @@
 // class _MyAppState extends State<MyApp> {
 //   var player = Player(
 //       media: PlayerMedia.network(
-//           "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3"),
+//           "https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3"),
 //       autoPlay: true)
 //     ..init();
 //   final _loadFromNetworkController = TextEditingController(
 //       text:
-//           "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3");
+//           "https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3");
 //   final _loadFromAssetController =
 //       TextEditingController(text: "assets/Introducing_flutter.mp3");
 //   @override
@@ -83,7 +83,7 @@
 //                   player.dispose();
 //                   player = Player(
 //                     media: PlayerMedia.network(
-//                         "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3"),
+//                         "https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3"),
 //                     autoPlay: true,
 //                   )..init();
 //                 });

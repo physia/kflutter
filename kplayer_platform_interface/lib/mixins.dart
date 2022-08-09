@@ -31,7 +31,6 @@ mixin PlayerStateMixin<T extends StatefulWidget> on State<T> {
   @override
   void dispose() {
     super.dispose();
-    _controller?.dispose();
     _subscriptions.forEach((subscription) => subscription?.cancel());
   }
 
@@ -49,6 +48,6 @@ mixin PlayerStateMixin<T extends StatefulWidget> on State<T> {
   }
 
   bool shouldRebuild(PlayerEvent event, PlayerEvent oldEvent) {
-    return event != oldEvent;
+    return true;
   }
 }

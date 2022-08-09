@@ -31,6 +31,7 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
   late Animation<double> _animation;
   @override
   void initState() {
+    super.initState();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 250),
       vsync: this,
@@ -40,8 +41,6 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
         curve: Curves.easeInOutSine,
       ),
     );
-
-    super.initState();
   }
 
   @override

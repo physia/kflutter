@@ -272,7 +272,7 @@ abstract class PlayerController {
   }
   void replay();
   void play();
-  void pause();
+  Future<void> pause();
   void stop();
   @Deprecated("use the position setter")
   void seek(Duration position);
@@ -314,7 +314,7 @@ abstract class PlayerController {
     _disposed = true;
   }
 
-  void notify(PlayerEvent event) {
+  Future<void> notify(PlayerEvent event) async {
     _streamControllers.events.add(event);
     _streamControllers.status.add(status);
     _streamControllers.playing.add(playing);
@@ -347,9 +347,13 @@ abstract class PlayerController {
         _ended = true;
         if (loop) {
           replay();
-        } else if (once) {
-          dispose();
+        } else {
+          position = Duration.zero;
+          await pause();
         }
+        //  else if (once) {
+        //   dispose();
+        // }
         break;
       default:
     }

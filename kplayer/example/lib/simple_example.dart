@@ -40,6 +40,12 @@ class SimpleExample extends StatelessWidget {
                     seconds: (audioPlayer.duration.inSeconds * 0.98).round());
               },
             ),
+            ElevatedButton(
+              child: const Text("Volume to 0.5"),
+              onPressed: () {
+                audioPlayer.volume = 0.5;
+              },
+            ),
           ],
         ),
       ),

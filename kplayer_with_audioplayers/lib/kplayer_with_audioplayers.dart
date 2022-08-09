@@ -126,7 +126,7 @@ class Player extends PlayerController {
   }
 
   @override
-  void pause() {
+  Future<void> pause() async {
     _status = PlayerStatus.paused;
     player.pause();
     notify(PlayerEvent.pause);

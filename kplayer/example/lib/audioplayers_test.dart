@@ -34,7 +34,7 @@
 //             child: Text("setSourceUrl"),
 //             onPressed: () {
 //               player.setSourceUrl(
-//                   "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3");
+//                   "https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3");
 //               player.resume();
 //             },
 //           ),

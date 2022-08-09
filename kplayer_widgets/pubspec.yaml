@@ -1,6 +1,6 @@
 name: kplayer_widgets
 description: widgets for kplayer
-version: 0.0.2
+version: 0.0.3
 repository: https://github.com/physia/kflutter/tree/main/kplayer/kplayer_widgets
 homepage: https://github.com/physia/kflutter/tree/main/kplayer/kplayer_widgets
 issue_tracker: https://github.com/flutter/flutter/issues?q=is:issue is:open label:"kplayer_widgets"
@@ -12,7 +12,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  kplayer_platform_interface: 0.3.0
+  kplayer_platform_interface: ^0.3.3
 
 dev_dependencies:
   flutter_test:
