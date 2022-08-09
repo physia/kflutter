@@ -120,28 +120,34 @@ class Player extends PlayerController {
     // player.volumeStream.listen((volume) {
     //   volume = volume;
     // });
-    player.positionStream.listen((positionValue) {
+    player.setLoopMode(just_audio.LoopMode.all);
+    player.positionStream.listen((positionValue) async {
       _position = positionValue;
-      notify(PlayerEvent.position);
-    });
-    player.playerStateStream.listen((pstate) {
-      switch (pstate.processingState) {
-        // case just_audio.ProcessingState.ready:
-        //   status = PlayerStatus.playing;
-        //   break;
-        // case just_audio.ProcessingState.loading:
-        //   status = PlayerStatus.loading;
-        //   break;
-        // case just_audio.ProcessingState.buffering:
-        //   status = PlayerStatus.buffering;
-        //   break;
-        case just_audio.ProcessingState.completed:
-          status = PlayerStatus.ended;
-          break;
-        default:
-        // status = PlayerStatus.unknown;
+      // detect end event
+      await notify(PlayerEvent.position);
+      if (_position.inSeconds != 0 &&
+          positionValue.inSeconds == duration.inSeconds) {
+        await notify(PlayerEvent.end);
       }
     });
+    // player.playerStateStream.listen((pstate) {
+    //   switch (pstate.processingState) {
+    //     // case just_audio.ProcessingState.ready:
+    //     //   status = PlayerStatus.playing;
+    //     //   break;
+    //     // case just_audio.ProcessingState.loading:
+    //     //   status = PlayerStatus.loading;
+    //     //   break;
+    //     // case just_audio.ProcessingState.buffering:
+    //     //   status = PlayerStatus.buffering;
+    //     //   break;
+    //     case just_audio.ProcessingState.completed:
+    //       status = PlayerStatus.ended;
+    //       break;
+    //     default:
+    //     // status = PlayerStatus.unknown;
+    //   }
+    // });
     players.add(this);
     if (autoPlay) {
       play();
@@ -169,21 +175,21 @@ class Player extends PlayerController {
   }
 
   @override
-  void replay() {
-    seek(Duration.zero);
+  Future<void> replay() async {
+    await seek(Duration.zero);
     play();
     notify(PlayerEvent.replay);
   }
 
   @override
-  void pause() {
-    player.pause();
+  Future<void> pause() async {
+    await player.pause();
     status = PlayerStatus.paused;
   }
 
   @override
-  void stop() {
-    player.stop();
+  Future<void> stop() async {
+    await player.stop();
     notify(PlayerEvent.stop);
   }
 
@@ -209,7 +215,6 @@ class Player extends PlayerController {
   // Duration _duration = Duration.zero;
   double _volume = 1;
   double _speed = 1;
-  bool _loop = false;
 
   @override
   double get speed => _speed;
@@ -230,14 +235,9 @@ class Player extends PlayerController {
   }
 
   @override
-  bool get loop => _loop;
-
-  @override
   set loop(bool loop) {
-    _loop = loop;
-    player
-        .setLoopMode(loop ? just_audio.LoopMode.all : just_audio.LoopMode.off);
-    notify(PlayerEvent.volume);
+    super.loop = loop;
+    notify(PlayerEvent.loop);
   }
 
   @override
@@ -247,8 +247,8 @@ class Player extends PlayerController {
   }
 
   @override
-  void seek(Duration position) {
-    player.seek(_position = position);
+  Future<void> seek(Duration position) async {
+    await player.seek(_position = position);
     notify(PlayerEvent.position);
   }
 

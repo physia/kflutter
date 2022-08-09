@@ -1,3 +1,9 @@
+## 0.3.3
+- fix loop bugs in `kplayer_with_just_audio`
+
+## 0.3.1
+- fix loop bug
+
 ## 0.2.4
 
 - add `others` property to return all other players

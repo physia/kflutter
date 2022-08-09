@@ -34,12 +34,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var player = Player.create(
       media: PlayerMedia.network(
-          "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3"),
+          "https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3"),
       autoPlay: true)
     ..init();
   final _loadFromNetworkController = TextEditingController(
       text:
-          "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3");
+          "https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3");
   final _loadFromAssetController =
       TextEditingController(text: "assets/Introducing_flutter.mp3");
   @override
@@ -84,7 +84,7 @@ class _MyAppState extends State<MyApp> {
                   player.dispose();
                   player = Player.create(
                     media: PlayerMedia.network(
-                        "https://archive.org/download/s0v5kiwcwp1zaps7pdwjtp5o8e6clmevdnewngnd/JSJ_385_Panel.mp3"),
+                        "https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3"),
                     autoPlay: true,
                   )..init();
                 });
@@ -150,10 +150,11 @@ class _MyAppState extends State<MyApp> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: DefaultTextStyle(
-              style: const TextStyle(fontSize: 11, color: Colors.grey),
-              child: PlayerBuilder(
-                  player: player,
-                  builder: (context, event, child) {
+              style: const TextStyle(
+                  fontSize: 11, color: Color.fromARGB(166, 177, 177, 177)),
+              child: StreamBuilder<PlayerEvent>(
+                  stream: player.streams.events,
+                  builder: (context, snapshot) {
                     return Column(
                       children: [
                         const Text(
@@ -163,7 +164,14 @@ class _MyAppState extends State<MyApp> {
                         const SizedBox(height: 10),
                         Table(
                           border: TableBorder.all(
-                              width: 1, color: Colors.grey.withOpacity(0.5)),
+                            width: 1,
+                            color: Colors.grey.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          columnWidths: {
+                            0: FractionColumnWidth(0.2),
+                            1: FractionColumnWidth(0.8),
+                          },
                           children: [
                             TableRow(children: [
                               const Text("Duration",

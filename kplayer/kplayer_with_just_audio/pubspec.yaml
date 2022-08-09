@@ -1,6 +1,6 @@
 name: kplayer_with_just_audio
 description: kplayer with just_audio.
-version: 0.2.2
+version: 0.3.3
 repository: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
 homepage: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
 issue_tracker: https://github.com/flutter/flutter/issues?q=is:issue is:open label:"kplayer"
@@ -12,10 +12,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  just_audio: ^0.9.21
-  kplayer_platform_interface: ^0.2.1
-  # kplayer_platform_interface:
-  #   path: ../kplayer_platform_interface
+  just_audio: ^0.9.28
+  kplayer_platform_interface: ^0.3.3
 
 dev_dependencies:
   flutter_test:

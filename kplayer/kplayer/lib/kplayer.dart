@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 // import 'package:kplayer_with_dart_vlc/kplayer_with_dart_vlc.dart' as dart_vlc;
 import 'package:kplayer_with_just_audio/kplayer_with_just_audio.dart'
     as just_audio;
@@ -11,6 +10,7 @@ import 'package:kplayer_with_audioplayers/kplayer_with_audioplayers.dart'
 
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 export 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
+export 'package:kplayer_widgets/kplayer_widgets.dart';
 
 // typedef  = dart_vlc.Player;
 /// [PlatformEnv] enum is used to determine which platform the app is
@@ -181,9 +181,13 @@ class Player {
   /// player.play();
   /// ```
   static PlayerController asset(String media,
-      {int? id, bool? autoPlay = true, bool? once}) {
+      {int? id, bool? autoPlay = true, bool? loop = true, bool? once}) {
     return Player.create(
-        id: id, media: PlayerMedia.asset(media), autoPlay: autoPlay, once: once)
+        id: id,
+        media: PlayerMedia.asset(media),
+        autoPlay: autoPlay,
+        once: once,
+        loop: loop)
       ..init();
   }
 
@@ -193,11 +197,12 @@ class Player {
   /// player.play();
   /// ```
   static PlayerController network(String media,
-      {int? id, bool? autoPlay = true, bool? once}) {
+      {int? id, bool? autoPlay = true, bool? loop = true, bool? once}) {
     return Player.create(
         id: id,
         media: PlayerMedia.network(media),
         autoPlay: autoPlay,
+        loop: loop,
         once: once)
       ..init();
   }
@@ -208,9 +213,13 @@ class Player {
   /// player.play();
   /// ```
   static PlayerController file(String media,
-      {int? id, bool? autoPlay = true, bool? once}) {
+      {int? id, bool? autoPlay = true, bool? loop = true, bool? once}) {
     return Player.create(
-        id: id, media: PlayerMedia.file(media), autoPlay: autoPlay, once: once)
+        id: id,
+        media: PlayerMedia.file(media),
+        loop: loop,
+        autoPlay: autoPlay,
+        once: once)
       ..init();
   }
 
@@ -220,9 +229,13 @@ class Player {
   /// player.play();
   /// ```
   static PlayerController bytes(Uint8List media,
-      {int? id, bool? autoPlay = true, bool? once}) {
+      {int? id, bool? autoPlay = true, bool? loop = true, bool? once}) {
     return Player.create(
-        id: id, media: PlayerMedia.bytes(media), autoPlay: autoPlay, once: once)
+        id: id,
+        media: PlayerMedia.bytes(media),
+        loop: loop,
+        autoPlay: autoPlay,
+        once: once)
       ..init();
   }
 
@@ -232,11 +245,12 @@ class Player {
   /// player.play();
   /// ```
   static PlayerController stream(Stream media,
-      {int? id, bool? autoPlay = true, bool? once}) {
+      {int? id, bool? autoPlay = true, bool? loop = true, bool? once}) {
     return Player.create(
         id: id,
         media: PlayerMedia.stream(media),
         autoPlay: autoPlay,
+        loop: loop,
         once: once)
       ..init();
   }

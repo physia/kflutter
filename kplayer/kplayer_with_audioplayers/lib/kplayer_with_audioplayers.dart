@@ -1,7 +1,6 @@
 library kplayer_with_audioplayers;
 
 import 'package:audioplayers/audioplayers.dart' as audioplayers;
-import 'package:audioplayers/audioplayers.dart';
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 export 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 
@@ -127,7 +126,7 @@ class Player extends PlayerController {
   }
 
   @override
-  void pause() {
+  Future<void> pause() async {
     _status = PlayerStatus.paused;
     player.pause();
     notify(PlayerEvent.pause);

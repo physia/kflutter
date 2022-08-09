@@ -3,12 +3,9 @@ library kplayer_platform_interface;
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-export 'widgets.dart';
-
 // import dart core
 import 'dart:core';
+export 'mixins.dart';
 
 /// a Player Statuses enum
 enum PlayerEvent {
@@ -171,8 +168,8 @@ abstract class PlayerController {
     required this.media,
     this.autoPlay = false,
     this.once = false,
-    bool loop = false,
-  }) : _loop = loop;
+    this.loop = false,
+  });
 
   // i know hhh
   // static bool _booted = false;
@@ -183,29 +180,29 @@ abstract class PlayerController {
   // }
   // list of th StreamSubscription for dispose automatically
   List<StreamSubscription> subscriptions = [];
-  static create(
-      {int? id,
-      required PlayerMedia media,
-      bool? autoPlay,
-      bool? once,
-      bool? loop}) {}
+  // static create(
+  //     {int? id,
+  //     required PlayerMedia media,
+  //     bool? autoPlay,
+  //     bool? once,
+  //     bool? loop}) {}
 
-  factory PlayerController.assets(media,
-      {int? id, required bool autoPlay, bool? once}) {
-    return PlayerController.create(
-        id: id, media: PlayerMedia.asset(media), autoPlay: autoPlay, once: once)
-      ..init();
-  }
+  // factory PlayerController.assets(media,
+  //     {int? id, required bool autoPlay, bool? once}) {
+  //   return PlayerController.create(
+  //       id: id, media: PlayerMedia.asset(media), autoPlay: autoPlay, once: once)
+  //     ..init();
+  // }
 
-  factory PlayerController.network(media,
-      {int? id, required bool autoPlay, bool? once}) {
-    return PlayerController.create(
-        id: id,
-        media: PlayerMedia.network(media),
-        autoPlay: autoPlay,
-        once: once)
-      ..init();
-  }
+  // factory PlayerController.network(media,
+  //     {int? id, required bool autoPlay, bool? once}) {
+  //   return PlayerController.create(
+  //       id: id,
+  //       media: PlayerMedia.network(media),
+  //       autoPlay: autoPlay,
+  //       once: once)
+  //     ..init();
+  // }
   //
   // bool _ready = false;
   bool get ready => duration != Duration.zero;
@@ -223,8 +220,8 @@ abstract class PlayerController {
   static void boot() {}
 
   final bool autoPlay;
-  final bool once;
-  bool _loop;
+  bool once;
+  bool loop;
   final PlayerMedia media;
 
   // static functions
@@ -275,16 +272,19 @@ abstract class PlayerController {
   }
   void replay();
   void play();
-  void pause();
+  Future<void> pause();
   void stop();
   @Deprecated("use the position setter")
   void seek(Duration position);
   void toggle();
-  // ignore: prefer_function_declarations_over_variables
-  Function(PlayerEvent) callback = (PlayerEvent event) {
-    if (enableLog) {
-      debugPrint("$event");
-    }
+  var callback = (PlayerEvent event) {
+    assert((() {
+      if (enableLog) {
+        // ignore: avoid_print
+        print("$event");
+      }
+      return true;
+    })());
   };
 
   String get package;
@@ -296,8 +296,6 @@ abstract class PlayerController {
   set volume(double volume);
   double get speed;
   set speed(double speed);
-  bool get loop;
-  set loop(bool speed);
   PlayerStatus get status;
   set status(PlayerStatus status);
 
@@ -316,7 +314,7 @@ abstract class PlayerController {
     _disposed = true;
   }
 
-  void notify(PlayerEvent event) {
+  Future<void> notify(PlayerEvent event) async {
     _streamControllers.events.add(event);
     _streamControllers.status.add(status);
     _streamControllers.playing.add(playing);
@@ -349,10 +347,13 @@ abstract class PlayerController {
         _ended = true;
         if (loop) {
           replay();
+        } else {
+          position = Duration.zero;
+          await pause();
         }
-        if (once) {
-          dispose();
-        }
+        //  else if (once) {
+        //   dispose();
+        // }
         break;
       default:
     }

@@ -1,0 +1,155 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "kplayer",
+            "cwd": "kplayer",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "kplayer (profile mode)",
+            "cwd": "kplayer",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "kplayer (release mode)",
+            "cwd": "kplayer",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "kplayer_platform_interface",
+            "cwd": "kplayer_platform_interface",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "kplayer_platform_interface (profile mode)",
+            "cwd": "kplayer_platform_interface",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "kplayer_platform_interface (release mode)",
+            "cwd": "kplayer_platform_interface",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "kplayer_widgets",
+            "cwd": "kplayer_widgets",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "kplayer_widgets (profile mode)",
+            "cwd": "kplayer_widgets",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "kplayer_widgets (release mode)",
+            "cwd": "kplayer_widgets",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "kplayer_with_audioplayers",
+            "cwd": "kplayer_with_audioplayers",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "kplayer_with_audioplayers (profile mode)",
+            "cwd": "kplayer_with_audioplayers",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "kplayer_with_audioplayers (release mode)",
+            "cwd": "kplayer_with_audioplayers",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "kplayer_with_dart_vlc",
+            "cwd": "kplayer_with_dart_vlc",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "kplayer_with_dart_vlc (profile mode)",
+            "cwd": "kplayer_with_dart_vlc",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "kplayer_with_dart_vlc (release mode)",
+            "cwd": "kplayer_with_dart_vlc",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "kplayer_with_just_audio",
+            "cwd": "kplayer_with_just_audio",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "kplayer_with_just_audio (profile mode)",
+            "cwd": "kplayer_with_just_audio",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "kplayer_with_just_audio (release mode)",
+            "cwd": "kplayer_with_just_audio",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "example",
+            "cwd": "kplayer\\example",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "example (profile mode)",
+            "cwd": "kplayer\\example",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "example (release mode)",
+            "cwd": "kplayer\\example",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+        },
+        // run with build arg
+        {
+            "name": "example (build web)",
+            "cwd": "kplayer\\example",
+            "type": "dart",
+            "args": ["build","web"]
+        }
+    ]
+}

@@ -1,32 +1,18 @@
-name: kplayer_with_audioplayers
-description: kplayer with audioplayers.
-version: 0.3.3
-repository: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
-homepage: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
-issue_tracker: https://github.com/flutter/flutter/issues?q=is:issue is:open label:"kplayer"
-# publish_to: "none"
+name: kplayer_widgets
+description: widgets for kplayer
+version: 0.0.3
+repository: https://github.com/physia/kflutter/tree/main/kplayer/kplayer_widgets
+homepage: https://github.com/physia/kflutter/tree/main/kplayer/kplayer_widgets
+issue_tracker: https://github.com/flutter/flutter/issues?q=is:issue is:open label:"kplayer_widgets"
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: '>=2.18.0-165.1.beta <3.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
   kplayer_platform_interface: ^0.3.3
-  # kplayer_platform_interface:
-  #   path: ../kplayer_platform_interface
-  audioplayers: ^1.0.1
-
-# dependency_overrides:
-  # audioplayers: ^1.0.0-rc.4
-
-# dependency_overrides:
-#   audioplayers_windows:
-#     git:
-#       url: https://github.com/kflutter/audioplayers
-#       path: packages/audioplayers_windows
-#       ref: 263b4cc648d39a79455c221897a2c699f9d1c4c0
 
 dev_dependencies:
   flutter_test:
