@@ -18,7 +18,7 @@ dependencies:
   # kplayer_with_audioplayers:
   #   path: ../../kplayer_with_audioplayers
   # cupertino_icons: ^1.0.2
-  file_picker: ^4.5.1
+  file_picker: ^5.3.2
   # universal_io:
 
 
