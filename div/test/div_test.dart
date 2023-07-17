@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -19,7 +21,7 @@ void main() {
         null,
         color: Colors.red,
         onTap: () {
-          print('tap on the Div');
+          log('tap on the Div');
         },
       ),
     );
@@ -34,10 +36,10 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: Div.col(
-          [Text('Hello from column')],
+          const [Text('Hello from column')],
           color: Colors.green,
           onTap: () {
-            print('tap on the Div');
+            log('tap on the Div');
           },
         ),
       ),
@@ -55,10 +57,10 @@ void main() {
       Directionality(
         textDirection: TextDirection.ltr,
         child: Div.row(
-          [Text('Hello from row')],
+          const [Text('Hello from row')],
           color: Colors.green,
           onTap: () {
-            print('tap on the Div');
+            log('tap on the Div');
           },
         ),
       ),
@@ -79,23 +81,23 @@ void main() {
           [
             Expanded(
               child: Div.row(
-                [Text('Hello from row')],
+                const [Text('Hello from row')],
                 color: Colors.green,
               ),
             ),
             Expanded(
               child: Div.col(
-                [Text('Hello from column')],
+                const [Text('Hello from column')],
                 color: Colors.green,
                 onTap: () {
-                  print('tap on the Div');
+                  log('tap on the Div');
                 },
               ),
             ),
           ],
           color: Colors.green,
           onTap: () {
-            print('tap on the Div');
+            log('tap on the Div');
           },
         ),
       ),

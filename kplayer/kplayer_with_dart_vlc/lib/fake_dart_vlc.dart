@@ -69,22 +69,22 @@ class Media implements MediaSource {
   final Duration stopTime;
   final Map<String, String> metas;
 
+  // ignore: unused_element
   const Media._({
     required this.mediaType,
     required this.resource,
     required this.metas,
-    this.startTime: Duration.zero,
-    this.stopTime: Duration.zero,
-  });
+  })  : startTime = Duration.zero,
+        stopTime = Duration.zero;
 
   /// Makes [Media] object from a [File].
   factory Media.file(
     File file, {
-    bool parse: false,
+    bool parse = false,
     Map<String, dynamic>? extras,
-    Duration timeout: const Duration(seconds: 10),
-    startTime: Duration.zero,
-    stopTime: Duration.zero,
+    Duration timeout = const Duration(seconds: 10),
+    startTime = Duration.zero,
+    stopTime = Duration.zero,
   }) {
     throw UnimplementedError('The platform is not supported');
   }
@@ -92,22 +92,17 @@ class Media implements MediaSource {
   /// Makes [Media] object from url.
   factory Media.network(
     dynamic url, {
-    bool parse: false,
+    bool parse = false,
     Map<String, dynamic>? extras,
-    Duration timeout: const Duration(seconds: 10),
-    startTime: Duration.zero,
-    stopTime: Duration.zero,
+    Duration timeout = const Duration(seconds: 10),
+    startTime = Duration.zero,
+    stopTime = Duration.zero,
   }) {
     throw UnimplementedError('The platform is not supported');
   }
 
   /// Makes [Media] object from direct show.
-  factory Media.directShow(
-      {String? rawUrl,
-      Map<String, dynamic>? args,
-      String? vdev,
-      String? adev,
-      int? liveCaching}) {
+  factory Media.directShow({String? rawUrl, Map<String, dynamic>? args, String? vdev, String? adev, int? liveCaching}) {
     throw UnimplementedError('The platform is not supported');
   }
 
@@ -120,17 +115,13 @@ class Media implements MediaSource {
   ///
   factory Media.asset(
     String asset, {
-    startTime: Duration.zero,
+    startTime = Duration.zero,
   }) {
     throw UnimplementedError('The platform is not supported');
   }
 
   /// Parses the [Media] to retrieve [Media.metas].
   void parse(Duration timeout) {
-    throw UnimplementedError('The platform is not supported');
-  }
-
-  static String _buildDirectShowUrl(Map<String, dynamic> args) {
     throw UnimplementedError('The platform is not supported');
   }
 }

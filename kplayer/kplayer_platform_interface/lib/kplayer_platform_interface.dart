@@ -105,52 +105,52 @@ class PlayerMedia<T> {
   final Duration? initial;
   final bool preload;
 
-  static PlayerMedia<String> asset(String _resource,
+  static PlayerMedia<String> asset(String resource,
       {Duration? initial, bool? preload}) {
     return PlayerMedia(
       type: PlayerMediaType.asset,
-      resource: _resource,
+      resource: resource,
       preload: preload ?? false,
       initial: initial,
     );
   }
 
-  static PlayerMedia<String> network(String _resource,
+  static PlayerMedia<String> network(String resource,
       {Map<String, String>? headers, Duration? initial, bool? preload}) {
     return PlayerMedia(
       type: PlayerMediaType.network,
-      resource: _resource,
+      resource: resource,
       headers: headers,
       preload: preload ?? false,
       initial: initial,
     );
   }
 
-  static PlayerMedia<String> file(String _resource,
+  static PlayerMedia<String> file(String resource,
       {Duration? initial, bool? preload}) {
     return PlayerMedia(
       type: PlayerMediaType.file,
-      resource: _resource,
+      resource: resource,
       preload: preload ?? false,
       initial: initial,
     );
   }
 
-  static PlayerMedia<Uint8List> bytes(Uint8List _resource,
+  static PlayerMedia<Uint8List> bytes(Uint8List resource,
       {Duration? initial, bool? preload}) {
     return PlayerMedia(
       type: PlayerMediaType.bytes,
-      resource: _resource,
+      resource: resource,
       preload: preload ?? false,
       initial: initial,
     );
   }
 
-  static PlayerMedia<Stream> stream(Stream _resource,
+  static PlayerMedia<Stream> stream(Stream resource,
       {Duration? initial, bool? preload}) {
     return PlayerMedia(
       type: PlayerMediaType.stream,
-      resource: _resource,
+      resource: resource,
       preload: preload ?? false,
       initial: initial,
     );
@@ -208,7 +208,7 @@ abstract class PlayerController {
   bool get ready => duration != Duration.zero;
   bool _created = false;
   bool get created => _created || inited;
-  bool _loading = false;
+  final bool _loading = false;
   bool get loading => _loading;
   bool _inited = false;
   bool get inited => _inited;
@@ -465,13 +465,13 @@ extension HumanizeDuration on Duration {
 
   String pluralize(int number, String word, String language, String locale) {
     if (language == "en") {
-      return number == 1 ? word : word + "s";
+      return number == 1 ? word : "${word}s";
     } else if (language == "fr") {
-      return number == 1 ? word : word + "s";
+      return number == 1 ? word : "${word}s";
     } else if (language == "ar") {
-      return number == 1 ? word : word + "s";
+      return number == 1 ? word : "${word}s";
     } else {
-      return number == 1 ? word : word + "s";
+      return number == 1 ? word : "${word}s";
     }
   }
 

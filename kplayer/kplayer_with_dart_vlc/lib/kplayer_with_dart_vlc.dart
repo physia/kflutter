@@ -1,11 +1,9 @@
 library kplayer_with_dart_vlc;
 
-import 'dart:typed_data';
 
 import "fake_io.dart" if (dart.library.io) 'dart:io';
 
-import "fake_dart_vlc.dart"
-    if (dart.library.ffi) 'package:dart_vlc/dart_vlc.dart' as dart_vlc;
+import "fake_dart_vlc.dart" if (dart.library.ffi) 'package:dart_vlc/dart_vlc.dart' as dart_vlc;
 import 'package:flutter/foundation.dart';
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 
@@ -17,11 +15,7 @@ class Player extends PlayerController {
     bool? once,
     bool? loop,
   })  : player = dart_vlc.Player(id: id ?? players.length + 50001),
-        super(
-            media: media,
-            autoPlay: autoPlay ?? false,
-            once: once ?? false,
-            loop: loop ?? false) {
+        super(media: media, autoPlay: autoPlay ?? false, once: once ?? false, loop: loop ?? false) {
     players.add(this);
   }
 
@@ -63,23 +57,23 @@ class Player extends PlayerController {
     //   Player.boot();
     //   print("Player.boot");
     // });
-    var _vlcMedia;
+    dart_vlc.Media vlcMedia;
     if (media.type == PlayerMediaType.network) {
-      _vlcMedia = dart_vlc.Media.network(media.resource);
+      vlcMedia = dart_vlc.Media.network(media.resource);
     } else if (media.type == PlayerMediaType.asset) {
-      _vlcMedia = dart_vlc.Media.asset(media.resource);
+      vlcMedia = dart_vlc.Media.asset(media.resource);
     } else if (media.type == PlayerMediaType.file) {
-      _vlcMedia = dart_vlc.Media.file(File(media.resource));
+      vlcMedia = dart_vlc.Media.file(File(media.resource));
     } else {
       throw Exception("media type not support");
     }
 
-    player.open(_vlcMedia, autoStart: false);
+    player.open(vlcMedia, autoStart: false);
     players.add(this);
     subscriptions.addAll([
-      player.positionStream.listen((dart_vlc.PositionState _state) {
-        _position = _state.position ?? _position;
-        _duration = _state.duration ?? _duration;
+      player.positionStream.listen((dart_vlc.PositionState state) {
+        _position = state.position ?? _position;
+        _duration = state.duration ?? _duration;
         notify(PlayerEvent.position);
       }),
       player.playbackStream.listen((state) {
@@ -91,9 +85,9 @@ class Player extends PlayerController {
           }
         }
       }),
-      player.generalStream.listen((dart_vlc.GeneralState _state) {
-        _volume = _state.volume;
-        _speed = _state.rate;
+      player.generalStream.listen((dart_vlc.GeneralState state) {
+        _volume = state.volume;
+        _speed = state.rate;
       }),
     ]);
 
@@ -127,7 +121,7 @@ class Player extends PlayerController {
   }
 
   @override
-  void pause() {
+  Future<void> pause() async {
     _status = PlayerStatus.paused;
     player.pause();
     notify(PlayerEvent.pause);
@@ -161,15 +155,13 @@ class Player extends PlayerController {
 
   //
   static void boot() {
-    if (!kIsWeb &&
-        (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+    if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
       dart_vlc.DartVLC.initialize();
     }
   }
 
   @override
-  Stream<Duration> get positionStream =>
-      player.positionStream.map((event) => event.position ?? Duration.zero);
+  Stream<Duration> get positionStream => player.positionStream.map((event) => event.position ?? Duration.zero);
   @override
   double get speed => _speed;
 
@@ -231,11 +223,8 @@ class Player extends PlayerController {
   /// var player = Player.asset("assets/file.mp3");
   /// player.play();
   /// ```
-  static PlayerController asset(String media,
-      {int? id, bool? autoPlay = true, bool? once}) {
-    return Player.create(
-        id: id, media: PlayerMedia.asset(media), autoPlay: autoPlay, once: once)
-      ..init();
+  static PlayerController asset(String media, {int? id, bool? autoPlay = true, bool? once}) {
+    return Player.create(id: id, media: PlayerMedia.asset(media), autoPlay: autoPlay, once: once)..init();
   }
 
   /// create network instance
@@ -243,14 +232,8 @@ class Player extends PlayerController {
   /// var player = Player.network("https://example.com/file.mp3");
   /// player.play();
   /// ```
-  static PlayerController network(String media,
-      {int? id, bool? autoPlay = true, bool? once}) {
-    return Player.create(
-        id: id,
-        media: PlayerMedia.network(media),
-        autoPlay: autoPlay,
-        once: once)
-      ..init();
+  static PlayerController network(String media, {int? id, bool? autoPlay = true, bool? once}) {
+    return Player.create(id: id, media: PlayerMedia.network(media), autoPlay: autoPlay, once: once)..init();
   }
 
   /// create file instance
@@ -258,11 +241,8 @@ class Player extends PlayerController {
   /// var player = Player.file("/path/to/file.mp3");
   /// player.play();
   /// ```
-  static PlayerController file(String media,
-      {int? id, bool? autoPlay = true, bool? once}) {
-    return Player.create(
-        id: id, media: PlayerMedia.file(media), autoPlay: autoPlay, once: once)
-      ..init();
+  static PlayerController file(String media, {int? id, bool? autoPlay = true, bool? once}) {
+    return Player.create(id: id, media: PlayerMedia.file(media), autoPlay: autoPlay, once: once)..init();
   }
 
   /// create file instance
@@ -270,11 +250,8 @@ class Player extends PlayerController {
   /// var player = Player.file("/path/to/file.mp3");
   /// player.play();
   /// ```
-  static PlayerController bytes(Uint8List media,
-      {int? id, bool? autoPlay = true, bool? once}) {
-    return Player.create(
-        id: id, media: PlayerMedia.bytes(media), autoPlay: autoPlay, once: once)
-      ..init();
+  static PlayerController bytes(Uint8List media, {int? id, bool? autoPlay = true, bool? once}) {
+    return Player.create(id: id, media: PlayerMedia.bytes(media), autoPlay: autoPlay, once: once)..init();
   }
 
   /// create file instance
@@ -282,13 +259,7 @@ class Player extends PlayerController {
   /// var player = Player.file("/path/to/file.mp3");
   /// player.play();
   /// ```
-  static PlayerController stream(Stream media,
-      {int? id, bool? autoPlay = true, bool? once}) {
-    return Player.create(
-        id: id,
-        media: PlayerMedia.stream(media),
-        autoPlay: autoPlay,
-        once: once)
-      ..init();
+  static PlayerController stream(Stream media, {int? id, bool? autoPlay = true, bool? once}) {
+    return Player.create(id: id, media: PlayerMedia.stream(media), autoPlay: autoPlay, once: once)..init();
   }
 }

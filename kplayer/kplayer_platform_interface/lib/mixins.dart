@@ -5,8 +5,7 @@ import 'kplayer_platform_interface.dart';
 
 /// Mixin handel Player (init,dispose)
 mixin PlayerStateMixin<T extends StatefulWidget> on State<T> {
-  PlayerController? _controller;
-  List<StreamSubscription?> _subscriptions = [];
+  final List<StreamSubscription?> _subscriptions = [];
   usePlayer(PlayerController? controller) {
     _subscriptions.addAll([
       controller?.streams.playing.listen(onPlayingChanged),
@@ -31,7 +30,9 @@ mixin PlayerStateMixin<T extends StatefulWidget> on State<T> {
   @override
   void dispose() {
     super.dispose();
-    _subscriptions.forEach((subscription) => subscription?.cancel());
+    for (var subscription in _subscriptions) {
+      subscription?.cancel();
+    }
   }
 
   PlayerEvent event = PlayerEvent.unknown;

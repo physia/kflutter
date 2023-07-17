@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
@@ -10,8 +11,7 @@ import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 class PlayerBar extends StatefulWidget {
   final PlayerController player;
   final List<Widget>? options;
-  const PlayerBar({Key? key, required this.player, this.options})
-      : super(key: key);
+  const PlayerBar({Key? key, required this.player, this.options}) : super(key: key);
 
   @override
   State<PlayerBar> createState() => _PlayerBarState();
@@ -53,8 +53,7 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
     volumeBoxOverlayEntry?.remove();
     var viewPortSize = MediaQuery.of(context).size;
 
-    RenderBox box =
-        volumeButtonKey.currentContext!.findRenderObject() as RenderBox;
+    RenderBox box = volumeButtonKey.currentContext!.findRenderObject() as RenderBox;
     Offset position = box.localToGlobal(Offset.zero);
     volumeBoxOverlayEntry = OverlayEntry(
       builder: (context) => AnimatedBuilder(
@@ -79,8 +78,7 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
                 bottom: (viewPortSize.height - position.dy) * _animation.value,
                 left: position.dx,
                 width: box.size.width,
-                height:
-                    (200 - box.size.width) * _animation.value + box.size.width,
+                height: (200 - box.size.width) * _animation.value + box.size.width,
                 child: Transform.scale(
                   scale: _animation.value,
                   child: Opacity(
@@ -126,7 +124,7 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
         },
       ),
     );
-    Overlay.of(context)!.insert(volumeBoxOverlayEntry!);
+    Overlay.of(context).insert(volumeBoxOverlayEntry!);
     _animationController.forward();
     _showVolumeBox = true;
   }
@@ -142,8 +140,7 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
     settingsBoxOverlayEntry?.remove();
 
     var viewPortSize = MediaQuery.of(context).size;
-    RenderBox box =
-        settingsButtonKey.currentContext!.findRenderObject() as RenderBox;
+    RenderBox box = settingsButtonKey.currentContext!.findRenderObject() as RenderBox;
     Offset position = box.localToGlobal(Offset.zero);
     // create shader mask with gradient, animate it and show it
 
@@ -161,19 +158,17 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
                       });
                     },
                     child: Container(
-                      color: Colors.black
-                          .withOpacity(0.1 * _animationController.value),
+                      color: Colors.black.withOpacity(0.1 * _animationController.value),
                     ),
                   ),
                 ),
                 Positioned(
-                  bottom:
-                      (viewPortSize.height - position.dy) * _animation.value,
+                  bottom: (viewPortSize.height - position.dy) * _animation.value,
                   right: position.dx + box.size.width - viewPortSize.width,
                   child: Transform.scale(
                     scale: _animation.value,
                     // the origin of the transform is the button right corner
-                    origin: Offset(150, 0),
+                    origin: const Offset(150, 0),
                     child: Opacity(
                       opacity: _animation.value,
                       child: Material(
@@ -194,7 +189,7 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
                                   return PlayerBuilder(
                                     player: widget.player,
                                     shouldRebuild: (e, o) {
-                                      print(e);
+                                      log(e.toString());
                                       return true;
                                     },
                                     builder: (context, event, child) {
@@ -222,7 +217,7 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
             );
           }),
     );
-    Overlay.of(context)!.insert(settingsBoxOverlayEntry!);
+    Overlay.of(context).insert(settingsBoxOverlayEntry!);
     _animationController.forward();
 
     _showSettingsBox = true;
@@ -248,9 +243,7 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
               if (!snapshot.hasData || snapshot.hasError) {
                 return const CircularProgressIndicator();
               }
-              return snapshot.data!
-                  ? const Icon(Icons.pause)
-                  : const Icon(Icons.play_arrow);
+              return snapshot.data! ? const Icon(Icons.pause) : const Icon(Icons.play_arrow);
             },
           ),
         ),
@@ -289,40 +282,32 @@ class _PlayerBarState extends State<PlayerBar> with TickerProviderStateMixin {
 
         // a way to show position
         Expanded(
-          child: StatefulBuilder(builder: (context, _setState) {
+          child: StatefulBuilder(builder: (context, setState) {
             return StreamBuilder<Duration>(
-                stream: widget.player.streams.position
-                    .distinct((a, b) => _nextPosition != null),
+                stream: widget.player.streams.position.distinct((a, b) => _nextPosition != null),
                 builder: (context, snapshot) {
-                  double value = _nextPosition?.inMilliseconds.toDouble() ??
-                      widget.player.position.inMilliseconds.toDouble();
+                  double value = _nextPosition?.inMilliseconds.toDouble() ?? widget.player.position.inMilliseconds.toDouble();
                   return Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        _nextPosition != null
-                            ? _nextPosition!.toReadableString()
-                            : widget.player.position.toReadableString(),
+                        _nextPosition != null ? _nextPosition!.toReadableString() : widget.player.position.toReadableString(),
                       ),
                       Expanded(
                         child: Slider(
                           min: 0,
-                          max: max(
-                              widget.player.duration.inMilliseconds.toDouble(),
-                              value),
-                          value: max(value, 0),
+                          max: math.max(widget.player.duration.inMilliseconds.toDouble(), value),
+                          value: math.max(value, 0),
                           onChangeStart: (double value) {
-                            _nextPosition =
-                                Duration(milliseconds: value.toInt());
+                            _nextPosition = Duration(milliseconds: value.toInt());
                           },
                           onChangeEnd: (double value) {
                             widget.player.position = _nextPosition!;
                             _nextPosition = null;
                           },
                           onChanged: (double value) {
-                            _setState(() {
-                              _nextPosition =
-                                  Duration(milliseconds: value.toInt());
+                            setState(() {
+                              _nextPosition = Duration(milliseconds: value.toInt());
                             });
                           },
                         ),
@@ -410,7 +395,7 @@ class _PlayerVolumeState extends State<PlayerVolume> {
         return Slider(
           min: 0,
           max: 1,
-          label: (widget.player.volume * 100.0).toStringAsFixed(0) + '%',
+          label: '${(widget.player.volume * 100.0).toStringAsFixed(0)}%',
           value: snapshot.data ?? widget.player.volume,
           onChanged: (double value) {
             widget.player.volume = value;
@@ -432,15 +417,8 @@ class PlayerBuilder extends StatefulWidget {
   final bool Function(PlayerEvent event, PlayerEvent oldEvent)? shouldRebuild;
   final PlayerController player;
   final Widget? child;
-  final Widget Function(BuildContext context, PlayerEvent event, Widget? child)
-      builder;
-  const PlayerBuilder(
-      {Key? key,
-      this.child,
-      required this.player,
-      required this.builder,
-      this.shouldRebuild})
-      : super(key: key);
+  final Widget Function(BuildContext context, PlayerEvent event, Widget? child) builder;
+  const PlayerBuilder({Key? key, this.child, required this.player, required this.builder, this.shouldRebuild}) : super(key: key);
 
   @override
   State<PlayerBuilder> createState() => _PlayerBuilderState();

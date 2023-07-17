@@ -1,15 +1,17 @@
+import 'dart:developer';
 import 'dart:io';
-import 'dart:ui' as ui;
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:dart_vlc/dart_vlc.dart';
 
 void main() async {
   DartVLC.initialize(/*useFlutterNativeView: true*/);
-  runApp(DartVLCExample());
+  runApp(const DartVLCExample());
 }
 
 class DartVLCExample extends StatefulWidget {
+  const DartVLCExample({super.key});
+
   @override
   DartVLCExampleState createState() => DartVLCExampleState();
 }
@@ -17,7 +19,7 @@ class DartVLCExample extends StatefulWidget {
 class DartVLCExampleState extends State<DartVLCExample> {
   Player player = Player(
     id: 0,
-    videoDimensions: VideoDimensions(640, 360),
+    videoDimensions: const VideoDimensions(640, 360),
     // registerTexture: !Platform.isWindows,
   );
   MediaType mediaType = MediaType.file;
@@ -25,7 +27,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
   PositionState position = PositionState();
   PlaybackState playback = PlaybackState();
   GeneralState general = GeneralState();
-  VideoDimensions videoDimensions = VideoDimensions(0, 0);
+  VideoDimensions videoDimensions = const VideoDimensions(0, 0);
   List<Media> medias = <Media>[];
   List<Device> devices = <Device>[];
   TextEditingController controller = TextEditingController();
@@ -36,35 +38,35 @@ class DartVLCExampleState extends State<DartVLCExample> {
   @override
   void initState() {
     super.initState();
-    if (this.mounted) {
-      this.player.currentStream.listen((current) {
-        this.setState(() => this.current = current);
+    if (mounted) {
+      player.currentStream.listen((current) {
+        setState(() => this.current = current);
       });
-      this.player.positionStream.listen((position) {
-        this.setState(() => this.position = position);
+      player.positionStream.listen((position) {
+        setState(() => this.position = position);
       });
-      this.player.playbackStream.listen((playback) {
-        this.setState(() => this.playback = playback);
+      player.playbackStream.listen((playback) {
+        setState(() => this.playback = playback);
       });
-      this.player.generalStream.listen((general) {
-        this.setState(() => this.general = general);
+      player.generalStream.listen((general) {
+        setState(() => this.general = general);
       });
-      this.player.videoDimensionsStream.listen((videoDimensions) {
-        this.setState(() => this.videoDimensions = videoDimensions);
+      player.videoDimensionsStream.listen((videoDimensions) {
+        setState(() => this.videoDimensions = videoDimensions);
       });
-      this.player.bufferingProgressStream.listen(
+      player.bufferingProgressStream.listen(
         (bufferingProgress) {
-          this.setState(() => this.bufferingProgress = bufferingProgress);
+          setState(() => this.bufferingProgress = bufferingProgress);
         },
       );
-      this.player.errorStream.listen((event) {
-        print('libvlc error.');
+      player.errorStream.listen((event) {
+        log('libvlc error.');
       });
-      this.devices = Devices.all;
+      devices = Devices.all;
       Equalizer equalizer = Equalizer.createMode(EqualizerMode.live);
       equalizer.setPreAmp(10.0);
       equalizer.setBandAmp(31.25, 10.0);
-      this.player.setEqualizer(equalizer);
+      player.setEqualizer(equalizer);
     }
   }
 
@@ -72,9 +74,9 @@ class DartVLCExampleState extends State<DartVLCExample> {
   Widget build(BuildContext context) {
     bool isTablet;
     bool isPhone;
-    final double devicePixelRatio = ui.window.devicePixelRatio;
-    final double width = ui.window.physicalSize.width;
-    final double height = ui.window.physicalSize.height;
+    final double devicePixelRatio = View.of(context).devicePixelRatio;
+    final double width = View.of(context).physicalSize.width;
+    final double height = View.of(context).physicalSize.height;
     if (devicePixelRatio < 2 && (width >= 1000 || height >= 1000)) {
       isTablet = true;
       isPhone = false;
@@ -117,7 +119,6 @@ class DartVLCExampleState extends State<DartVLCExample> {
                   volumeThumbColor: Colors.blue,
                   volumeActiveColor: Colors.blue,
                   showControls: !isPhone,
-                  playlistLength: 1,
                 ),
               ],
             ),
@@ -141,7 +142,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                                   const Text('Playlist creation.'),
-                                  Divider(
+                                  const Divider(
                                     height: 8.0,
                                     color: Colors.transparent,
                                   ),
@@ -150,27 +151,25 @@ class DartVLCExampleState extends State<DartVLCExample> {
                                     children: [
                                       Expanded(
                                         child: TextField(
-                                          controller: this.controller,
+                                          controller: controller,
                                           cursorWidth: 1.0,
                                           autofocus: true,
                                           style: const TextStyle(
                                             fontSize: 14.0,
                                           ),
-                                          decoration: InputDecoration.collapsed(
-                                            hintStyle: const TextStyle(
+                                          decoration: const InputDecoration.collapsed(
+                                            hintStyle: TextStyle(
                                               fontSize: 14.0,
                                             ),
                                             hintText: 'Enter Media path.',
                                           ),
                                         ),
                                       ),
-                                      Container(
+                                      SizedBox(
                                         width: 152.0,
                                         child: DropdownButton<MediaType>(
-                                          value: this.mediaType,
-                                          onChanged: (mediaType) => this
-                                              .setState(() =>
-                                                  this.mediaType = mediaType!),
+                                          value: mediaType,
+                                          onChanged: (mediaType) => setState(() => this.mediaType = mediaType!),
                                           items: [
                                             DropdownMenuItem<MediaType>(
                                               value: MediaType.file,
@@ -203,31 +202,27 @@ class DartVLCExampleState extends State<DartVLCExample> {
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.only(left: 10.0),
+                                        padding: const EdgeInsets.only(left: 10.0),
                                         child: ElevatedButton(
                                           onPressed: () {
-                                            if (this.mediaType ==
-                                                MediaType.file) {
-                                              this.medias.add(
-                                                    Media.file(
-                                                      File(
-                                                        controller.text
-                                                            .replaceAll(
-                                                                '"', ''),
-                                                      ),
-                                                    ),
-                                                  );
-                                            } else if (this.mediaType ==
-                                                MediaType.network) {
-                                              this.medias.add(
-                                                    Media.network(
-                                                      controller.text,
-                                                    ),
-                                                  );
+                                            if (mediaType == MediaType.file) {
+                                              medias.add(
+                                                Media.file(
+                                                  File(
+                                                    controller.text.replaceAll('"', ''),
+                                                  ),
+                                                ),
+                                              );
+                                            } else if (mediaType == MediaType.network) {
+                                              medias.add(
+                                                Media.network(
+                                                  controller.text,
+                                                ),
+                                              );
                                             }
-                                            this.setState(() {});
+                                            setState(() {});
                                           },
-                                          child: Text(
+                                          child: const Text(
                                             'Add to Playlist',
                                             style: TextStyle(
                                               fontSize: 14.0,
@@ -246,8 +241,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
                                   ),
                                   const Text('Playlist'),
                                 ] +
-                                this
-                                    .medias
+                                medias
                                     .map(
                                       (media) => ListTile(
                                         title: Text(
@@ -273,20 +267,19 @@ class DartVLCExampleState extends State<DartVLCExample> {
                                   Row(
                                     children: [
                                       ElevatedButton(
-                                        onPressed: () => this.setState(
+                                        onPressed: () => setState(
                                           () {
-                                            this.player.open(
-                                                  Playlist(
-                                                    medias: this.medias,
-                                                    playlistMode:
-                                                        PlaylistMode.single,
-                                                  ),
-                                                );
+                                            player.setPlaylistMode(PlaylistMode.single);
+                                            player.open(
+                                              Playlist(
+                                                medias: medias,
+                                              ),
+                                            );
                                           },
                                         ),
-                                        child: Text(
+                                        child: const Text(
                                           'Open into Player',
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 14.0,
                                           ),
                                         ),
@@ -294,12 +287,11 @@ class DartVLCExampleState extends State<DartVLCExample> {
                                       const SizedBox(width: 12.0),
                                       ElevatedButton(
                                         onPressed: () {
-                                          this.setState(
-                                              () => this.medias.clear());
+                                          setState(() => medias.clear());
                                         },
-                                        child: Text(
+                                        child: const Text(
                                           'Clear the list',
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             fontSize: 14.0,
                                           ),
                                         ),
@@ -333,24 +325,13 @@ class DartVLCExampleState extends State<DartVLCExample> {
                               ),
                               Slider(
                                 min: 0,
-                                max: this
-                                        .position
-                                        .duration
-                                        ?.inMilliseconds
-                                        .toDouble() ??
-                                    1.0,
-                                value: this
-                                        .position
-                                        .position
-                                        ?.inMilliseconds
-                                        .toDouble() ??
-                                    0.0,
-                                onChanged: (double position) =>
-                                    this.player.seek(
-                                          Duration(
-                                            milliseconds: position.toInt(),
-                                          ),
-                                        ),
+                                max: position.duration?.inMilliseconds.toDouble() ?? 1.0,
+                                value: position.position?.inMilliseconds.toDouble() ?? 0.0,
+                                onChanged: (double position) => player.seek(
+                                  Duration(
+                                    milliseconds: position.toInt(),
+                                  ),
+                                ),
                               ),
                               const Text('Event streams.'),
                               const Divider(
@@ -360,76 +341,40 @@ class DartVLCExampleState extends State<DartVLCExample> {
                               Table(
                                 children: [
                                   TableRow(
-                                    children: [
-                                      const Text('player.general.volume'),
-                                      Text('${this.general.volume}')
-                                    ],
+                                    children: [const Text('player.general.volume'), Text('${general.volume}')],
                                   ),
                                   TableRow(
-                                    children: [
-                                      const Text('player.general.rate'),
-                                      Text('${this.general.rate}')
-                                    ],
+                                    children: [const Text('player.general.rate'), Text('${general.rate}')],
                                   ),
                                   TableRow(
-                                    children: [
-                                      const Text('player.position.position'),
-                                      Text('${this.position.position}')
-                                    ],
+                                    children: [const Text('player.position.position'), Text('${position.position}')],
                                   ),
                                   TableRow(
-                                    children: [
-                                      const Text('player.position.duration'),
-                                      Text('${this.position.duration}')
-                                    ],
+                                    children: [const Text('player.position.duration'), Text('${position.duration}')],
                                   ),
                                   TableRow(
-                                    children: [
-                                      const Text('player.playback.isCompleted'),
-                                      Text('${this.playback.isCompleted}')
-                                    ],
+                                    children: [const Text('player.playback.isCompleted'), Text('${playback.isCompleted}')],
                                   ),
                                   TableRow(
-                                    children: [
-                                      const Text('player.playback.isPlaying'),
-                                      Text('${this.playback.isPlaying}')
-                                    ],
+                                    children: [const Text('player.playback.isPlaying'), Text('${playback.isPlaying}')],
                                   ),
                                   TableRow(
-                                    children: [
-                                      const Text('player.playback.isSeekable'),
-                                      Text('${this.playback.isSeekable}')
-                                    ],
+                                    children: [const Text('player.playback.isSeekable'), Text('${playback.isSeekable}')],
                                   ),
                                   TableRow(
-                                    children: [
-                                      const Text('player.current.index'),
-                                      Text('${this.current.index}')
-                                    ],
+                                    children: [const Text('player.current.index'), Text('${current.index}')],
                                   ),
                                   TableRow(
-                                    children: [
-                                      const Text('player.current.media'),
-                                      Text('${this.current.media}')
-                                    ],
+                                    children: [const Text('player.current.media'), Text('${current.media}')],
                                   ),
                                   TableRow(
-                                    children: [
-                                      const Text('player.current.medias'),
-                                      Text('${this.current.medias}')
-                                    ],
+                                    children: [const Text('player.current.medias'), Text('${current.medias}')],
                                   ),
                                   TableRow(
-                                    children: [
-                                      const Text('player.videoDimensions'),
-                                      Text('${this.videoDimensions}')
-                                    ],
+                                    children: [const Text('player.videoDimensions'), Text('$videoDimensions')],
                                   ),
                                   TableRow(
-                                    children: [
-                                      const Text('player.bufferingProgress'),
-                                      Text('${this.bufferingProgress}')
-                                    ],
+                                    children: [const Text('player.bufferingProgress'), Text('$bufferingProgress')],
                                   ),
                                 ],
                               ),
@@ -454,8 +399,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
                                     height: 12.0,
                                   ),
                                 ] +
-                                this
-                                    .devices
+                                devices
                                     .map(
                                       (device) => ListTile(
                                         title: Text(
@@ -470,8 +414,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
                                             fontSize: 14.0,
                                           ),
                                         ),
-                                        onTap: () =>
-                                            this.player.setDevice(device),
+                                        onTap: () => player.setDevice(device),
                                       ),
                                     )
                                     .toList(),
@@ -492,26 +435,25 @@ class DartVLCExampleState extends State<DartVLCExample> {
                                 children: [
                                   Expanded(
                                     child: TextField(
-                                      controller: this.metasController,
+                                      controller: metasController,
                                       cursorWidth: 1.0,
                                       autofocus: true,
                                       style: const TextStyle(
                                         fontSize: 14.0,
                                       ),
-                                      decoration: InputDecoration.collapsed(
-                                        hintStyle: const TextStyle(
+                                      decoration: const InputDecoration.collapsed(
+                                        hintStyle: TextStyle(
                                           fontSize: 14.0,
                                         ),
                                         hintText: 'Enter Media path.',
                                       ),
                                     ),
                                   ),
-                                  Container(
+                                  SizedBox(
                                     width: 152.0,
                                     child: DropdownButton<MediaType>(
-                                      value: this.mediaType,
-                                      onChanged: (mediaType) => this.setState(
-                                          () => this.mediaType = mediaType!),
+                                      value: mediaType,
+                                      onChanged: (mediaType) => setState(() => this.mediaType = mediaType!),
                                       items: [
                                         DropdownMenuItem<MediaType>(
                                           value: MediaType.file,
@@ -544,22 +486,21 @@ class DartVLCExampleState extends State<DartVLCExample> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(left: 16.0),
+                                    padding: const EdgeInsets.only(left: 16.0),
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        if (this.mediaType == MediaType.file) {
-                                          this.metasMedia = Media.file(
-                                            File(this.metasController.text),
+                                        if (mediaType == MediaType.file) {
+                                          metasMedia = Media.file(
+                                            File(metasController.text),
                                             parse: true,
                                           );
-                                        } else if (this.mediaType ==
-                                            MediaType.network) {
-                                          this.metasMedia = Media.network(
-                                            this.metasController.text,
+                                        } else if (mediaType == MediaType.network) {
+                                          metasMedia = Media.network(
+                                            metasController.text,
                                             parse: true,
                                           );
                                         }
-                                        this.setState(() {});
+                                        setState(() {});
                                       },
                                       child: const Text(
                                         'Parse',
@@ -579,8 +520,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
                                 color: Colors.transparent,
                               ),
                               Text(
-                                JsonEncoder.withIndent('    ')
-                                    .convert(this.metasMedia?.metas),
+                                const JsonEncoder.withIndent('    ').convert(metasMedia?.metas),
                               ),
                             ],
                           ),
@@ -626,7 +566,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () => this.player.play(),
+                  onPressed: () => player.play(),
                   child: const Text(
                     'play',
                     style: TextStyle(
@@ -636,7 +576,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
                 ),
                 const SizedBox(width: 12.0),
                 ElevatedButton(
-                  onPressed: () => this.player.pause(),
+                  onPressed: () => player.pause(),
                   child: const Text(
                     'pause',
                     style: TextStyle(
@@ -646,7 +586,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
                 ),
                 const SizedBox(width: 12.0),
                 ElevatedButton(
-                  onPressed: () => this.player.playOrPause(),
+                  onPressed: () => player.playOrPause(),
                   child: const Text(
                     'playOrPause',
                     style: TextStyle(
@@ -663,7 +603,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () => this.player.stop(),
+                  onPressed: () => player.stop(),
                   child: const Text(
                     'stop',
                     style: TextStyle(
@@ -673,7 +613,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
                 ),
                 const SizedBox(width: 12.0),
                 ElevatedButton(
-                  onPressed: () => this.player.next(),
+                  onPressed: () => player.next(),
                   child: const Text(
                     'next',
                     style: TextStyle(
@@ -683,7 +623,7 @@ class DartVLCExampleState extends State<DartVLCExample> {
                 ),
                 const SizedBox(width: 12.0),
                 ElevatedButton(
-                  onPressed: () => this.player.previous(),
+                  onPressed: () => player.previous(),
                   child: const Text(
                     'previous',
                     style: TextStyle(
@@ -708,10 +648,10 @@ class DartVLCExampleState extends State<DartVLCExample> {
             Slider(
               min: 0.0,
               max: 1.0,
-              value: this.player.general.volume,
+              value: player.general.volume,
               onChanged: (volume) {
-                this.player.setVolume(volume);
-                this.setState(() {});
+                player.setVolume(volume);
+                setState(() {});
               },
             ),
             const Text('Playback rate control.'),
@@ -722,10 +662,10 @@ class DartVLCExampleState extends State<DartVLCExample> {
             Slider(
               min: 0.5,
               max: 1.5,
-              value: this.player.general.rate,
+              value: player.general.rate,
               onChanged: (rate) {
-                this.player.setRate(rate);
-                this.setState(() {});
+                player.setRate(rate);
+                setState(() {});
               },
             ),
           ],
@@ -738,76 +678,73 @@ class DartVLCExampleState extends State<DartVLCExample> {
     return Card(
       elevation: 2.0,
       margin: const EdgeInsets.all(4.0),
-      child: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(left: 16.0, top: 16.0),
-              alignment: Alignment.topLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text('Playlist manipulation.'),
-                  Divider(
-                    height: 12.0,
-                    color: Colors.transparent,
-                  ),
-                  Divider(
-                    height: 12.0,
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: 456.0,
-              child: ReorderableListView(
-                shrinkWrap: true,
-                onReorder: (int initialIndex, int finalIndex) async {
-                  /// 🙏🙏🙏
-                  /// In the name of God,
-                  /// With all due respect,
-                  /// I ask all Flutter engineers to please fix this issue.
-                  /// Peace.
-                  /// 🙏🙏🙏
-                  ///
-                  /// Issue:
-                  /// https://github.com/flutter/flutter/issues/24786
-                  /// Prevention:
-                  /// https://stackoverflow.com/a/54164333/12825435
-                  ///
-                  if (finalIndex > this.current.medias.length)
-                    finalIndex = this.current.medias.length;
-                  if (initialIndex < finalIndex) finalIndex--;
-
-                  this.player.move(initialIndex, finalIndex);
-                  this.setState(() {});
-                },
-                scrollDirection: Axis.vertical,
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                children: List.generate(
-                  this.current.medias.length,
-                  (int index) => ListTile(
-                    key: Key(index.toString()),
-                    leading: Text(
-                      index.toString(),
-                      style: const TextStyle(fontSize: 14.0),
-                    ),
-                    title: Text(
-                      this.current.medias[index].resource,
-                      style: const TextStyle(fontSize: 14.0),
-                    ),
-                    subtitle: Text(
-                      this.current.medias[index].mediaType.toString(),
-                      style: const TextStyle(fontSize: 14.0),
-                    ),
-                  ),
-                  growable: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(left: 16.0, top: 16.0),
+            alignment: Alignment.topLeft,
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Playlist manipulation.'),
+                Divider(
+                  height: 12.0,
+                  color: Colors.transparent,
                 ),
+                Divider(
+                  height: 12.0,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 456.0,
+            child: ReorderableListView(
+              shrinkWrap: true,
+              onReorder: (int initialIndex, int finalIndex) async {
+                /// 🙏🙏🙏
+                /// In the name of God,
+                /// With all due respect,
+                /// I ask all Flutter engineers to please fix this issue.
+                /// Peace.
+                /// 🙏🙏🙏
+                ///
+                /// Issue:
+                /// https://github.com/flutter/flutter/issues/24786
+                /// Prevention:
+                /// https://stackoverflow.com/a/54164333/12825435
+                ///
+                if (finalIndex > current.medias.length) finalIndex = current.medias.length;
+                if (initialIndex < finalIndex) finalIndex--;
+
+                player.move(initialIndex, finalIndex);
+                setState(() {});
+              },
+              scrollDirection: Axis.vertical,
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              children: List.generate(
+                current.medias.length,
+                (int index) => ListTile(
+                  key: Key(index.toString()),
+                  leading: Text(
+                    index.toString(),
+                    style: const TextStyle(fontSize: 14.0),
+                  ),
+                  title: Text(
+                    current.medias[index].resource,
+                    style: const TextStyle(fontSize: 14.0),
+                  ),
+                  subtitle: Text(
+                    current.medias[index].mediaType.toString(),
+                    style: const TextStyle(fontSize: 14.0),
+                  ),
+                ),
+                growable: true,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

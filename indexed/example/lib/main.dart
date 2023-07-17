@@ -7,7 +7,6 @@
 // https://opensource.org/licenses/MIT.
 
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:indexed/indexed.dart';
 
@@ -26,7 +25,7 @@ class IndexPage extends StatefulWidget {
   const IndexPage({super.key});
 
   @override
-  _IndexPageState createState() => _IndexPageState();
+  State<IndexPage> createState() => _IndexPageState();
 }
 
 class _IndexPageState extends State<IndexPage> with TickerProviderStateMixin {
@@ -87,13 +86,12 @@ class _IndexPageState extends State<IndexPage> with TickerProviderStateMixin {
             onPressed: () {
               setState(() {
                 int rd = Random().nextInt(colors.length);
-                AnimationController _controller = AnimationController(
+                AnimationController controller = AnimationController(
                   duration: const Duration(milliseconds: 500),
                   vsync: this,
                 )..forward();
                 BoxDemo.boxes.add(
-                  BoxDemo(
-                      index: rd, color: colors[rd], controller: _controller),
+                  BoxDemo(index: rd, color: colors[rd], controller: controller),
                 );
               });
             },
@@ -172,8 +170,7 @@ class IndexedExtendsDemo extends AnimatedWidget implements IndexedInterface {
                   TextButton.icon(
                     onPressed: () {
                       boxDemo.controller.reverse();
-                      Future.delayed(const Duration(milliseconds: 500))
-                          .then((value) {
+                      Future.delayed(const Duration(milliseconds: 500)).then((value) {
                         BoxDemo.boxes.remove(boxDemo);
                         callback!();
                       });

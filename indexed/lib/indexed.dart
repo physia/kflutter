@@ -41,16 +41,16 @@ class Indexer extends Stack {
   }) : super(
           children: children
             ..sort((Widget a, Widget b) {
-              int _reverser = reversed ? -1 : 1;
-              int _aIndex = 1;
-              int _bIndex = 1;
+              int reverser = reversed ? -1 : 1;
+              int aIndex = 1;
+              int bIndex = 1;
               if (a is IndexedInterface) {
-                _aIndex = (a as IndexedInterface).index;
+                aIndex = (a as IndexedInterface).index;
               }
               if (b is IndexedInterface) {
-                _bIndex = (b as IndexedInterface).index;
+                bIndex = (b as IndexedInterface).index;
               }
-              return _aIndex - _bIndex * _reverser;
+              return aIndex - bIndex * reverser;
             }),
         );
 
@@ -68,9 +68,9 @@ class Indexer extends Stack {
         super(
           children: children
             ..sort((Widget a, Widget b) {
-              int _reverser = reversed ? -1 : 1;
+              int reverser = reversed ? -1 : 1;
               return shadow[children.indexOf(a)] -
-                  shadow[children.indexOf(b)] * _reverser;
+                  shadow[children.indexOf(b)] * reverser;
             }),
         );
 }
