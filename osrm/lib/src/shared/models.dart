@@ -49,7 +49,7 @@ class OsrmWaypoint extends OsrmModel<Map<String, dynamic>> {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'location': location != null ? [location!.$2, location!.$1] : null,
+      'location': location != null ? [location!.toCoordinateList()] : null,
       'distance': distance,
       'hint': hint,
       'nodes': nodes,
@@ -174,7 +174,7 @@ class OsrmLineString extends OsrmModel<Map<String, dynamic>>   {
   Map<String, dynamic> toMap() {
     return {
       'type': 'LineString',
-      'coordinates': coordinates.map((e) => [e.$1, e.$2]).toList(),
+      'coordinates': coordinates.map((e) => e.toCoordinateList()).toList(),
     };
   }
 }
@@ -406,7 +406,7 @@ class OsrmStepManeuver extends OsrmModel<Map<String, dynamic>> {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'location': location != null ? [location!.$2, location!.$1] : null,
+      'location': location != null ? location!.toCoordinateList() : null,
       'bearing_before': bearingBefore,
       'bearing_after': bearingAfter,
       'type': type,
@@ -460,7 +460,7 @@ class OsrmIntersection extends OsrmModel<Map<String, dynamic>> {
   @override
   Map<String, dynamic> toMap() {
     return {
-      'location': location != null ? [location!.$2, location!.$1] : null,
+      'location': location != null ? location!.toCoordinateList() : null,
       'bearings': bearings,
       'entry': entry,
       'in': in_,

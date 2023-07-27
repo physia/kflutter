@@ -356,13 +356,13 @@ abstract class OsrmRequest {
         assert(format == OsrmFormat.json, 'format must be json, so why i added it?, just for fun :) + may use it in the future');
 
   String get stringCoordinates => coordinates.map((c) {
-        return '${c.$2},${c.$1}';
+        return '${c.toLongLatCoordinateString()}';
       }).join(';');
 
   /// [inject] method to inject the parameters into the request url
   Uri inject(String server) {
     var urlToParse =
-        '$server/${service.toString().split('.').last}/$version/${profile.name}/${coordinates.map((e) => '${e.$1},${e.$2}').join(';')}';
+        '$server/${service.toString().split('.').last}/$version/${profile.name}/${coordinates.map((e) => e.toLongLatCoordinateString()).join(';')}';
     if (queryParameters.isNotEmpty) {
       urlToParse += '?';
       urlToParse +=

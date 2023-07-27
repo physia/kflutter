@@ -3,10 +3,10 @@ import '../../osrm.dart';
 /// [RouteRequest]
 /// Options for the route service.
 class RouteRequest extends OsrmRequest {
-  /// [RouteRequest] constructor.
   RouteRequest({
     super.version,
     super.profile,
+    /// List lat-lng
     required super.coordinates,
     super.format,
     super.parameters,

@@ -15,13 +15,27 @@ import '../../osrm.dart';
 /// Uri build(OsrmRequest options)
 typedef ServerBuildFn = Uri Function(OsrmRequest options);
 
+/// LongLat
 typedef OsrmCoordinate = (double,double);
 
+class OsrmLocation {
+  final double lat;
+  final double lng;
+  OsrmLocation({
+    required this.lat,
+    required this.lng,
+  });
+}
+
 extension OsrmCoordinateExtensions on OsrmCoordinate {
+  /// Long Lat
+  // ignore: prefer_interpolation_to_compose_strings
+  String toLongLatCoordinateString() => $2.toString()+','+$1.toString();
+  OsrmLocation toLocation() => OsrmLocation(lat:$1,lng:$2);
   List<double> toCoordinateList() => [$1,$2];
   Map<String,double> toCoordinateMap() => {
-    'latitude': $1,
-    'longitude': $2
+    'lat': $2,
+    'lng': $1
   };
 }
 
