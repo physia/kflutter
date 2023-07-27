@@ -40,3 +40,23 @@ final route = await osrm.route(
   ),
 );
 ```
+
+this package under development.
+
+## TODO
+(*) add 'Nearest' service
+(*) add 'Nearest' service tests
+(*) add 'Route' service
+(*) add 'Route' service tests
+( ) add 'Match' service
+( ) add 'Table' service
+( ) add 'trip' service
+( ) add 'Tile' service
+( ) integrate with flutter
+
+## Support/Sponcer this project
+contact me: <mohamadlounnas@gmail.com>
+
+**Coffee for my mind**
+<a href="https://www.buymeacoffee.com/mohamadlounnas"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=mohamadlounnas&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a>
+
