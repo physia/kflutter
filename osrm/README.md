@@ -1,5 +1,5 @@
 /// /Users/Shared/dev/opensource/dart/kflutter/osrm/docs/screenshot_2023-08-02.png
-<center><img src="docs/screenshot_2023-08-02.png"/><a href="https://www.buymeacoffee.com/mohamadlounnas"><img src="https://img.buymeacoffee.com/button-api/?text=Sponcer Project&emoji=&slug=mohamadlounnas&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a></center>
+<center><img src="doc/screenshot_2023-08-02.png"/><a href="https://www.buymeacoffee.com/mohamadlounnas"><img src="https://img.buymeacoffee.com/button-api/?text=Sponcer Project&emoji=&slug=mohamadlounnas&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a></center>
 
 # OSRM Dart Client
 [![pub package](https://img.shields.io/pub/v/osrm.svg)](https://pub.dartlang.org/packages/osrm)
