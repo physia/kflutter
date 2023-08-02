@@ -6,6 +6,7 @@ import 'package:osrm/osrm.dart';
 import 'dart:math' as math;
 // flutter_map
 import 'package:flutter_map/flutter_map.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MainApp());
@@ -15,7 +16,7 @@ class MainApp extends StatelessWidget {
   const MainApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
+    return MaterialApp(
       title: 'Flutter Map Osrm Example',
       theme: ThemeData(
         useMaterial3: true,
@@ -49,16 +50,17 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
 
   /// [distance] the distance between two coordinates [from] and [to]
   num distance = 0.0;
+
   /// [duration] the duration between two coordinates [from] and [to]
   num duration = 0.0;
 
   /// [getRoute] get the route between two coordinates [from] and [to]
   Future<void> getRoute() async {
     final osrm = Osrm(
-      // source: OsrmSource(
-      //   serverBuilder: OpenstreetmapServerBuilder().build,
-      // ),
-    );
+        // source: OsrmSource(
+        //   serverBuilder: OpenstreetmapServerBuilder().build,
+        // ),
+        );
     // get the route
     final options = RouteRequest(
       coordinates: [
@@ -70,7 +72,6 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
       // alternatives: OsrmAlternative.number(2),
       // annotations: OsrmAnnotation.true_,
       // steps: false,
-      
     );
     final route = await osrm.route(options);
     distance = route.routes.first.distance!;
@@ -95,26 +96,44 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
         children: [
           FlutterMap(
             options: MapOptions(
-              onTap: 
-                // use [isPairly] to switch between [from] and [to]
-                (_,point) {
-                  if (isPairly) {
-                    to = point;
-                  } else {
-                    from = point;
-                  }
-                  isPairly = !isPairly;
-                  setState(() {
-                    
-                  });
-                  getRoute();
-                },
+              onTap:
+                  // use [isPairly] to switch between [from] and [to]
+                  (_, point) {
+                if (isPairly) {
+                  to = point;
+                } else {
+                  from = point;
+                }
+                isPairly = !isPairly;
+                setState(() {});
+                getRoute();
+              },
               center: const LatLng(36.479960, 2.829099),
               zoom: 13.0,
             ),
+            nonRotatedChildren: [
+              RichAttributionWidget(
+                animationConfig:
+                    const ScaleRAWA(), // Or `FadeRAWA` as is default
+                attributions: [
+                  TextSourceAttribution(
+                    'OpenStreetMap contributors',
+                    onTap: () => launchUrl(
+                        Uri.parse('https://openstreetmap.org/copyright')),
+                  ),
+                  /// @mohamadlounnas
+                  TextSourceAttribution(
+                    'Mohamad Lounnas',
+                    onTap: () => launchUrl(
+                        Uri.parse('mailto:mohamadlounnas@gmail.com')),
+                  ),
+                ],
+              ),
+            ],
             children: [
               TileLayer(
-                urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                urlTemplate:
+                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 subdomains: const ['a', 'b', 'c'],
               ),
 
@@ -128,6 +147,7 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
                   ),
                 ],
               ),
+
               /// [MarkerLayer] draw the marker on the map
               MarkerLayer(
                 markers: [
@@ -149,6 +169,7 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
                       color: Colors.red,
                     ),
                   ),
+
                   /// in the middle of [points] list we draw the [Marker] shows the distance between [from] and [to]
                   if (points.isNotEmpty)
                     Marker(
@@ -178,9 +199,10 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
                 ],
               ),
 
-
+              // copy right text
             ],
           ),
+
           /// [Form] with two [TextFormField] to get the coordinates [from] and [to]
           Align(
             alignment: Alignment.topRight,
@@ -196,41 +218,38 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextFormField(
-                      initialValue: from.toSexagesimal(),
-                      onChanged: (value) {
-                        from = LatLng.fromSexagesimal(value);
-                        setState(() {});
-                      },
-                      decoration:  InputDecoration(
-                        prefixIcon: const Icon(Icons.location_on),
-                        prefix: const Text('From: '),
-                        border: const OutlineInputBorder().copyWith(
-                          borderSide: const BorderSide(
-                            color: Colors.grey,
+                        initialValue: from.toSexagesimal(),
+                        onChanged: (value) {
+                          from = LatLng.fromSexagesimal(value);
+                          setState(() {});
+                        },
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.location_on),
+                          prefix: const Text('From: '),
+                          border: const OutlineInputBorder().copyWith(
+                            borderSide: const BorderSide(
+                              color: Colors.grey,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      )
-                    ),
+                        )),
                     const SizedBox(height: 20),
                     TextFormField(
-                      initialValue: to.toSexagesimal(),
-                      onChanged: (value) {
-                        to = LatLng.fromSexagesimal(value);
-                        setState(() {});
-                      },
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.location_on),
-                        prefix: const Text('To: '),
-                        border: const OutlineInputBorder().copyWith(
-                          borderSide: const BorderSide(
-                            color: Colors.grey,
+                        initialValue: to.toSexagesimal(),
+                        onChanged: (value) {
+                          to = LatLng.fromSexagesimal(value);
+                          setState(() {});
+                        },
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.location_on),
+                          prefix: const Text('To: '),
+                          border: const OutlineInputBorder().copyWith(
+                            borderSide: const BorderSide(
+                              color: Colors.grey,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      )
-                    ),
-                    
+                        )),
                     const SizedBox(height: 20),
                     Row(
                       children: [
@@ -259,7 +278,6 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
               ),
             ),
           ),
-          
         ],
       ),
     );

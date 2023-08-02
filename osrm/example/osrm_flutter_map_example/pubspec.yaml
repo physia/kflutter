@@ -13,6 +13,8 @@ dependencies:
   latlong2: ^0.9.0
   osrm:
     path: ../../
+  cupertino_icons:
+  url_launcher:
 
 dev_dependencies:
   flutter_test:
