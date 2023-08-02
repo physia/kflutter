@@ -1,5 +1,13 @@
-# OSRM
+/// /Users/Shared/dev/opensource/dart/kflutter/osrm/docs/screenshot_2023-08-02.png
+<center><img src="docs/screenshot_2023-08-02.png"/><a href="https://www.buymeacoffee.com/mohamadlounnas"><img src="https://img.buymeacoffee.com/button-api/?text=Sponcer Project&emoji=&slug=mohamadlounnas&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a></center>
+
+# OSRM Dart Client
+[![pub package](https://img.shields.io/pub/v/osrm.svg)](https://pub.dartlang.org/packages/osrm)
+![pub package](https://img.shields.io/github/license/physia/kflutter.svg)
+
 This package is the OSRM client for Dart and Flutter. It provides a simple and easy-to-use interface for communicating with an OSRM server and retrieving routing and other information.
+
+and of course, because it's written in Dart, it can be used in any platform that supports Dart.
 
 To use this package, simply add it to your `pubspec.yaml` file:
 dependencies:
@@ -16,14 +24,14 @@ NearestResponse response = await osrm.nearest(
   ),
 );
 ```
-#### routing (direction) service
+#### routing (directions in GoogleMap) service
 ```dart
 final route = await osrm.route(
   RouteRequest(
     coordinates: [
-      (-0.1234, 51.1234),
-      (-0.1234, 51.1234),
-      (-0.1234, 51.1234),
+      (-0.1234, 51.1234), // Point A
+      (-0.1234, 51.1234), // Point B
+      (-0.1234, 51.1234), // Point C
     ],
     alternatives: OsrmAlternative.true_,
     steps: true,
@@ -32,6 +40,7 @@ final route = await osrm.route(
     continueStraight: OsrmContinueStraight.true_,
     format: OsrmFormat.json,
     waypoints: [
+      /// Waypoints are listed in order of visit
       OsrmWaypoint(
         distance: 0.0,
         location: (-0.1234, 51.1234),
@@ -44,19 +53,27 @@ final route = await osrm.route(
 this package under development.
 
 ## TODO
-(*) add 'Nearest' service
-(*) add 'Nearest' service tests
-(*) add 'Route' service
-(*) add 'Route' service tests
-( ) add 'Match' service
-( ) add 'Table' service
-( ) add 'trip' service
-( ) add 'Tile' service
-( ) integrate with flutter
+- [x] add **Nearest** service
+- [x] add **Nearest** service tests
+- [x] add **Route** service
+- [x] add **Route** service tests
+- [x] add dart example
+- [x] add flutter example
+- [ ] add **Match** service
+- [ ] add **Table** service
+- [ ] add **trip** service
+- [ ] add **Tile** service
+- [ ] integrate with flutter ()
 
-## Support/Sponcer this project
-contact me: <mohamadlounnas@gmail.com>
+## Support/Sponcer/More?
+any contrubutions/support are welcome :)
 
-**Coffee for my mind**
-<a href="https://www.buymeacoffee.com/mohamadlounnas"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=mohamadlounnas&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a>
+Contact me: <mohamadlounnas@gmail.com>
+
+Github: [@mohamadlounnas](github.com/mohamadlounnas)
+
+Linkedin: [@mohamadlounnas](https://www.linkedin.com/in/mohamadlounnas/)
+
+
+
 

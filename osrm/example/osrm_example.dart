@@ -8,16 +8,15 @@ void main() async {
   // get the route
   final options =  RouteRequest(
       coordinates: [
-      // LatLng
-      (36.479960, 2.829099),
-      (36.473662, 2.825987),
+      // LngLat
+      (2.829099,36.479960),
+      (2.825987,36.473662),
     ],
     geometries: OsrmGeometries.geojson,
     overview: OsrmOverview.full,
     alternatives: OsrmAlternative.number(2),
     annotations: OsrmAnnotation.true_,
     steps: true,
-
   );
   print(osrm.source.serverBuilder(options));
   final route = await osrm.route(options);

@@ -1,3 +1,7 @@
+// ignore_for_file: constant_identifier_names
+
+import 'dart:math';
+
 import '../osrm.dart';
 import 'shared/core.dart';
 
@@ -9,8 +13,12 @@ abstract class OsrmServerBuilder {
   Uri build(OsrmRequest options);
 
   /// [defaultBuilder] server for development
-  static Uri defaultBuild(OsrmRequest options) =>
-      ProjectOsrmServerBuilder().build(options);
+  static Uri defaultBuild(OsrmRequest options) {
+    /// randomly choice ProjectOsrmServerBuilder().build(options) or OpenstreetmapServerBuilder().build(options)
+    return Random().nextBool()
+        ? ProjectOsrmServerBuilder().build(options)
+        : OpenstreetmapServerBuilder().build(options);
+  }
 }
 
 /// [ProjectOsrmServerBuilder] class for the project-osrm server builder
@@ -98,7 +106,7 @@ class MapboxServerBuilder extends OsrmServerBuilder {
     var coords =
         options.stringCoordinates.replaceAll(',', '%2C').replaceAll(';', '%3B');
     var urlToParse =
-        '$baseUrl/${services[options.service.index]}/v5/mapbox/${profiles[options.profile.index]}/${coords}';
+        '$baseUrl/${services[options.service.index]}/v5/mapbox/${profiles[options.profile.index]}/$coords';
     urlToParse += '?';
     urlToParse +=
         queryParameters.entries.map((e) => '${e.key}=${e.value}').join('&');

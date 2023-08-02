@@ -36,7 +36,7 @@ class OsrmWaypoint extends OsrmModel<Map<String, dynamic>> {
   factory OsrmWaypoint.fromMap(Map<String, dynamic> json) {
     return OsrmWaypoint(
       name: json['name'],
-      location: json['location'] != null ? (json['location'][1], json['location'][0]) : null,
+      location: json['location'] != null ? (json['location'][0], json['location'][1]) : null,
       distance: json['distance'],
       hint: json['hint'],
       nodes: json['nodes'] != null ? (json['nodes'] as List).map((e) => e as num).toList() : null,
@@ -262,8 +262,10 @@ class OsrmRouteLeg extends OsrmModel<Map<String, dynamic>> {
       distance: json['distance'],
       duration: json['duration'],
       weight: json['weight'],
-      summary: json['summary'],
-      steps: (json['steps'] as List).map((e) => OsrmRouteStep.fromMap(e)).toList(),
+      summary: json['summary'].toString(),
+      steps: (json['steps'] as List).map((e){
+        return OsrmRouteStep.fromMap(e);
+      }).toList(),
     );
   }
 
@@ -363,7 +365,7 @@ class OsrmStepManeuver extends OsrmModel<Map<String, dynamic>> {
   /// [modifier] An optional string indicating the direction change of the maneuver.
   final String? modifier;
   /// [exit] An optional integer indicating the exit number or name of the roundabout exit.
-  final String? exit;
+  final num? exit;
   /// [instruction] A string indicating the verbal instruction to be announced just before the maneuver.
   final String? instruction;
   /// [streetName] A string indicating the name of the street to turn onto in order to complete the maneuver.
@@ -389,7 +391,7 @@ class OsrmStepManeuver extends OsrmModel<Map<String, dynamic>> {
   /// [fromMap] method to get the [OsrmStepManeuver] from a json map
   factory OsrmStepManeuver.fromMap(Map<String, dynamic> json) {
     return OsrmStepManeuver(
-      location: json['location'] != null ? (json['location'][1], json['location'][0]) : null,
+      location: json['location'] != null ? (json['location'][0], json['location'][1]) : null,
       bearingBefore: json['bearing_before'],
       bearingAfter: json['bearing_after'],
       type: json['type'],
@@ -447,7 +449,7 @@ class OsrmIntersection extends OsrmModel<Map<String, dynamic>> {
   /// [fromMap] method to get the [OsrmIntersection] from a json map
   factory OsrmIntersection.fromMap(Map<String, dynamic> json) {
     return OsrmIntersection(
-      location: json['location'] != null ? (json['location'][1], json['location'][0]) : null,
+      location: json['location'] != null ? (json['location'][0], json['location'][1]) : null,
       bearings: json['bearings'] != null ? (json['bearings'] as List).map((e) => e as num).toList() : null,
       entry: json['entry'] != null ? (json['entry'] as List).map((e) => e as bool).toList() : null,
       in_: json['in'],

@@ -55,6 +55,7 @@ import 'src/shared/core.dart';
 export 'src/shared/core.dart';
 export 'src/shared/models.dart';
 export 'src/shared/utils.dart';
+export 'src/builders.dart';
 
 // Services
 export 'src/services/nearest.dart';
@@ -141,64 +142,6 @@ class Osrm {
     return RouteResponse.fromMap(response);
   }
 }
-
-/// [Osrm.nearest] 
-/// If you encounter any issues or have any questions, please consult the Project-OSRM documentation or open an issue on the Project-OSRM GitHub repository.
-/// Snaps a coordinate to the street network and returns the nearest n matches.
-/// Parameters:
-/// - coordinates: array of Location objects
-/// - number: number of nearest segments that should be returned
-/// 
-/// Examples:
-/// ```curl
-/// curl "http://router.project-osrm.org/nearest/v1/driving/-0.1234,51.1234?number=3"
-/// ```
-/// ```dart
-/// final nearest = await osrm.nearest(
-///   NearestOptions(
-///    coordinates: [
-///     Location(latitude: 52.4224, longitude: 13.333086),
-///     Location(latitude: 52.4224, longitude: 13.333086),
-///     Location(latitude: 52.4224, longitude: 13.333086),
-///   ],
-///   number: 3,
-/// );
-/// ```
-
-
-/// [Osrm.route]
-/// Finds the fastest route between coordinates in the supplied order.
-/// Template: /route/v1/{profile}/{coordinates}?alternatives={true|false|number}&steps={true|false}&geometries={polyline|polyline6|geojson}&overview={full|simplified|false}&annotations={true|false}
-/// Parameters:
-/// - coordinates: array of Location objects
-/// - alternatives: search for alternative routes and return as well
-/// - steps: return route steps for each route leg
-/// - annotations: return annotations for each route leg for duration, nodes, distance, weight, datasources, speed
-/// - geometries: return route geometry as polyline or geojson
-/// - overview: add overview geometry either full, simplified according to highest zoom level it could be display on, or not at all
-/// - continueStraight: forces the route to keep going straight at waypoints constraining uturns there even if it would be faster
-/// Examples:
-/// ```curl
-/// curl "http://router.project-osrm.org/route/v1/driving/13.388860,52.517037;13.385983,52.496891?steps=true&alternatives=true"
-/// ```
-/// ```dart
-/// final route = await osrm.route(
-///   RouteOptions(
-///     /// List<OsmCoordinate>
-///     coordinates: [ 
-///       (52.124, 13.333006),
-///       (52.4424, 13.3326),
-///       (52.224, 13.1330086),
-///     ],
-///     alternatives: true,
-///     steps: true,
-///     annotations: true,
-///     geometries: OsrmGeometries.geojson,
-///     overview: OsrmOverview.full,
-///     continueStraight: true,
-///  ),
-/// );
-/// ```
 
 /// [Osrm.match] 
 /// Map matching matches/snaps given GPS points to the road network in the most plausible way.

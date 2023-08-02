@@ -30,12 +30,12 @@ class OsrmLocation {
 extension OsrmCoordinateExtensions on OsrmCoordinate {
   /// Long Lat
   // ignore: prefer_interpolation_to_compose_strings
-  String toLongLatCoordinateString() => $2.toString()+','+$1.toString();
-  OsrmLocation toLocation() => OsrmLocation(lat:$1,lng:$2);
+  String toLongLatCoordinateString() => $1.toString()+','+$2.toString();
+  OsrmLocation toLocation() => OsrmLocation(lat:$2,lng:$1);
   List<double> toCoordinateList() => [$1,$2];
   Map<String,double> toCoordinateMap() => {
+    'lng': $1,
     'lat': $2,
-    'lng': $1
   };
 }
 

@@ -31,7 +31,6 @@ enum OsrmRequestProfile {
   // traffic;
 
   // override name getter
-  @override
   String get name {
     switch (this) {
       case OsrmRequestProfile.car:
@@ -244,7 +243,7 @@ class OsrmSource {
   OsrmSource({
     Client? client,
     Uri Function(OsrmRequest options)? serverBuilder,
-    this.timeout = const Duration(seconds: 10),
+    this.timeout = const Duration(seconds: 20),
   })  : serverBuilder = serverBuilder ?? OsrmServerBuilder.defaultBuild,
         client = client ?? Client();
 
@@ -257,6 +256,7 @@ class OsrmSource {
           'Content-Type': 'application/json; charset=utf-8',
         },
       ).timeout(timeout);
+      // CancellableOperation? operation;
       if (result.statusCode == 200) {
         return parseResponse(result.body);
       } else if (result.statusCode == 400) {
@@ -267,9 +267,11 @@ class OsrmSource {
         );
       }
       throw Exception('Invalid response code: ${result.statusCode}');
-    } on OsrmResponseException catch (e) {
+    // ignore: unused_catch_clause, no_leading_underscores_for_local_identifiers
+    } on OsrmResponseException catch (_e) {
       rethrow;
-    } on Exception catch (e) {
+    // ignore: unused_catch_clause, no_leading_underscores_for_local_identifiers
+    } on Exception catch (_e) {
       rethrow;
     }
   }
@@ -278,7 +280,6 @@ class OsrmSource {
   // /// if error occurs, the method should throw [OsrmResponseException]
   // /// if other error occurs, the method should throw [Exception]
   // Future<OsrmResponse> request(OsrmOptions options);
-
   /// [parseResponse] method to parse the response
   Map<String, dynamic> parseResponse(String response) {
     final map = jsonDecode(response);
@@ -320,7 +321,7 @@ class OsrmGeneralRequest extends OsrmRequest {
     super.format,
     super.parameters,
   });
-  
+
   @override
   Map<String, dynamic> get extraQueryParameters => const {};
 }
@@ -352,11 +353,12 @@ abstract class OsrmRequest {
     required this.coordinates,
     this.format = OsrmFormat.json,
     this.parameters = const OsrmParameters(),
-  }): // make sure this.format is always json
-        assert(format == OsrmFormat.json, 'format must be json, so why i added it?, just for fun :) + may use it in the future');
+  }) : // make sure this.format is always json
+        assert(format == OsrmFormat.json,
+            'format must be json, so why i added it?, just for fun :) + may use it in the future');
 
   String get stringCoordinates => coordinates.map((c) {
-        return '${c.toLongLatCoordinateString()}';
+        return c.toLongLatCoordinateString();
       }).join(';');
 
   /// [inject] method to inject the parameters into the request url
@@ -372,9 +374,9 @@ abstract class OsrmRequest {
   }
 
   Map<String, dynamic> get queryParameters => {
-    ...(parameters?.toMap() ?? const {}),
-    ...extraQueryParameters,
-  };
+        ...(parameters?.toMap() ?? const {}),
+        ...extraQueryParameters,
+      };
 
   /// [extraQueryParameters] method to get the extra parameters of the request
   Map<String, dynamic> get extraQueryParameters;
