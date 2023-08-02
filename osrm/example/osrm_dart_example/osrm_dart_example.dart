@@ -1,6 +1,4 @@
 import 'package:osrm/osrm.dart';
-import 'dart:io';
-import 'dart:math' as math;
 
 /// how to use the OSRM package to get a route between two coordinates.
 void main() async {

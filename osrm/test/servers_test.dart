@@ -1,4 +1,3 @@
-import 'package:osrm/src/builders.dart';
 import 'package:test/test.dart';
 import 'package:osrm/osrm.dart';
 

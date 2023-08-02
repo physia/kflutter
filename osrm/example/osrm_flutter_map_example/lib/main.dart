@@ -1,8 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 // osrm
 import 'package:osrm/osrm.dart';
-import 'dart:io';
 import 'dart:math' as math;
 // flutter_map
 import 'package:flutter_map/flutter_map.dart';
@@ -21,7 +21,7 @@ class MainApp extends StatelessWidget {
         useMaterial3: true,
         primarySwatch: Colors.teal,
       ),
-      home: FlutterMapOsrmExample(),
+      home: const FlutterMapOsrmExample(),
     );
   }
 }
@@ -79,7 +79,9 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
       var location = e.toLocation();
       return LatLng(location.lat, location.lng);
     }).toList();
-    print(points);
+    if (kDebugMode) {
+      print(points);
+    }
     setState(() {});
   }
 
@@ -113,7 +115,7 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
             children: [
               TileLayer(
                 urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                subdomains: ['a', 'b', 'c'],
+                subdomains: const ['a', 'b', 'c'],
               ),
 
               /// [PolylineLayer] draw the route between two coordinates [from] and [to]
@@ -199,18 +201,18 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
                         from = LatLng.fromSexagesimal(value);
                         setState(() {});
                       },
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.location_on),
-                        prefix: Text('From: '),
-                        border: OutlineInputBorder().copyWith(
-                          borderSide: BorderSide(
+                      decoration:  InputDecoration(
+                        prefixIcon: const Icon(Icons.location_on),
+                        prefix: const Text('From: '),
+                        border: const OutlineInputBorder().copyWith(
+                          borderSide: const BorderSide(
                             color: Colors.grey,
                           ),
                           borderRadius: BorderRadius.circular(10),
                         ),
                       )
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     TextFormField(
                       initialValue: to.toSexagesimal(),
                       onChanged: (value) {
@@ -218,10 +220,10 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
                         setState(() {});
                       },
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.location_on),
-                        prefix: Text('To: '),
-                        border: OutlineInputBorder().copyWith(
-                          borderSide: BorderSide(
+                        prefixIcon: const Icon(Icons.location_on),
+                        prefix: const Text('To: '),
+                        border: const OutlineInputBorder().copyWith(
+                          borderSide: const BorderSide(
                             color: Colors.grey,
                           ),
                           borderRadius: BorderRadius.circular(10),

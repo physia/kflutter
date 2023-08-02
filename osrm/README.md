@@ -1,14 +1,22 @@
-/// /Users/Shared/dev/opensource/dart/kflutter/osrm/docs/screenshot_2023-08-02.png
-<center><img src="doc/screenshot_2023-08-02.png"/><a href="https://www.buymeacoffee.com/mohamadlounnas"><img src="https://img.buymeacoffee.com/button-api/?text=Sponcer Project&emoji=&slug=mohamadlounnas&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a></center>
+<!-- <center><img width="1026" alt="image" src="https://github.com/edumeet/edumeet-ansible/assets/22839194/9b092913-ddb3-4ded-b35e-ffdf51bba5ea"><a href="https://www.buymeacoffee.com/mohamadlounnas"><img src="https://img.buymeacoffee.com/button-api/?text=Sponcer Project&emoji=&slug=mohamadlounnas&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a></center> -->
+<p align="center">
+  <img width="1026" alt="image" src="https://github.com/edumeet/edumeet-ansible/assets/22839194/9b092913-ddb3-4ded-b35e-ffdf51bba5ea">
+</p>
 
-# OSRM Dart Client
+# OSRM Dart Client (Documentation inProgress)
 [![pub package](https://img.shields.io/pub/v/osrm.svg)](https://pub.dartlang.org/packages/osrm)
 ![pub package](https://img.shields.io/github/license/physia/kflutter.svg)
+[![Pub Version](https://img.shields.io/pub/v/osrm?color=blueviolet)](https://pub.dev/packages/osrm)
+[![popularity](https://img.shields.io/pub/popularity/osrm?logo=dart)](https://pub.dev/packages/osrm/score)
+[![likes](https://img.shields.io/pub/likes/osrm?logo=dart)](https://pub.dev/packages/osrm/score)
 
 This package is the OSRM client for Dart and Flutter. It provides a simple and easy-to-use interface for communicating with an OSRM server and retrieving routing and other information.
 
 and of course, because it's written in Dart, it can be used in any platform that supports Dart.
 
+<a href="https://www.buymeacoffee.com/mohamadlounnas"><img src="https://img.buymeacoffee.com/button-api/?text=Sponsor This Project&emoji=&slug=mohamadlounnas&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a>
+
+## Installation
 To use this package, simply add it to your `pubspec.yaml` file:
 dependencies:
     osrm:

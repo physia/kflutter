@@ -1,3 +1,9 @@
+# 0.0.5
+- update documentation
+# 0.0.4
+- update documentation
+# 0.0.3
+- update documentation
 # 0.0.2
 - add flutter example
 - fix some bugs

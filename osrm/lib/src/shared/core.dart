@@ -1,11 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:osrm/src/builders.dart';
 import 'package:recase/recase.dart';
 
 import '../../osrm.dart';
-import 'utils.dart';
 
 /// [OsrmService] enum for the service to use for the request
 enum OsrmService {
