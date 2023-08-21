@@ -37,11 +37,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var player = Player.create(
-      media: PlayerMedia.network("https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3"), autoPlay: true)
+      media: PlayerMedia.network(
+          "https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3"),
+      autoPlay: true)
     ..init();
-  final _loadFromNetworkController =
-      TextEditingController(text: "https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3");
-  final _loadFromAssetController = TextEditingController(text: "assets/Introducing_flutter.mp3");
+  final _loadFromNetworkController = TextEditingController(
+      text:
+          "https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3");
+  final _loadFromAssetController =
+      TextEditingController(text: "assets/Introducing_flutter.mp3");
   @override
   void initState() {
     super.initState();
@@ -74,18 +78,16 @@ class _MyAppState extends State<MyApp> {
             title: const Text("Load from network"),
             subtitle: TextField(
               controller: _loadFromNetworkController,
-              decoration: const InputDecoration(hintText: "URL of the media to load"),
+              decoration:
+                  const InputDecoration(hintText: "URL of the media to load"),
             ),
             trailing: IconButton(
               icon: const Icon(Icons.play_arrow),
-              onPressed: () {
-                setState(() {
-                  player.dispose();
-                  player = Player.create(
-                    media: PlayerMedia.network("https://physia.github.io/kflutter/kplayer/online_example/assets/assets/Introducing_flutter.mp3"),
-                    autoPlay: true,
-                  )..init();
-                });
+              onPressed: () async {
+                await player.setMedia(
+                    PlayerMedia.network(_loadFromNetworkController.text));
+                await player.replay();
+
               },
             ),
           ),
@@ -100,17 +102,11 @@ class _MyAppState extends State<MyApp> {
             ),
             trailing: IconButton(
               icon: const Icon(Icons.play_arrow),
-              onPressed: () {
-                setState(() {
-                  player.dispose();
-                  for (var player in PlayerController.players) {
-                    player.pause();
-                  }
-                  player = Player.create(
-                    media: PlayerMedia.asset(_loadFromAssetController.text),
-                    autoPlay: true,
-                  )..init();
-                });
+              onPressed: () async {
+                PlayerController.pauseAll();
+                await player
+                    .setMedia(PlayerMedia.asset(_loadFromAssetController.text));
+                await player.replay();
               },
             ),
           ),
@@ -122,17 +118,18 @@ class _MyAppState extends State<MyApp> {
               ignoring: PlatformEnv.isWeb,
               child: ListTile(
                 leading: const Icon(Icons.folder),
-                title: Text("Load from file${PlatformEnv.isWeb ? " (Web not sopported currently)" : ""}"),
+                title: Text(
+                    "Load from file${PlatformEnv.isWeb ? " (Web not sopported currently)" : ""}"),
                 trailing: IconButton(
                   icon: const Icon(Icons.play_arrow),
                   onPressed: () async {
-                    FilePickerResult? result = await FilePicker.platform.pickFiles();
+                    FilePickerResult? result = await FilePicker.platform
+                        .pickFiles(type: FileType.audio);
 
                     if (result != null) {
-                      setState(() {
-                        player.dispose();
-                        player = Player.create(media: PlayerMedia.file(result.files.single.path!))..init();
-                      });
+                      await player.setMedia(
+                          PlayerMedia.file(result.files.single.path!));
+                      await player.replay();
                     }
                   },
                 ),
@@ -144,7 +141,8 @@ class _MyAppState extends State<MyApp> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: DefaultTextStyle(
-              style: const TextStyle(fontSize: 11, color: Color.fromARGB(166, 177, 177, 177)),
+              style: const TextStyle(
+                  fontSize: 11, color: Color.fromARGB(166, 177, 177, 177)),
               child: StreamBuilder<PlayerEvent>(
                   stream: player.streams.events,
                   builder: (context, snapshot) {
@@ -167,46 +165,68 @@ class _MyAppState extends State<MyApp> {
                           },
                           children: [
                             TableRow(children: [
-                              const Text("Duration", style: TextStyle(fontWeight: FontWeight.bold)),
+                              const Text("Duration",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               Text(player.duration.toString()),
                             ]),
                             TableRow(children: [
-                              const Text("Position", style: TextStyle(fontWeight: FontWeight.bold)),
+                              const Text("Position",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               Text(player.position.toString()),
                             ]),
                             TableRow(children: [
-                              const Text("Volume", style: TextStyle(fontWeight: FontWeight.bold)),
+                              const Text("Volume",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               Text(player.volume.toString()),
                             ]),
                             TableRow(children: [
-                              const Text("Speed", style: TextStyle(fontWeight: FontWeight.bold)),
+                              const Text("Speed",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               Text(player.speed.toString()),
                             ]),
                             TableRow(children: [
-                              const Text("Loop", style: TextStyle(fontWeight: FontWeight.bold)),
+                              const Text("Loop",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               Text(player.loop.toString()),
                             ]),
                             TableRow(children: [
-                              const Text("Status", style: TextStyle(fontWeight: FontWeight.bold)),
+                              const Text("Status",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               Text(player.status.toString()),
                             ]),
                             TableRow(children: [
-                              const Text("Media type", style: TextStyle(fontWeight: FontWeight.bold)),
+                              const Text("Media type",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               Text(player.media.type.toString()),
                             ]),
                             TableRow(children: [
-                              const Text("Media resource", style: TextStyle(fontWeight: FontWeight.bold)),
+                              const Text("Media resource",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               Text(player.media.resource.toString()),
                             ]),
                             TableRow(children: [
-                              const Text("Platform Adaptive Player", style: TextStyle(fontWeight: FontWeight.bold)),
+                              const Text("Platform Adaptive Player",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               // table display the platform adaptive player from the map Player.platforms
                               Table(
-                                border: TableBorder.all(width: 1, color: Colors.grey.withOpacity(0.5)),
+                                border: TableBorder.all(
+                                    width: 1,
+                                    color: Colors.grey.withOpacity(0.5)),
                                 children: [
                                   for (var platform in Player.platforms.entries)
                                     TableRow(children: [
-                                      Text("${platform.key}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                                      Text("${platform.key}",
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold)),
                                       Text("${platform.value?.name}"),
                                     ]),
                                 ],

@@ -195,18 +195,18 @@ packages:
     dependency: "direct main"
     description:
       name: kplayer_platform_interface
-      sha256: ea3eb152e6559a625d03943de676c52dd9e83d7625af07fef59c1d86947b5fcb
+      sha256: "60ec85428976e58b8d27612f1adaffb35097eebb0451c31fc6625a5f34cd5e25"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.1"
+    version: "0.4.2"
   kplayer_with_audioplayers:
     dependency: "direct main"
     description:
       name: kplayer_with_audioplayers
-      sha256: "4c553cc9b3c5c2e16f41eeef91e9da77b0626068019f6c6ccb619357161514f5"
+      sha256: dd9c13281da52caa9f4ea2c79382e2e4931a7b4f26f5eed1b240a2be56cedb4f
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.1"
+    version: "0.4.2"
   lints:
     dependency: transitive
     description:

@@ -206,7 +206,7 @@ check the repository on github (<https://github.com/physia/kflutter/tree/main/kp
 
 ## Check list
 
-- [x] add `disposeAll`
+- [x] add `disposeAll`, `pauseAll`, `playAll`
 - [x] add `setMedia`
 - [x] replace setters with async methods
 - [x] add more widget

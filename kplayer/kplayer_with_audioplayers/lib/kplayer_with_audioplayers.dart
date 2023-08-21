@@ -6,14 +6,13 @@ export 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 
 class Player extends PlayerController {
   Player({
-    int? id,
-    required PlayerMedia media,
+    super.id,
+    required super.media,
     bool? autoPlay,
     bool? once,
     bool? loop,
   })  : player = audioplayers.AudioPlayer(),
         super(
-            media: media,
             autoPlay: autoPlay ?? true,
             once: once ?? false,
             loop: loop ?? false) {
@@ -39,7 +38,7 @@ class Player extends PlayerController {
   }
 
   @override
-  @Deprecated("use setStatus instead")
+  @Deprecated("use setStatus instead, will be removed in 1.0.0")
   set status(PlayerStatus status) {
     notify(PlayerEvent.status);
     _status = status;
@@ -105,10 +104,8 @@ class Player extends PlayerController {
   @override
   Future<void> play() async {
     await notify(PlayerEvent.play);
-    if (!playing) {
-      _status = PlayerStatus.playing;
-      await player.resume();
-    }
+    _status = PlayerStatus.playing;
+    await player.resume();
   }
 
   @override
@@ -133,7 +130,7 @@ class Player extends PlayerController {
   }
 
   @override
-  @Deprecated("use setPosition instead")
+  @Deprecated("use setPosition instead, will be removed in 1.0.0")
   Future<void> seek(Duration position) async {
     await setPosition(position);
   }
@@ -165,7 +162,7 @@ class Player extends PlayerController {
 
   // deprecated
   @override
-  @Deprecated("use setSpeed instead")
+  @Deprecated("use ``setSpeed`` instead, will be removed in 1.0.0")
   set speed(double speed) {
     setSpeed(speed);
   }
@@ -180,7 +177,7 @@ class Player extends PlayerController {
   }
 
   @override
-  @Deprecated("use setVolume instead")
+  @Deprecated("use ``setVolume`` instead, will be removed in 1.0.0")
   set volume(double volume) {
     setVolume(volume);
   }
@@ -195,7 +192,7 @@ class Player extends PlayerController {
   }
 
   @override
-  @Deprecated("use setLoop instead")
+  @Deprecated("use ``setLoop`` instead, will be removed in 1.0.0")
   set loop(bool loop) {
     setLoop(loop);
   }
@@ -208,14 +205,15 @@ class Player extends PlayerController {
   }
 
   @override
-  @Deprecated(
-      "use setLoop instead, No longer supported and will be removed in the next major version")
+  @Deprecated("use ``setLoop`` instead, will be removed in 1.0.0")
   set position(Duration position) {
     setPosition(position);
   }
 
   @override
   Future<void> setMedia(PlayerMedia media) async {
+    await stop();
+    await notify(PlayerEvent.media);
     audioplayers.Source apMedia;
     if (media.type == PlayerMediaType.network) {
       apMedia = audioplayers.UrlSource(media.resource);

@@ -20,6 +20,7 @@ dependencies:
   # cupertino_icons: ^1.0.2
   file_picker: ^5.3.2
   kplayer_widgets:
+    path: ../../kplayer_widgets
   # universal_io:
 
 

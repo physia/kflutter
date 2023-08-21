@@ -72,15 +72,18 @@ enum PlayerEvent {
   /// on buffering.
   buffering,
 
+  /// seting media.
+  media,
+
   /// once changed.
   once,
 }
 
 /// a Player Statuses enum
 enum PlayerStatus {
-  // created,
-  // inited,
-  // ready,
+  created,
+  inited,
+  ready,
   loading,
   buffering,
   playing,
@@ -277,6 +280,33 @@ abstract class PlayerController {
     players.clear();
   }
 
+  /// [pauseAll] pause all the players
+  static void pauseAll() {
+    for (var player in players) {
+      if (!player.disposed) {
+        player.pause();
+      }
+    }
+  }
+
+  /// [playAll] play all the players
+  static void playAll() {
+    for (var player in players) {
+      if (!player.disposed) {
+        player.play();
+      }
+    }
+  }
+
+  /// [stopAll] stop all the players
+  static void stopAll() {
+    for (var player in players) {
+      if (!player.disposed) {
+        player.stop();
+      }
+    }
+  }
+
   /// [others] is a list of other players
   List<PlayerController> get others =>
       players.where((player) => player != this).toList();
@@ -398,6 +428,12 @@ abstract class PlayerController {
         break;
       case PlayerEvent.init:
         _inited = true;
+        break;
+      case PlayerEvent.status:
+        // when ended check if need loop
+        if (status == PlayerStatus.ended) {
+          await notify(PlayerEvent.end);
+        }
         break;
       case PlayerEvent.dispose:
         _disposed = true;

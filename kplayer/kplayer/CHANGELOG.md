@@ -1,3 +1,6 @@
+## 0.4.2
+- fix loop bug
+- add helper methods
 ## 0.4.1
 - fix bugs
 - implement `kplayer_platform_interface: ^0.4.1`

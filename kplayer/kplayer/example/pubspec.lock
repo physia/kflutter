@@ -202,26 +202,23 @@ packages:
   kplayer_platform_interface:
     dependency: transitive
     description:
-      name: kplayer_platform_interface
-      sha256: ea3eb152e6559a625d03943de676c52dd9e83d7625af07fef59c1d86947b5fcb
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../kplayer_platform_interface"
+      relative: true
+    source: path
     version: "0.4.1"
   kplayer_widgets:
     dependency: "direct main"
     description:
-      name: kplayer_widgets
-      sha256: ef7936a0a3fe4b77d6df01944893beeae92a4dba93792d030eaa65cf7fc7d757
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../kplayer_widgets"
+      relative: true
+    source: path
     version: "0.4.1"
   kplayer_with_audioplayers:
     dependency: transitive
     description:
-      name: kplayer_with_audioplayers
-      sha256: "4c553cc9b3c5c2e16f41eeef91e9da77b0626068019f6c6ccb619357161514f5"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../../kplayer_with_audioplayers"
+      relative: true
+    source: path
     version: "0.4.1"
   lints:
     dependency: transitive
