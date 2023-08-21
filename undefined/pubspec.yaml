@@ -1,0 +1,13 @@
+name: undefinedor
+description: Undefined for dart 
+version: 1.0.0
+repository: https://github.com/physia/kflutter
+
+environment:
+  sdk: ^3.0.6
+
+dependencies:
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.21.0
