@@ -8,12 +8,12 @@ class Car {
   Car({this.name, this.price});
 
   Car copyWith({
-    UndefinedOr<String>? name = const UndefinedOr.undefined(),
-    UndefinedOr<int>? price = const UndefinedOr.undefined(),
+    UndefinedOr<String> name = const UndefinedOr.undefined(),
+    UndefinedOr<int> price = const UndefinedOr.undefined(),
   }) {
     return Car(
-      name: name?.isUndefined == true ? this.name : name?.value,
-      price: price?.isUndefined == true ? this.price : price?.value,
+      name: name.isUndefined == true ? this.name : name.value,
+      price: price.isUndefined == true ? this.price : price.value,
     );
   }
 }
@@ -30,12 +30,21 @@ void main() {
       );
       expect(car.name, 'BMW');
       expect(car.price, 100000);
+
+      car = car.copyWith(
+        name: null.toUndefinedOr(),
+      );
+
+      expect(car.name, null);
+      expect(car.price, 100000);
+
       car = car.copyWith(
         name: null.toUndefinedOr(),
         price: null.toUndefinedOr(),
       );
       expect(car.name, null);
       expect(car.price, null);
+
 
       /// just for fun :)
       expect("Hello World!".toUndefinedOr().value, "Hello World!");
