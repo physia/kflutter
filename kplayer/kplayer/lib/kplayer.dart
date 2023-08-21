@@ -2,14 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 // import 'package:kplayer_with_dart_vlc/kplayer_with_dart_vlc.dart' as dart_vlc;
-import 'package:kplayer_with_just_audio/kplayer_with_just_audio.dart'
-    as just_audio;
+// import 'package:kplayer_with_just_audio/kplayer_with_just_audio.dart'
+//     as just_audio;
 import 'package:kplayer_with_audioplayers/kplayer_with_audioplayers.dart'
     as audioplayers;
 
 import 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
 export 'package:kplayer_platform_interface/kplayer_platform_interface.dart';
-export 'package:kplayer_widgets/kplayer_widgets.dart';
 
 // typedef  = dart_vlc.Player;
 /// [PlatformEnv] enum is used to determine which platform the app is
@@ -105,7 +104,7 @@ class Player {
   static boot() {
     if (!Player.booted) {
       // dart_vlc.Player.boot();
-      just_audio.Player.boot();
+      // just_audio.Player.boot();
       audioplayers.Player.boot();
       Player._booted = true;
     }
@@ -117,16 +116,16 @@ class Player {
   /// add property to Player for return Map<PlatformEnv,PlayerContoller> named as platforms
   static Map<PlatformEnv, PlayerAdaptivePackage?> platforms = {
     PlatformEnv.web: PlayerAdaptivePackage(
-      factory: just_audio.Player.new,
-      name: 'just_audio',
+      factory: audioplayers.Player.new,
+      name: 'audioplayers',
     ),
     PlatformEnv.ios: PlayerAdaptivePackage(
-      factory: just_audio.Player.new,
-      name: 'just_audio',
+      factory: audioplayers.Player.new,
+      name: 'audioplayers',
     ),
     PlatformEnv.android: PlayerAdaptivePackage(
-      factory: just_audio.Player.new,
-      name: 'just_audio',
+      factory: audioplayers.Player.new,
+      name: 'audioplayers',
     ),
     PlatformEnv.windows: PlayerAdaptivePackage(
       factory: audioplayers.Player.new,
@@ -137,8 +136,8 @@ class Player {
       name: 'audioplayers',
     ),
     PlatformEnv.macos: PlayerAdaptivePackage(
-      factory: just_audio.Player.new,
-      name: 'just_audio',
+      factory: audioplayers.Player.new,
+      name: 'audioplayers',
     ),
     PlatformEnv.fuchsia: null, // [Hope to add fuchsia support],
   };

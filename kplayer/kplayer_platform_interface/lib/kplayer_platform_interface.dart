@@ -65,6 +65,15 @@ enum PlayerEvent {
 
   /// unknown event. if you get this, probably something wrong
   unknown,
+
+  /// auto play event.
+  autoPlay,
+
+  /// on buffering.
+  buffering,
+
+  /// once changed.
+  once,
 }
 
 /// a Player Statuses enum
@@ -219,7 +228,7 @@ abstract class PlayerController {
 
   static void boot() {}
 
-  final bool autoPlay;
+  bool autoPlay;
   bool once;
   bool loop;
   final PlayerMedia media;
@@ -256,24 +265,34 @@ abstract class PlayerController {
   // return blocks.join(":");
   // }
 
-  static List<PlayerController> palyers = <PlayerController>[];
+  static List<PlayerController> players = <PlayerController>[];
+
+  /// [disposeAll] dispose all the players
+  static void disposeAll() {
+    for (var player in players) {
+      if (!player.disposed) {
+        player.dispose();
+      }
+    }
+    players.clear();
+  }
 
   /// [others] is a list of other players
   List<PlayerController> get others =>
-      palyers.where((player) => player != this).toList();
+      players.where((player) => player != this).toList();
 
   // @mustCallSuper
-  void init() {
+  Future<void> init() async {
     // streams.duration.listen((event) {
     //   if(event != Duration.zero && !_ready){
     //     _ready=true;
     //   }
     // });
   }
-  void replay();
-  void play();
+  Future<void> replay();
+  Future<void> play();
   Future<void> pause();
-  void stop();
+  Future<void> stop();
   @Deprecated("use the position setter")
   void seek(Duration position);
   void toggle();
@@ -298,6 +317,46 @@ abstract class PlayerController {
   set speed(double speed);
   PlayerStatus get status;
   set status(PlayerStatus status);
+
+  // sets
+  Future<void> setMedia(PlayerMedia media) async {
+    throw UnimplementedError();
+  }
+
+  Future<void> setVolume(double volume) async {
+    this.volume = volume.clamp(0.0, 1.0);
+    await notify(PlayerEvent.volume);
+  }
+
+  Future<void> setSpeed(double speed) async {
+    this.speed = speed.clamp(0.0, 1.0);
+    await notify(PlayerEvent.speed);
+  }
+
+  Future<void> setLoop(bool loop) async {
+    this.loop = loop;
+    await notify(PlayerEvent.loop);
+  }
+
+  Future<void> setOnce(bool once) async {
+    this.once = once;
+    await notify(PlayerEvent.once);
+  }
+
+  Future<void> setAutoPlay(bool autoPlay) async {
+    this.autoPlay = autoPlay;
+    await notify(PlayerEvent.autoPlay);
+  }
+
+  Future<void> setPosition(Duration position) async {
+    this.position = position;
+    await notify(PlayerEvent.position);
+  }
+
+  Future<void> setStatus(PlayerStatus status) async {
+    this.status = status;
+    await notify(PlayerEvent.status);
+  }
 
   @Deprecated('Use `streams.position` instead.')
   Stream<Duration> get positionStream => streams.position;
@@ -345,15 +404,14 @@ abstract class PlayerController {
         break;
       case PlayerEvent.end:
         _ended = true;
-        if (loop) {
-          replay();
+        if (once) {
+          dispose();
+        } else if (loop) {
+          await replay();
         } else {
           position = Duration.zero;
           await pause();
         }
-        //  else if (once) {
-        //   dispose();
-        // }
         break;
       default:
     }

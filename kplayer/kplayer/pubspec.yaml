@@ -1,37 +1,37 @@
 name: kplayer
 description: audio player that support all platforms.
-version: 0.3.4
+version: 0.4.1
 repository: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
 homepage: https://github.com/physia/kflutter/tree/main/kplayer/kplayer
 issue_tracker: https://github.com/flutter/flutter/issues?q=is:issue is:open label:"kplayer"
 # publish_to: none
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.17.0 <4.0.0"
   flutter: ">=1.20.0"
 
 flutter:
-  plugin:
-    platforms:
-      android:
-        default_package: kplayer_with_just_audio
-      ios:
-        default_package: kplayer_with_just_audio
-      windows:
-        default_package: kplayer_with_audioplayers
-      macos:
-        default_package: kplayer_with_just_audio
-      linux:
-        default_package: kplayer_with_audioplayers
-      web:
-        default_package: kplayer_with_just_audio
+  # plugin:
+  #   platforms:
+  #     android:
+  #       default_package: kplayer_with_audioplayers
+  #     ios:
+  #       default_package: kplayer_with_audioplayers
+  #     windows:
+  #       default_package: kplayer_with_audioplayers
+  #     macos:
+  #       default_package: kplayer_with_audioplayers
+  #     linux:
+  #       default_package: kplayer_with_audioplayers
+  #     web:
+  #       default_package: kplayer_with_audioplayers
 
 dependencies:
   flutter:
     sdk: flutter
-  kplayer_with_just_audio: ^0.3.3
-  kplayer_platform_interface: ^0.3.3
-  kplayer_with_audioplayers: ^0.3.4
-  kplayer_widgets: ^0.0.3
+  # deprecated
+  # kplayer_with_just_audio: ^0.3.3
+  kplayer_platform_interface: ^0.4.1
+  kplayer_with_audioplayers: ^0.4.1
 
 dev_dependencies:
   flutter_driver:

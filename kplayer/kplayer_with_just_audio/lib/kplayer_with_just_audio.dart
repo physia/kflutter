@@ -83,7 +83,7 @@ class Player extends PlayerController {
   @override
   Duration get position => _position;
 
-  static List<PlayerController> get players => PlayerController.palyers;
+  static List<PlayerController> get players => PlayerController.players;
 
   @override
   void init() async {

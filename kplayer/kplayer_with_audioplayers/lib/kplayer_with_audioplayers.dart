@@ -23,9 +23,7 @@ class Player extends PlayerController {
   final audioplayers.AudioPlayer player;
   Duration _position = Duration.zero;
   Duration _duration = Duration.zero;
-  double _volume = 1;
   bool _loop = false;
-  double _speed = 1;
 
   @override
   get package => "audioplayers";
@@ -35,6 +33,13 @@ class Player extends PlayerController {
   PlayerStatus get status => _status;
 
   @override
+  Future<void> setStatus(PlayerStatus status) async {
+    _status = status;
+    await notify(PlayerEvent.status);
+  }
+
+  @override
+  @Deprecated("use setStatus instead")
   set status(PlayerStatus status) {
     notify(PlayerEvent.status);
     _status = status;
@@ -49,37 +54,25 @@ class Player extends PlayerController {
   @override
   Duration get position => _position;
 
-  static List<PlayerController> get players => PlayerController.palyers;
+  static List<PlayerController> get players => PlayerController.players;
 
   @override
-  void init() {
-    notify(PlayerEvent.init);
+  Future<void> init() async {
+    await notify(PlayerEvent.init);
+    // reset the prefix of assets
+    player.audioCache.prefix = "";
     // needBoot((){
     //   Player.boot();
     //   print("Player.boot");
     // });
-    audioplayers.Source apMedia;
-    if (media.type == PlayerMediaType.network) {
-      apMedia = audioplayers.UrlSource(media.resource);
-    } else if (media.type == PlayerMediaType.asset) {
-      apMedia = audioplayers.AssetSource(media.resource);
-    } else if (media.type == PlayerMediaType.file) {
-      apMedia = audioplayers.DeviceFileSource(media.resource);
-    } else if (media.type == PlayerMediaType.bytes) {
-      apMedia = audioplayers.BytesSource(media.resource);
-    } else {
-      throw Exception("media type ${media.type} not support");
-    }
-    // reset the prefix of assets
-    player.audioCache.prefix = "";
-    player.audioCache.clearAll();
-    player.setSource(apMedia);
-    players.add(this);
+    await setMedia(media);
+
+    // await player.audioCache.clearAll();
 
     subscriptions.addAll([
       player.onPositionChanged.listen((Duration position) async {
         _position = position;
-        notify(PlayerEvent.position);
+        await notify(PlayerEvent.position);
         // if (position == duration) {
         //   notify(PlayerEvent.end);
         // }
@@ -95,107 +88,146 @@ class Player extends PlayerController {
         } else if (status == audioplayers.PlayerState.completed) {
           _status = PlayerStatus.ended;
         }
-        notify(PlayerEvent.status);
+        await notify(PlayerEvent.status);
       }),
-      player.onDurationChanged.listen((Duration duration) {
+      player.onDurationChanged.listen((Duration duration) async {
         _duration = duration;
-        notify(PlayerEvent.duration);
+        await notify(PlayerEvent.duration);
       }),
     ]);
 
     if (autoPlay) {
-      play();
+      await play();
     }
-    super.init();
+    await super.init();
   }
 
   @override
-  void play() {
-    notify(PlayerEvent.play);
+  Future<void> play() async {
+    await notify(PlayerEvent.play);
     if (!playing) {
       _status = PlayerStatus.playing;
-      player.resume();
+      await player.resume();
     }
   }
 
   @override
   Future<void> replay() async {
-    await seek(Duration.zero);
-    notify(PlayerEvent.replay);
-    play();
+    await setPosition(Duration.zero);
+    await notify(PlayerEvent.replay);
+    await play();
   }
 
   @override
   Future<void> pause() async {
     _status = PlayerStatus.paused;
-    player.pause();
-    notify(PlayerEvent.pause);
+    await player.pause();
+    await notify(PlayerEvent.pause);
   }
 
   @override
-  void stop() {
+  Future<void> stop() async {
     _status = PlayerStatus.stopped;
-    player.stop();
-    notify(PlayerEvent.stop);
+    await player.stop();
+    await notify(PlayerEvent.stop);
   }
 
   @override
+  @Deprecated("use setPosition instead")
   Future<void> seek(Duration position) async {
-    player.seek(position);
-    _position = position;
-    notify(PlayerEvent.position);
+    await setPosition(position);
   }
 
   @override
-  void toggle() {
-    _status == PlayerStatus.playing ? pause() : play();
-    notify(PlayerEvent.toggle);
+  Future<void> toggle() async {
+    _status == PlayerStatus.playing ? await pause() : await play();
+    await notify(PlayerEvent.toggle);
   }
 
   @override
-  void dispose() {
-    notify(PlayerEvent.dispose);
+  Future<void> dispose() async {
+    await notify(PlayerEvent.dispose);
+    await player.dispose();
     super.dispose();
-    player.dispose();
   }
 
   //
-  static void boot() {
-    //
+  static Future<void> boot() async {}
+
+  @override
+  double get speed => player.playbackRate;
+
+  @override
+  Future<void> setSpeed(double speed) async {
+    await player.setPlaybackRate(speed);
+    await notify(PlayerEvent.speed);
   }
 
+  // deprecated
   @override
-  double get speed => _speed;
-
-  @override
+  @Deprecated("use setSpeed instead")
   set speed(double speed) {
-    player.setPlaybackRate(speed);
-    _speed = speed;
-    notify(PlayerEvent.speed);
+    setSpeed(speed);
   }
 
   @override
-  double get volume => _volume;
+  double get volume => player.volume;
 
   @override
+  Future<void> setVolume(double volume) async {
+    await player.setVolume(volume);
+    await notify(PlayerEvent.volume);
+  }
+
+  @override
+  @Deprecated("use setVolume instead")
   set volume(double volume) {
-    player.setVolume(volume);
-    _volume = volume;
-    notify(PlayerEvent.volume);
+    setVolume(volume);
   }
 
   @override
   bool get loop => _loop;
 
   @override
-  set loop(bool loop) {
+  Future<void> setLoop(bool loop) async {
     _loop = loop;
-    notify(PlayerEvent.loop);
+    await notify(PlayerEvent.loop);
   }
 
   @override
+  @Deprecated("use setLoop instead")
+  set loop(bool loop) {
+    setLoop(loop);
+  }
+
+  @override
+  Future<void> setPosition(Duration position) async {
+    await player.seek(position);
+    _position = position;
+    await notify(PlayerEvent.position);
+  }
+
+  @override
+  @Deprecated(
+      "use setLoop instead, No longer supported and will be removed in the next major version")
   set position(Duration position) {
-    seek(position);
-    notify(PlayerEvent.position);
+    setPosition(position);
+  }
+
+  @override
+  Future<void> setMedia(PlayerMedia media) async {
+    audioplayers.Source apMedia;
+    if (media.type == PlayerMediaType.network) {
+      apMedia = audioplayers.UrlSource(media.resource);
+    } else if (media.type == PlayerMediaType.asset) {
+      apMedia = audioplayers.AssetSource(media.resource);
+    } else if (media.type == PlayerMediaType.file) {
+      apMedia = audioplayers.DeviceFileSource(media.resource);
+    } else if (media.type == PlayerMediaType.bytes) {
+      apMedia = audioplayers.BytesSource(media.resource);
+    } else {
+      throw Exception("media type ${media.type} not support");
+    }
+    await player.setSource(apMedia);
   }
 }

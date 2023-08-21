@@ -1,3 +1,7 @@
+## 0.4.1
+- fix bugs
+- implement `kplayer_platform_interface: ^0.4.1`
+- deprcated `kplayer_with_just_audio` and `kplayer_with_dart_vlc`
 ## 0.3.3
 - fix loop bugs in `kplayer_with_just_audio`
 

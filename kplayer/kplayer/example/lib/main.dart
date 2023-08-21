@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:kplayer/kplayer.dart';
+import 'package:kplayer_widgets/widgets.dart';
 // import 'package:kplayer_with_audioplayers/kplayer_with_audioplayers.dart';
 
 // StreamController for isDarkMode
@@ -14,9 +15,12 @@ void main() {
         return MaterialApp(
           themeMode: isDarkMode.value ? ThemeMode.dark : ThemeMode.light,
           theme: ThemeData(
+            useMaterial3: true,
             brightness: isDarkMode.value ? Brightness.dark : Brightness.light,
           ),
-          darkTheme: ThemeData.dark(),
+          darkTheme: ThemeData.dark(
+            useMaterial3: true,
+          ),
           home: const MyApp(),
         );
       },
@@ -99,7 +103,7 @@ class _MyAppState extends State<MyApp> {
               onPressed: () {
                 setState(() {
                   player.dispose();
-                  for (var player in PlayerController.palyers) {
+                  for (var player in PlayerController.players) {
                     player.pause();
                   }
                   player = Player.create(

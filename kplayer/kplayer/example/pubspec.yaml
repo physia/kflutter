@@ -19,6 +19,7 @@ dependencies:
   #   path: ../../kplayer_with_audioplayers
   # cupertino_icons: ^1.0.2
   file_picker: ^5.3.2
+  kplayer_widgets:
   # universal_io:
 
 
@@ -26,16 +27,16 @@ dependencies:
   #   git:
   #     url: https://github.com/alexmercerind/dart_vlc.git
   #     ref: master
-dependency_overrides:
-  dart_vlc:
-    git:
-      url: https://github.com/alexmercerind/dart_vlc.git
-      ref: master
-  audioplayers_windows:
-    git:
-      url: https://github.com/kflutter/audioplayers
-      path: packages/audioplayers_windows
-      ref: 263b4cc648d39a79455c221897a2c699f9d1c4c0
+# dependency_overrides:
+#   dart_vlc:
+#     git:
+#       url: https://github.com/alexmercerind/dart_vlc.git
+#       ref: master
+#   audioplayers_windows:
+#     git:
+#       url: https://github.com/kflutter/audioplayers
+#       path: packages/audioplayers_windows
+#       ref: 263b4cc648d39a79455c221897a2c699f9d1c4c0
       
 dev_dependencies:
   flutter_test:

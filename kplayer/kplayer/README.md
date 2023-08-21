@@ -11,76 +11,13 @@ Flutter player (currently only audio)
 </div>
 
 ## sopport
-### windows
-because of this issue: <https://github.com/bluefireteam/audioplayers/issues/1119>
-if want to use ```kplayer_with_audioplayers```, use this on ```pubspec.yaml```:
-
-```yaml
-dependency_overrides:
-  audioplayers_windows:
-    git:
-      url: https://github.com/kflutter/audioplayers
-      path: packages/audioplayers_windows
-      ref: 263b4cc648d39a79455c221897a2c699f9d1c4c0
-```
-Thanks to [maintel](https://github.com/maintel)
-
-### macos
-
-on macos if you using just_audio you may need to do some changes
-> I was able to build the project example when macos/Podfile replace platform :osx, '10.11' to platform :osx, '10.15'. Furthermore, adding to macos/Runner/DebugProfile.entitlements and macos/Runner/Release.entitlements:
-> ```xml
-> <key>com.apple.security.network.client</key>
-> <true/>
-> ```
-Thanks to [Andresit0](https://github.com/Andresit0) 
-
-### specify platform
-now u can specify the packages u want to use in every platform dynamically
-```dart
-// by default:
-Map<PlatformEnv, PlayerAdaptivePackage?> platforms = {
-  PlatformEnv.web: PlayerAdaptivePackage(
-    factory: just_audio.Player.new,
-    name: 'just_audio',
-  ),
-  PlatformEnv.ios: PlayerAdaptivePackage(
-    factory: just_audio.Player.new,
-    name: 'just_audio',
-  ),
-  PlatformEnv.android: PlayerAdaptivePackage(
-    factory: just_audio.Player.new,
-    name: 'just_audio',
-  ),
-  PlatformEnv.windows: PlayerAdaptivePackage(
-    factory: audioplayers.Player.new,
-    name: 'audioplayers',
-  ),
-  PlatformEnv.linux: PlayerAdaptivePackage(
-    factory: audioplayers.Player.new,
-    name: 'audioplayers',
-  ),
-  PlatformEnv.macos: PlayerAdaptivePackage(
-    factory: just_audio.Player.new,
-    name: 'just_audio',
-  ),
-  PlatformEnv.fuchsia: null, // [Hope to add fuchsia support],
-};
-```
-### change or add ur own implementation
-learn more [here](https://pub.dev/packages/kplayer_platform_interface)
-```dart
-Player.platforms[PlatformEnv.<platform>] = PlayerAdaptivePackage(
-    factory: <custom_package>.Player.new,
-    name: 'custom_package',
-);
-```
+no action required, just add package and use it
 
 ### packages has wrapper
-
-- just_audio (kplayer_with_just_audio)
-- audioplayers (kplayer_with_audioplayers)
-- dart_vlc (kplayer_with_dart_vlc)
+by default kplayer use ``audioplayers`` package
+- recommended: audioplayers (kplayer_with_audioplayers)
+- not updated: just_audio (kplayer_with_just_audio)
+- deprecated: dart_vlc (kplayer_with_dart_vlc)
 
 ## Getting Started
 
@@ -88,7 +25,7 @@ main.dart
 
 ```dart
 void main() {
-  Player.boot(); //add this  line
+  Player.boot(); //add this  line (optional)
   runApp(MyApp());
 }
 ```
@@ -102,7 +39,7 @@ var player = Player.asset("/assets/sound.mp3");
 Play from network:
 
 ```dart
-var player = Player.network("[/assets/sound.mp3](https://example.com/sound.mp3)");
+var player = Player.network("https://example.com/sound.mp3");
 ```
 
 Play from file:
@@ -127,21 +64,18 @@ var player = Player.create(asset: PlayerMedia.asset("/assets/sound.mp3"), autoPl
 you have also:
 
 ```dart
- var palyer = Player.create(asset: PlayerMedia.asset("/assets/sound.mp3"),autoPlay: true, once: true)..init();
+var player = Player.asset("/assets/sound.mp3");
 
-// callback
-palyer.callback = (PlayerEvent event){
-   // just example
-   setState((){});
-};
 
 // info
-var package   = player.package;   // "just_audio" or "dart_vlc"
+var package   = player.package;   // "current_apaptive_package_name"
 var position  = player.position;  // setter an getter like seek()
-var duration  = player.duration;  // getter
-var status    = player.status;    // 
+var duration  = player.duration;  // getter (Duration are unmodifiable)
+var status    = player.status;    // current status (playing, paused, ...)
 var loop      = player.loop;      // bool
 var playing   = player.playing;
+var volume    = player.volume;    // get current volume
+var speed     = player.speed;     // get current speed (playback rate)
 ...
 // streams
 player.streams.playing.stream;
@@ -151,22 +85,24 @@ player.streams.volume.stream;
 player.streams.speed.stream;
 player.streams.loop.stream;
 
-// control
+// control (all async)
 player.play();
 player.pause();
 player.toggle();
 player.stop();
-player.seek(newPosition);
-player.volume = 0.8; // setter getter
-player.speed = 1.2; // Rate
-player.loop = true; // looping
+player.setPosition(Duration(seconds: 10));
+player.setVolume(0.8);
+player.setSpeed(1.5);
+player.setLoop(true);
 
 //other
 player.dispose();
-player.player; // the package player instance for more option `dart_vlc`, `audioplayers` , `just_audio`
+player.player; // the native player
 
 // all players
 PlayerController.players; // List<PlayerController>
+// dispose all players
+PlayerController.disposeAll();
 
 // all other players
 player.others; // List<PlayerController>
@@ -270,10 +206,11 @@ check the repository on github (<https://github.com/physia/kflutter/tree/main/kp
 
 ## Check list
 
+- [x] add `disposeAll`
+- [x] add `setMedia`
+- [x] replace setters with async methods
+- [x] add more widget
 - [ ] support playLists
-- [ ] add `disposeAll`
-- [ ] add `reuse` Re-use player for single player use cases
-- [ ] add more widget
 - [ ] add style option and sub widget
 
 ## Support ☺️
