@@ -1,7 +1,7 @@
 name: puncher
 description: puncher is a flutter package that helps you to create a puncher widget.
 version: 0.0.1
-homepage:
+homepage: https://github.com/physia/kflutter
 
 environment:
   sdk: '>=3.0.6 <4.0.0'

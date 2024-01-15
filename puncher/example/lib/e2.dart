@@ -125,7 +125,7 @@ class _AppState extends State<App> {
                         selectedShape
                       },
                     ),
-
+                
                     const SizedBox(height: 50),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -139,7 +139,7 @@ class _AppState extends State<App> {
                           Builder(
                             builder: (context) {
                               Widget child = Container(
-                                decoration: decoration,
+                                decoration:decoration,
                               );
                               return Stack(
                                 clipBehavior: Clip.none,
@@ -204,7 +204,7 @@ class _AppState extends State<App> {
                           ),
                         ],
                       ),
-
+                    
                     // decorations select (list of circular buttons)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -231,15 +231,13 @@ class _AppState extends State<App> {
                                             width: 2,
                                           )
                                         : null,
-                                    boxShadow: decoration == this.decoration
-                                        ? [
-                                            BoxShadow(
-                                              color: Colors.black.withOpacity(.2),
-                                              blurRadius: 4,
-                                              offset: const Offset(0, 2),
-                                            )
-                                          ]
-                                        : null,
+                                        boxShadow: decoration == this.decoration?[
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(.2),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 2),
+                                          )
+                                        ]:null,
                                   ),
                                 ),
                               );

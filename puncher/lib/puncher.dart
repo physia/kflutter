@@ -6,6 +6,7 @@ library puncher;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+export './widgets/nested_puncher.dart';
 
 /// final api
 /// ```dart
@@ -134,14 +135,60 @@ class Puncher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return
-    enabled? ClipPath(
-      clipBehavior: clipBehavior,
-      clipper: PuncherClipper(punchers: punchers),
-      child: child,
+    enabled? Stack(
+      children: [
+        
+        ClipPath(
+          clipBehavior: clipBehavior,
+          clipper: PuncherClipper(punchers: punchers),
+          child: child,
+        ),
+        // draw for debug
+        Positioned.fill(
+          child: CustomPaint(
+            painter: 
+          PuncherPainter(
+            punchers: punchers
+          ),
+          ),
+        )
+      ],
     ):child;
   }
 }
+/// [PuncherPainter] is jus custom painter drow every thing to debug
+class PuncherPainter extends CustomPainter {
+  final List<PuncherClip> punchers;
+  const PuncherPainter({
+    required this.punchers
+  });
 
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.stroke;
+      
+    
+    /// first create a rectangle path filling the whole widget.
+    var path = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+
+    /// loop over the shapes and use [Path.combine] every two shapes
+    /// to combine them together.
+    for (int i = 0; i < punchers.length; i++) {
+      PuncherClip puncher = punchers[i];
+      canvas.drawPath(
+          puncher.build(size),
+          paint);
+    }
+
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+}
 /// [PuncherShape] is a class that represents a puncher shape.
 /// it have a build that return a [Path] that represents the shape.
 /// it also have a [invert] method that return a new [PuncherShape] that
@@ -225,16 +272,37 @@ class PuncherShape {
 
     // if margin is provided use it to apply scale transform
     if (margin != null) {
+      // var vw = (bounds.width + margin*2) / bounds.width;
+      // var vh = (bounds.height + margin*2) / bounds.height;
       result.scale(
-        (bounds.width + margin*2) / bounds.width,
-        (bounds.height + margin*2) / bounds.height,
+        1.0,
+        1.0
       );
       // re align the shape
       result.translate(
         -margin,
-        -margin,
+        -0.0,
       );
     }
+
+    // if (margin != null) {
+    //   var vw = (bounds.width + margin*2) / bounds.width;
+    //   var vh = (bounds.height + margin*2) / bounds.height;
+      
+    //   result.scale(
+    //     vw,
+    //     vw
+    //   );
+    //    var _origin = origin!.resolve(null).alongOffset(
+    //           Offset(
+    //             margin,
+    //             margin,
+    //           ),
+    //         );
+    //   // re align the shape
+    //     result.translate(-_origin!.dx, -_origin.dy);
+    // }
+
 
     // offset is the last thing to apply
     if (offset != null) {
@@ -454,8 +522,8 @@ class StarPuncherShape extends PuncherShape {
             var usedSize = size;
             // if no offset is provided use the center of the widget.
             var usedOffset = Offset(
-              (size.width - usedSize.width) / 2,
-              (size.height - usedSize.height) / 2,
+              10+(size.width - usedSize.width) / 2,
+              10+(size.height - usedSize.height) / 2,
             );
             return StarBorder(
               side: side,
