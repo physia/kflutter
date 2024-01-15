@@ -1,5 +1,5 @@
 name: latlng_picker
-description: "A new Flutter package project."
+description: "location picker for flutter using flutter_map"
 version: 0.0.1
 homepage:
 
