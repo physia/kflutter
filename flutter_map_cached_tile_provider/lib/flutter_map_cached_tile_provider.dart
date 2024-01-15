@@ -1,19 +1,18 @@
 library flutter_map_cached_tile_provider;
 
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/rendering.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
+// ignore: depend_on_referenced_packages
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 
-
 /// `flutter_map_cached_tile_provider.dart`
-/// 
+///
 /// This file contains the `CachedTileProvider` class which extends the `TileProvider` class from the `flutter_map` package.
 /// The `CachedTileProvider` class is used to provide tiles for the map, with caching capabilities.
-/// 
+///
 /// Usage:
 /// This class can be used with a `FlutterMap` widget to provide cached tiles for the map. The `CachedTileProvider` should be passed to the `tileProvider` property of the `TileLayerOptions` used with the `FlutterMap`.
 /// example:
@@ -66,14 +65,14 @@ class CachedTileProvider extends TileProvider {
 
   @override
   ImageProvider getImage(TileCoordinates coordinates, TileLayer options) => CachedNetworkImageProvider(
-    getTileUrl(coordinates, options),
-    headers: headers,
-    cacheManager: cacheManager,
-    cacheKey: cacheKey,
-    scale: scale,
-    errorListener: errorListener,
-    imageRenderMethodForWeb: imageRenderMethodForWeb,
-    maxHeight: maxHeight,
-    maxWidth: maxWidth,
-  );
+        getTileUrl(coordinates, options),
+        headers: headers,
+        cacheManager: cacheManager,
+        cacheKey: cacheKey,
+        scale: scale,
+        errorListener: errorListener,
+        imageRenderMethodForWeb: imageRenderMethodForWeb,
+        maxHeight: maxHeight,
+        maxWidth: maxWidth,
+      );
 }
