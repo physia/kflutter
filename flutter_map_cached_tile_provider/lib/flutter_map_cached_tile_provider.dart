@@ -2,10 +2,8 @@ library flutter_map_cached_tile_provider;
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/rendering.dart';
-// ignore: depend_on_referenced_packages
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_map/flutter_map.dart';
-// ignore: depend_on_referenced_packages
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 
 /// `flutter_map_cached_tile_provider.dart`
