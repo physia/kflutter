@@ -1,5 +1,4 @@
-<div style="display:flex;">
-<img height="auto" width="1400" src="https://github.com/physia/kflutter/assets/22839194/9f122928-0ec1-4b2d-a908-13307f257acb"><img width="536" src="https://github.com/physia/kflutter/assets/22839194/0145bb19-3c3c-49ec-8654-73c63f0c94a9"><img width="536"  src="https://github.com/physia/kflutter/assets/22839194/7b923821-f43b-436c-b057-bbd3da7c7351"></div>
+<div style="display:flex;"><img width="250" src="https://github.com/physia/kflutter/assets/22839194/9f122928-0ec1-4b2d-a908-13307f257acb"><img width="150" src="https://github.com/physia/kflutter/assets/22839194/0145bb19-3c3c-49ec-8654-73c63f0c94a9"><img width="150"  src="https://github.com/physia/kflutter/assets/22839194/7b923821-f43b-436c-b057-bbd3da7c7351"></div>
 
 This package provide easy way pick location using flutter_map.
 

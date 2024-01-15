@@ -232,7 +232,7 @@ class LatLngPickerDialog extends StatelessWidget {
             options: options,
             length: length,
             onConfirm: (latLngs) {
-              Navigator.of(context).pop(latLngs.first);
+              Navigator.of(context).pop(latLngs);
             },
           ),
         ),
