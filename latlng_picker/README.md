@@ -1,11 +1,14 @@
+<div style="display:flex;">
+<img height="auto" width="1400" src="https://github.com/physia/kflutter/assets/22839194/9f122928-0ec1-4b2d-a908-13307f257acb"><img width="536" src="https://github.com/physia/kflutter/assets/22839194/0145bb19-3c3c-49ec-8654-73c63f0c94a9"><img width="536"  src="https://github.com/physia/kflutter/assets/22839194/7b923821-f43b-436c-b057-bbd3da7c7351"></div>
+
 This package provide easy way pick location using flutter_map.
 
 ## Features
 
-- [x] Single/multiple selection.
-- [x] Support `flutter_map` package and its options.
-- [x] Cache tiles using `cached_network_image` package.
-- [x] Support all `cached_network_image` options.
+- [X] Single/multiple selection.
+- [X] Support `flutter_map` package and its options.
+- [X] Cache tiles using `cached_network_image` package.
+- [X] Support all `cached_network_image` options.
 
 ## Getting started
 
@@ -37,7 +40,7 @@ check my other projects:
 2. [indexed](https://pub.dev/packages/indexed): indexed widget, allow you to order the items inside stack, sothing like `z-index`.
 3. [kplayer](https://pub.dev/packages/kplayer): audio player that support all platforms.
 4. [puncher](https://pub.dev/packages/puncher): puncher is a flutter package that helps you to create a puncher widget.
-4. [flutter_map_cached_tile_provider](https://pub.dev/packages/flutter_map_cached_tile_provider): cache for `flutter_map` plugin.
+5. [flutter_map_cached_tile_provider](https://pub.dev/packages/flutter_map_cached_tile_provider): cache for `flutter_map` plugin.
 
 ## Support/Job?
 
