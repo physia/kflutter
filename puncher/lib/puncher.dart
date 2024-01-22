@@ -116,36 +116,46 @@ class Puncher extends StatelessWidget {
   /// [enabled] is a bool that indicate if the puncher is enabled or not.
   final bool enabled;
 
+  /// [debug] is a bool that indicate if the puncher is in debug mode or not.
+  final bool debug;
+
   /// [Puncher] constructor.
   const Puncher({
     super.key,
     required this.punchers,
     this.clipBehavior = Clip.antiAlias,
     this.enabled = true,
+    this.debug = kDebugMode,
     required this.child,
   });
 
   @override
   Widget build(BuildContext context) {
     return enabled
-        ? Stack(
-            children: [
-              // draw for debug
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: PuncherPainter(punchers: punchers),
-                ),
-              ),
-              Opacity(
-                opacity: 0.9,
-                child: ClipPath(
-                  clipBehavior: clipBehavior,
-                  clipper: PuncherClipper(punchers: punchers),
-                  child: child,
-                ),
-              ),
-            ],
-          )
+        ? debug
+            ? Stack(
+                children: [
+                  // draw for debug
+                  Positioned.fill(
+                    child: CustomPaint(
+                      painter: PuncherPainter(punchers: punchers),
+                    ),
+                  ),
+                  Opacity(
+                    opacity: 0.9,
+                    child: ClipPath(
+                      clipBehavior: clipBehavior,
+                      clipper: PuncherClipper(punchers: punchers),
+                      child: child,
+                    ),
+                  ),
+                ],
+              )
+            : ClipPath(
+                clipBehavior: clipBehavior,
+                clipper: PuncherClipper(punchers: punchers),
+                child: child,
+              )
         : child;
   }
 }
@@ -233,11 +243,10 @@ class PuncherShape {
     var bounds = opath.getBounds();
 
     if (margin != null) {
-      var offset = Offset(margin*bounds.width/2, margin*bounds.height/2);
+      var offset = Offset(margin * bounds.width / 2, margin * bounds.height / 2);
       // scale
       opath = opath.transform(Matrix4.diagonal3Values(margin, margin, 2).storage);
-      opath = opath.shift(-offset+Offset(bounds.width/2, bounds.height/2));
-
+      opath = opath.shift(-offset + Offset(bounds.width / 2, bounds.height / 2));
     }
 
     return opath;
@@ -266,6 +275,12 @@ class PuncherShape {
         size.width,
         size.height,
       );
+    }
+
+    // if bounds.topLeft is not zero then we need to translate the shape
+    // to the origin
+    if (bounds.topLeft != Offset.zero) {
+      opath = opath.shift(-bounds.topLeft);
     }
 
     // in alingment its bit different than origin
@@ -318,13 +333,11 @@ class PuncherShape {
     // }
 
     if (margin != null) {
-      var offset = Offset(margin*bounds.width/2, margin*bounds.height/2);
+      var offset = Offset(margin * bounds.width / 2, margin * bounds.height / 2);
       // scale
       opath = opath.transform(Matrix4.diagonal3Values(margin, margin, 2).storage);
-      opath = opath.shift(-offset+Offset(bounds.width/2, bounds.height/2));
-
+      opath = opath.shift(-offset + Offset(bounds.width / 2, bounds.height / 2));
     }
-
 
     // offset is the last thing to apply
     if (offset != null) {

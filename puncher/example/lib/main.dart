@@ -146,6 +146,7 @@ class _AppState extends State<App> {
                                 clipBehavior: Clip.none,
                                 children: [
                                   NestedPuncher(
+                                    // debug: true,
                                     radius: radius,
                                     overlap: overlap,
                                     enabled: enabled,
@@ -288,7 +289,7 @@ class _AppState extends State<App> {
                           value: margin * 100,
                           min: 0,
                           max: 200,
-                          divisions: 10,
+                          // divisions: 10,
                           onChanged: (value) {
                             setState(() {
                               margin = value / 100;
@@ -395,6 +396,7 @@ class NestedPuncher extends StatelessWidget {
     this.margin = 1.0,
     this.inner = true,
     this.outer = true,
+    this.debug = false,
     this.punchers = const [],
     required this.child,
   });
@@ -403,6 +405,7 @@ class NestedPuncher extends StatelessWidget {
   final double radius;
   final double overlap;
   final bool enabled;
+  final bool debug;
   final bool inner;
   final bool outer;
   final PuncherShape? shape;
@@ -423,6 +426,7 @@ class NestedPuncher extends StatelessWidget {
             textDirection: Directionality.maybeOf(context) ?? TextDirection.ltr,
             start: 0,
             child: Puncher(
+              debug: debug,
               enabled: enabled,
               punchers: [
                 ...punchers,
