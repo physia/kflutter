@@ -5,7 +5,9 @@ library puncher;
 
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 export './widgets/nested_puncher.dart';
 
 /// final api
@@ -95,16 +97,7 @@ class PuncherClip {
   /// it also use the [parentSize] to calculate the transform of the shape.
   /// if the [transform] is null.
   Path build(Size parentSize) {
-    return shape.build(
-      parentSize,
-      size: size,
-      transform: transform,
-      origin: origin,
-      alignment: alignment,
-      offset: offset,
-      translate: translate,
-      margin: margin
-    );
+    return shape.build(parentSize, size: size, transform: transform, origin: origin, alignment: alignment, offset: offset, translate: translate, margin: margin);
   }
 }
 
@@ -117,7 +110,7 @@ class Puncher extends StatelessWidget {
   /// [child] is the child widget to be clipped.
   final Widget child;
 
-  /// [clipBehavior] is the clip behavior of the widget.	
+  /// [clipBehavior] is the clip behavior of the widget.
   final Clip clipBehavior;
 
   /// [enabled] is a bool that indicate if the puncher is enabled or not.
@@ -134,54 +127,74 @@ class Puncher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-    enabled? Stack(
-      children: [
-        
-        ClipPath(
-          clipBehavior: clipBehavior,
-          clipper: PuncherClipper(punchers: punchers),
-          child: child,
-        ),
-        // draw for debug
-        Positioned.fill(
-          child: CustomPaint(
-            painter: 
-          PuncherPainter(
-            punchers: punchers
-          ),
-          ),
-        )
-      ],
-    ):child;
+    return enabled
+        ? Stack(
+            children: [
+              // draw for debug
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: PuncherPainter(punchers: punchers),
+                ),
+              ),
+              Opacity(
+                opacity: 0.9,
+                child: ClipPath(
+                  clipBehavior: clipBehavior,
+                  clipper: PuncherClipper(punchers: punchers),
+                  child: child,
+                ),
+              ),
+            ],
+          )
+        : child;
   }
 }
+
 /// [PuncherPainter] is jus custom painter drow every thing to debug
 class PuncherPainter extends CustomPainter {
   final List<PuncherClip> punchers;
-  const PuncherPainter({
-    required this.punchers
-  });
+  const PuncherPainter({required this.punchers});
 
   @override
   void paint(Canvas canvas, Size size) {
+    // random colors
+    List<Color> colors = [
+      Colors.red,
+      Colors.green,
+      Colors.blue,
+      Colors.yellow,
+      Colors.pink,
+      Colors.purple,
+      Colors.orange,
+      Colors.teal,
+      Colors.cyan,
+      Colors.indigo,
+      Colors.lime,
+      Colors.amber,
+      Colors.brown,
+      Colors.grey,
+    ];
+
+    Color randomColor() {
+      return colors[Random().nextInt(colors.length)].withOpacity(1);
+    }
+
     final paint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.stroke;
-      
-    
+      ..color = randomColor()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.0;
+
     /// first create a rectangle path filling the whole widget.
     var path = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
+    canvas.drawPath(path, paint);
 
     /// loop over the shapes and use [Path.combine] every two shapes
     /// to combine them together.
     for (int i = 0; i < punchers.length; i++) {
+      paint.color = randomColor();
       PuncherClip puncher = punchers[i];
-      canvas.drawPath(
-          puncher.build(size),
-          paint);
+      canvas.drawPath(puncher.build(size), paint);
     }
-
   }
 
   @override
@@ -189,6 +202,7 @@ class PuncherPainter extends CustomPainter {
     return false;
   }
 }
+
 /// [PuncherShape] is a class that represents a puncher shape.
 /// it have a build that return a [Path] that represents the shape.
 /// it also have a [invert] method that return a new [PuncherShape] that
@@ -203,6 +217,32 @@ class PuncherShape {
   /// - [alignment] is the alignment of the shape.
   /// - [offset] is the offset of the shape.
   /// and returns a [Path] that represents the shape.
+  Path _build(
+    Size parentSize, {
+    Size? size,
+    Matrix4? transform,
+    AlignmentGeometry? origin = Alignment.center,
+    AlignmentGeometry alignment = Alignment.center,
+    Offset? offset,
+    Offset? translate,
+    double? margin,
+  }) {
+    // assert that translate is >= -1 and <= 1
+    assert(translate == null || (translate.dx >= -1 && translate.dx <= 1), 'translate.dx must be >= -1 and <= 1');
+    var opath = path(size ?? parentSize);
+    var bounds = opath.getBounds();
+
+    if (margin != null) {
+      var offset = Offset(margin*bounds.width/2, margin*bounds.height/2);
+      // scale
+      opath = opath.transform(Matrix4.diagonal3Values(margin, margin, 2).storage);
+      opath = opath.shift(-offset+Offset(bounds.width/2, bounds.height/2));
+
+    }
+
+    return opath;
+  }
+
   Path build(
     Size parentSize, {
     Size? size,
@@ -214,10 +254,9 @@ class PuncherShape {
     double? margin,
   }) {
     // assert that translate is >= -1 and <= 1
-    assert(translate == null || (translate.dx >= -1 && translate.dx <= 1),
-        'translate.dx must be >= -1 and <= 1');
+    assert(translate == null || (translate.dx >= -1 && translate.dx <= 1), 'translate.dx must be >= -1 and <= 1');
     final Matrix4 result = Matrix4.identity();
-    final opath = path(size ?? parentSize);
+    var opath = path(size ?? parentSize);
     var bounds = opath.getBounds();
     if (size != null) {
       result.scale(size.width / bounds.width, size.height / bounds.height);
@@ -236,10 +275,8 @@ class PuncherShape {
     // also we have the parentSize
     // so we can calculate the offset
     final Alignment resolvedAlignment = alignment.resolve(null);
-    final Offset resolvedAlignmentOffset =
-        resolvedAlignment.alongSize(parentSize);
-    final Offset resolvedBoundsOffset =
-        resolvedAlignment.alongSize(bounds.size);
+    final Offset resolvedAlignmentOffset = resolvedAlignment.alongSize(parentSize);
+    final Offset resolvedBoundsOffset = resolvedAlignment.alongSize(bounds.size);
 
     result.translate(
       resolvedAlignmentOffset.dx - resolvedBoundsOffset.dx,
@@ -247,11 +284,9 @@ class PuncherShape {
     );
 
     if (translate != null) {
-      result.translate(
-          translate.dx * parentSize.width, translate.dy * parentSize.height);
+      result.translate(translate.dx * parentSize.width, translate.dy * parentSize.height);
     }
 
-    
     // if transform is provided use it and apply origin to it
     if (transform != null) {
       Offset? _origin;
@@ -271,44 +306,30 @@ class PuncherShape {
     }
 
     // if margin is provided use it to apply scale transform
-    if (margin != null) {
-      // var vw = (bounds.width + margin*2) / bounds.width;
-      // var vh = (bounds.height + margin*2) / bounds.height;
-      result.scale(
-        1.0,
-        1.0
-      );
-      // re align the shape
-      result.translate(
-        -margin,
-        -0.0,
-      );
-    }
-
     // if (margin != null) {
-    //   var vw = (bounds.width + margin*2) / bounds.width;
-    //   var vh = (bounds.height + margin*2) / bounds.height;
-      
-    //   result.scale(
-    //     vw,
-    //     vw
-    //   );
-    //    var _origin = origin!.resolve(null).alongOffset(
-    //           Offset(
-    //             margin,
-    //             margin,
-    //           ),
-    //         );
+    //   // var vw = (bounds.width + margin*2) / bounds.width;
+    //   // var vh = (bounds.height + margin*2) / bounds.height;
+    //   result.scale(1.0, 1.0);
     //   // re align the shape
-    //     result.translate(-_origin!.dx, -_origin.dy);
+    //   result.translate(
+    //     -margin,
+    //     -0.0,
+    //   );
     // }
+
+    if (margin != null) {
+      var offset = Offset(margin*bounds.width/2, margin*bounds.height/2);
+      // scale
+      opath = opath.transform(Matrix4.diagonal3Values(margin, margin, 2).storage);
+      opath = opath.shift(-offset+Offset(bounds.width/2, bounds.height/2));
+
+    }
 
 
     // offset is the last thing to apply
     if (offset != null) {
       result.translate(offset.dx, offset.dy);
     }
-
 
     return opath.transform(result.storage);
   }
@@ -386,7 +407,6 @@ class PuncherShape {
       squash: squash,
     );
   }
-
 }
 
 /// [CirclePuncherShape] is a class that represents a circle puncher shape.
@@ -424,7 +444,7 @@ class CirclePuncherShape extends PuncherShape {
                 startAngle,
                 endAngle,
               );
-              path.close();
+            path.close();
 
             return path;
           },
@@ -474,8 +494,8 @@ class RectPuncherShape extends PuncherShape {
                   bottomLeft: rr.bottomLeft,
                   bottomRight: rr.bottomRight,
                 ),
-                );
-                path.close();
+              );
+            path.close();
 
             return path;
           },
@@ -522,8 +542,8 @@ class StarPuncherShape extends PuncherShape {
             var usedSize = size;
             // if no offset is provided use the center of the widget.
             var usedOffset = Offset(
-              10+(size.width - usedSize.width) / 2,
-              10+(size.height - usedSize.height) / 2,
+              10 + (size.width - usedSize.width) / 2,
+              10 + (size.height - usedSize.height) / 2,
             );
             return StarBorder(
               side: side,
@@ -595,8 +615,6 @@ class PolygonPuncherShape extends PuncherShape {
         );
 }
 
-
-
 /// [PuncherClipper] is a [CustomClipper] that clips a child widget with a
 /// puncher shape.
 /// it takes list of [PuncherShape]s to draw the puncher shape.
@@ -640,17 +658,6 @@ class PuncherClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => true;
 }
-
-
-
-
-
-
-
-
-
-
-
 
 /*
 /// [PuncherShapeData] is a class that contains the data of a [PuncherShape].

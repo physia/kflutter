@@ -33,7 +33,7 @@ class _AppState extends State<App> {
 
   double radius = 50;
   double overlap = 0.5;
-  double margin = 4;
+  double margin = 1;
   bool enabled = true;
   bool inner = true;
   bool outer = true;
@@ -90,6 +90,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark(),
       home: Scaffold(
         appBar: AppBar(title: const Text('Crescent Difference Example')),
         body: Stack(
@@ -284,12 +285,13 @@ class _AppState extends State<App> {
                       children: [
                         const Text('margin'),
                         Slider(
-                          value: margin,
+                          value: margin * 100,
                           min: 0,
-                          max: 50,
+                          max: 200,
+                          divisions: 10,
                           onChanged: (value) {
                             setState(() {
-                              margin = value;
+                              margin = value / 100;
                             });
                           },
                         ),
@@ -390,7 +392,7 @@ class NestedPuncher extends StatelessWidget {
     this.overlap = 0.5,
     this.enabled = true,
     this.shape,
-    this.margin = 4,
+    this.margin = 1.0,
     this.inner = true,
     this.outer = true,
     this.punchers = const [],
