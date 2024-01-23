@@ -8,6 +8,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shaper/shaper.dart';
 export './widgets/nested_puncher.dart';
 
 /// final api
@@ -15,7 +16,7 @@ export './widgets/nested_puncher.dart';
 /// Puncher(
 ///   punchers: [
 ///     PuncherClip(
-///       shape: PuncherShape.circle().invert(),
+///       shape: Shape.circle().invert(),
 ///       alignment: Alignment.center,
 ///       offset: Offset(50, 0),
 ///       origin: Offset(20, 0),
@@ -30,13 +31,13 @@ export './widgets/nested_puncher.dart';
 /// )
 /// ```
 
-/// [PuncherClip] is a class that contains the data of a [PuncherShape].
+/// [PuncherClip] is a class that contains the data of a [Shape].
 class PuncherClip {
   /// [invert] is a bool that indicate if the shape should be inverted.
   final bool invert;
 
   /// [shape] is the shape of the puncher.
-  final PuncherShape shape;
+  final Shaper shape;
 
   /// [offset] is the offset of the shape.
   final Offset offset;
@@ -213,424 +214,12 @@ class PuncherPainter extends CustomPainter {
   }
 }
 
-/// [PuncherShape] is a class that represents a puncher shape.
-/// it have a build that return a [Path] that represents the shape.
-/// it also have a [invert] method that return a new [PuncherShape] that
-/// invert the shape (by adding a rectangle that fill the whole widget and then
-/// subtract the shape from it).
-class PuncherShape {
-  /// [build] is a function that takes:
-  /// - [parentSize] is the size of the parent widget.
-  /// - [size] is the size of the shape (if null use the parent size).
-  /// - [transform] is the transform of the shape.
-  /// - [origin] is the origin of the shape.
-  /// - [alignment] is the alignment of the shape.
-  /// - [offset] is the offset of the shape.
-  /// and returns a [Path] that represents the shape.
-  Path _build(
-    Size parentSize, {
-    Size? size,
-    Matrix4? transform,
-    AlignmentGeometry? origin = Alignment.center,
-    AlignmentGeometry alignment = Alignment.center,
-    Offset? offset,
-    Offset? translate,
-    double? margin,
-  }) {
-    // assert that translate is >= -1 and <= 1
-    assert(translate == null || (translate.dx >= -1 && translate.dx <= 1), 'translate.dx must be >= -1 and <= 1');
-    var opath = path(size ?? parentSize);
-    var bounds = opath.getBounds();
 
-    if (margin != null) {
-      var offset = Offset(margin * bounds.width / 2, margin * bounds.height / 2);
-      // scale
-      opath = opath.transform(Matrix4.diagonal3Values(margin, margin, 2).storage);
-      opath = opath.shift(-offset + Offset(bounds.width / 2, bounds.height / 2));
-    }
 
-    return opath;
-  }
-
-  Path build(
-    Size parentSize, {
-    Size? size,
-    Matrix4? transform,
-    AlignmentGeometry? origin = Alignment.center,
-    AlignmentGeometry alignment = Alignment.center,
-    Offset? offset,
-    Offset? translate,
-    double? margin,
-  }) {
-    // assert that translate is >= -1 and <= 1
-    assert(translate == null || (translate.dx >= -1 && translate.dx <= 1), 'translate.dx must be >= -1 and <= 1');
-    final Matrix4 result = Matrix4.identity();
-    var opath = path(size ?? parentSize);
-    var bounds = opath.getBounds();
-    if (size != null) {
-      result.scale(size.width / bounds.width, size.height / bounds.height);
-      bounds = Rect.fromLTWH(
-        bounds.left,
-        bounds.top,
-        size.width,
-        size.height,
-      );
-    }
-
-    // if bounds.topLeft is not zero then we need to translate the shape
-    // to the origin
-    if (bounds.topLeft != Offset.zero) {
-      opath = opath.shift(-bounds.topLeft);
-    }
-
-    // in alingment its bit different than origin
-    // because we need to translate the shape to the center or corner
-    // depending on the alignment
-    // we have all needed data in the bounds
-    // also we have the parentSize
-    // so we can calculate the offset
-    final Alignment resolvedAlignment = alignment.resolve(null);
-    final Offset resolvedAlignmentOffset = resolvedAlignment.alongSize(parentSize);
-    final Offset resolvedBoundsOffset = resolvedAlignment.alongSize(bounds.size);
-
-    result.translate(
-      resolvedAlignmentOffset.dx - resolvedBoundsOffset.dx,
-      resolvedAlignmentOffset.dy - resolvedBoundsOffset.dy,
-    );
-
-    if (translate != null) {
-      result.translate(translate.dx * parentSize.width, translate.dy * parentSize.height);
-    }
-
-    // if transform is provided use it and apply origin to it
-    if (transform != null) {
-      Offset? _origin;
-      if (origin != null) {
-        _origin = origin.resolve(null).alongOffset(
-              Offset(
-                bounds.width,
-                bounds.height,
-              ),
-            );
-        result.translate(_origin.dx, _origin.dy);
-      }
-      result.multiply(transform);
-      if (origin != null) {
-        result.translate(-_origin!.dx, -_origin.dy);
-      }
-    }
-
-    // if margin is provided use it to apply scale transform
-    // if (margin != null) {
-    //   // var vw = (bounds.width + margin*2) / bounds.width;
-    //   // var vh = (bounds.height + margin*2) / bounds.height;
-    //   result.scale(1.0, 1.0);
-    //   // re align the shape
-    //   result.translate(
-    //     -margin,
-    //     -0.0,
-    //   );
-    // }
-
-    if (margin != null) {
-      var offset = Offset(margin * bounds.width / 2, margin * bounds.height / 2);
-      // scale
-      opath = opath.transform(Matrix4.diagonal3Values(margin, margin, 2).storage);
-      opath = opath.shift(-offset + Offset(bounds.width / 2, bounds.height / 2));
-    }
-
-    // offset is the last thing to apply
-    if (offset != null) {
-      result.translate(offset.dx, offset.dy);
-    }
-
-    return opath.transform(result.storage);
-  }
-
-  /// [path] is a function that takes a [Size] and returns a [Path]
-  final Path Function(Size parentSize) path;
-  PuncherShape({
-    required this.path,
-  });
-
-  /// [invert] is a function that returns a new [PuncherShape] that invert the shape.
-  PuncherShape invert() {
-    return PuncherShape(
-      path: (size) {
-        return Path.combine(
-          PathOperation.difference,
-          Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height)),
-          path(size),
-        );
-      },
-    );
-  }
-
-  /// static shapes
-  static PuncherShape circle({
-    double startAngle = 0,
-    double endAngle = 2 * pi,
-  }) {
-    return CirclePuncherShape(
-      startAngle: startAngle,
-      endAngle: endAngle,
-    );
-  }
-
-  static PuncherShape rect({
-    BorderRadiusGeometry borderRadius = BorderRadius.zero,
-  }) {
-    return RectPuncherShape(
-      borderRadius: borderRadius,
-    );
-  }
-
-  static PuncherShape star({
-    BorderSide side = BorderSide.none,
-    double points = 5,
-    double innerRadiusRatio = 0.4,
-    double pointRounding = 0,
-    double valleyRounding = 0,
-    double rotation = 0,
-    double squash = 0,
-  }) {
-    return StarPuncherShape(
-      side: side,
-      points: points,
-      innerRadiusRatio: innerRadiusRatio,
-      pointRounding: pointRounding,
-      valleyRounding: valleyRounding,
-      rotation: rotation,
-      squash: squash,
-    );
-  }
-
-  static PuncherShape polygon({
-    BorderSide side = BorderSide.none,
-    double sides = 5,
-    double pointRounding = 0,
-    double rotation = 0,
-    double squash = 0,
-  }) {
-    return PolygonPuncherShape(
-      side: side,
-      sides: sides,
-      pointRounding: pointRounding,
-      rotation: rotation,
-      squash: squash,
-    );
-  }
-}
-
-/// [CirclePuncherShape] is a class that represents a circle puncher shape.
-/// it have a build that return a [Path] that represents the shape.
-/// it also have a [invert] method that return a new [CirclePuncherShape] that
-/// invert the shape (by adding a rectangle that fill the whole widget and then
-/// subtract the shape from it).
-class CirclePuncherShape extends PuncherShape {
-  /// [startAngle] is the start angle of the circle.
-  final double startAngle;
-
-  /// [endAngle] is the end angle of the circle.
-  final double endAngle;
-
-  /// [CirclePuncherShape] constructor.
-  CirclePuncherShape({
-    this.startAngle = 0,
-    this.endAngle = 2 * pi,
-  }) : super(
-          path: (size) {
-            var usedSize = size;
-            // if no offset is provided use the center of the widget.
-            var usedOffset = Offset(
-              (size.width - usedSize.width) / 2,
-              (size.height - usedSize.height) / 2,
-            );
-            var path = Path()
-              ..addArc(
-                Rect.fromLTWH(
-                  usedOffset.dx,
-                  usedOffset.dy,
-                  usedSize.width,
-                  usedSize.height,
-                ),
-                startAngle,
-                endAngle,
-              );
-            path.close();
-
-            return path;
-          },
-        );
-
-  /// [invert] is a function that returns a new [CirclePuncherShape] that invert the shape.
-  @override
-  CirclePuncherShape invert() {
-    return CirclePuncherShape();
-  }
-}
-
-/// [RectPuncherShape] is a class that represents a rectangle puncher shape.
-/// it have a build that return a [Path] that represents the shape.
-/// it also have a [invert] method that return a new [RectPuncherShape] that
-/// invert the shape (by adding a rectangle that fill the whole widget and then
-/// subtract the shape from it).
-/// it also have [borderRadius] property [BorderRadiusGeometry] to control the radius of the rectangle (every corner)
-/// use  to control the .
-class RectPuncherShape extends PuncherShape {
-  /// [borderRadius] is the radius of the rectangle (every corner).
-  final BorderRadiusGeometry borderRadius;
-
-  /// [RectPuncherShape] constructor.
-  RectPuncherShape({
-    this.borderRadius = BorderRadius.zero,
-  }) : super(
-          path: (size) {
-            var usedSize = size;
-            // if no offset is provided use the center of the widget.
-            var usedOffset = Offset(
-              (size.width - usedSize.width) / 2,
-              (size.height - usedSize.height) / 2,
-            );
-            BorderRadius rr = borderRadius.resolve(TextDirection.rtl);
-            var path = Path()
-              ..addRRect(
-                RRect.fromRectAndCorners(
-                  Rect.fromLTWH(
-                    usedOffset.dx,
-                    usedOffset.dy,
-                    usedSize.width,
-                    usedSize.height,
-                  ),
-                  topLeft: rr.topLeft,
-                  topRight: rr.topRight,
-                  bottomLeft: rr.bottomLeft,
-                  bottomRight: rr.bottomRight,
-                ),
-              );
-            path.close();
-
-            return path;
-          },
-        );
-}
-
-/// [StarPuncherShape] is a class that represents a star puncher shape.
-/// it have a build that return a [Path] that represents the shape.
-/// it also have a [invert] method that return a new [StarPuncherShape] that
-/// it contains all the properties of [StarBorder] to control the shape.
-class StarPuncherShape extends PuncherShape {
-  /// [side] is the side of the star.
-  final BorderSide side;
-
-  /// [points] is the number of points of the star.
-  final double points;
-
-  /// [innerRadiusRatio] is the inner radius ratio of the star.
-  final double innerRadiusRatio;
-
-  /// [pointRounding] is the point rounding of the star.
-  final double pointRounding;
-
-  /// [valleyRounding] is the valley rounding of the star.
-  final double valleyRounding;
-
-  /// [rotation] is the rotation of the star.
-  final double rotation;
-
-  /// [squash] is the squash of the star.
-  final double squash;
-
-  /// [StarPuncherShape] constructor.
-  StarPuncherShape({
-    this.side = BorderSide.none,
-    this.points = 5,
-    this.innerRadiusRatio = 0.4,
-    this.pointRounding = 0,
-    this.valleyRounding = 0,
-    this.rotation = 0,
-    this.squash = 0,
-  }) : super(
-          path: (size) {
-            var usedSize = size;
-            // if no offset is provided use the center of the widget.
-            var usedOffset = Offset(
-              10 + (size.width - usedSize.width) / 2,
-              10 + (size.height - usedSize.height) / 2,
-            );
-            return StarBorder(
-              side: side,
-              points: points,
-              innerRadiusRatio: innerRadiusRatio,
-              pointRounding: pointRounding,
-              valleyRounding: valleyRounding,
-              rotation: rotation,
-              squash: squash,
-            ).getOuterPath(
-              Rect.fromLTWH(
-                usedOffset.dx,
-                usedOffset.dy,
-                usedSize.width,
-                usedSize.height,
-              ),
-            );
-          },
-        );
-}
-
-/// [PolygonPuncherShape] is a class that represents a polygon puncher shape.
-class PolygonPuncherShape extends PuncherShape {
-  /// [side] is the side of the polygon.
-  final BorderSide side;
-
-  /// [sides] is the number of sides of the polygon.
-  final double sides;
-
-  /// [pointRounding] is the point rounding of the polygon.
-  final double pointRounding;
-
-  /// [rotation] is the rotation of the polygon.
-  final double rotation;
-
-  /// [squash] is the squash of the polygon.
-  final double squash;
-
-  /// [PolygonPuncherShape] constructor.
-  PolygonPuncherShape({
-    this.side = BorderSide.none,
-    this.sides = 5,
-    this.pointRounding = 0,
-    this.rotation = 0,
-    this.squash = 0,
-  }) : super(
-          path: (size) {
-            var usedSize = size;
-            // if no offset is provided use the center of the widget.
-            var usedOffset = Offset(
-              (size.width - usedSize.width) / 2,
-              (size.height - usedSize.height) / 2,
-            );
-            return StarBorder.polygon(
-              side: side,
-              sides: sides,
-              pointRounding: pointRounding,
-              rotation: rotation,
-              squash: squash,
-            ).getOuterPath(
-              Rect.fromLTWH(
-                usedOffset.dx,
-                usedOffset.dy,
-                usedSize.width,
-                usedSize.height,
-              ),
-            );
-          },
-        );
-}
 
 /// [PuncherClipper] is a [CustomClipper] that clips a child widget with a
 /// puncher shape.
-/// it takes list of [PuncherShape]s to draw the puncher shape.
+/// it takes list of [Shape]s to draw the puncher shape.
 class PuncherClipper extends CustomClipper<Path> {
   /// [punchers] is the list of [PuncherClip]s to draw the puncher shape.
   final List<PuncherClip> punchers;
@@ -673,8 +262,8 @@ class PuncherClipper extends CustomClipper<Path> {
 }
 
 /*
-/// [PuncherShapeData] is a class that contains the data of a [PuncherShape].
-class PuncherShapeData {
+/// [ShapeData] is a class that contains the data of a [Shape].
+class ShapeData {
   /// [offset] is the offset of the shape.
   final Offset offset;
 
@@ -690,8 +279,8 @@ class PuncherShapeData {
   /// [alignment] is the alignment of the shape.
   final AlignmentGeometry alignment;
 
-  /// [PuncherShapeData] constructor.
-  const PuncherShapeData({
+  /// [ShapeData] constructor.
+  const ShapeData({
     this.size,
     this.transform,
     this.origin = Alignment.center,
@@ -703,34 +292,34 @@ class PuncherShapeData {
 
 /// [PuncherClipper] is a [CustomClipper] that clips a child widget with a
 /// puncher shape.
-/// it takes list of [PuncherShape]s to draw the puncher shape.
+/// it takes list of [Shape]s to draw the puncher shape.
 
-/// [PuncherShape] is a class that represents a puncher shape.
+/// [Shape] is a class that represents a puncher shape.
 /// it have a build that return a [Path] that represents the shape.
-class PuncherShape {
+class Shape {
   /// [path] is a function that takes a [Size] and returns a [Path]
-  final Path Function({required Size parentSize,required PuncherShapeData data}) path;
+  final Path Function({required Size parentSize,required ShapeData data}) path;
 
-  /// [data] is a [PuncherShapeData] that contains the data of the shape.
-  final PuncherShapeData data;
+  /// [data] is a [ShapeData] that contains the data of the shape.
+  final ShapeData data;
 
-  /// constructor for [PuncherShape]
-  PuncherShape({
+  /// constructor for [Shape]
+  Shape({
     required this.path,
-    this.data = const PuncherShapeData(),
+    this.data = const ShapeData(),
   });
 
   /*
-  /// [transform] is a function that takes a [transform] and [origin] and [offset] and returns a [PuncherShape]
-  PuncherShape transform({
+  /// [transform] is a function that takes a [transform] and [origin] and [offset] and returns a [Shape]
+  Shape transform({
     Matrix4? transform,
     AlignmentGeometry origin = Alignment.center,
     AlignmentGeometry alignment = Alignment.center,
     Offset offset = Offset.zero,
     Size? size,
   }) {
-    return PuncherShape(
-      path: ({required Size parentSize,required PuncherShapeData data}) {
+    return Shape(
+      path: ({required Size parentSize,required ShapeData data}) {
         final Matrix4 result = Matrix4.identity();
         var userdSize = size ?? size ?? constraints.biggest;
         
@@ -759,11 +348,11 @@ class PuncherShape {
   }
 
 
-  /// [PuncherShape.rect] is a factory constructor that returns a [PuncherShape]
-  factory PuncherShape.rect({
+  /// [Shape.rect] is a factory constructor that returns a [Shape]
+  factory Shape.rect({
     Radius? radius,
   }) {
-    return PuncherShape(
+    return Shape(
       path: (_size) {
         var usedSize = _size;
         // if no offset is provided use the center of the widget.
@@ -789,9 +378,9 @@ class PuncherShape {
     );
   }
 
-  /// [PuncherShape.circle] is a factory constructor that returns a [PuncherShape]
-  factory PuncherShape.circle() {
-    return PuncherShape(
+  /// [Shape.circle] is a factory constructor that returns a [Shape]
+  factory Shape.circle() {
+    return Shape(
       path: (_size) {
         var usedSize = _size;
         // if no offset is provided use the center of the widget.
@@ -814,12 +403,12 @@ class PuncherShape {
     );
   }
 
-  /// [PuncherShape.star] is a factory constructor that returns a [PuncherShape]
+  /// [Shape.star] is a factory constructor that returns a [Shape]
   /// it uses [StarBorder] to draw a star shape.
   /// but the same api as [PusherShape.rect] and [PusherShape.circle] is used.
   /// not the old one that are commented below.
   /// that mean also not offset
-  factory PuncherShape.star({
+  factory Shape.star({
     BorderSide side = BorderSide.none,
     double points = 5,
     double innerRadiusRatio = 0.4,
@@ -828,7 +417,7 @@ class PuncherShape {
     double rotation = 0,
     double squash = 0,
   }) {
-    return PuncherShape(
+    return Shape(
       path: (_size) {
         var usedSize = _size;
         // if no offset is provided use the center of the widget.
@@ -856,19 +445,19 @@ class PuncherShape {
     );
   }
 
-  /// [PuncherShape.polygon] is a factory constructor that returns a [PuncherShape]
+  /// [Shape.polygon] is a factory constructor that returns a [Shape]
   /// it uses [StarBorder.polygon] to draw a polygon shape.
   /// but the same api as [PusherShape.rect] and [PusherShape.circle] is used.
   /// not the old one that are commented below.
   /// that mean also not offset
-  factory PuncherShape.polygon({
+  factory Shape.polygon({
     BorderSide side = BorderSide.none,
     double sides = 5,
     double pointRounding = 0,
     double rotation = 0,
     double squash = 0,
   }) {
-    return PuncherShape(
+    return Shape(
       path: (_size) {
         var usedSize = _size;
         // if no offset is provided use the center of the widget.
@@ -895,9 +484,9 @@ class PuncherShape {
   }
 
 
-  // /// [PuncherShape.star] it uses [StarBorder] to draw a star shape.
+  // /// [Shape.star] it uses [StarBorder] to draw a star shape.
   // /// it allow all the properties of [StarBorder] to be used.
-  // factory PuncherShape.star({
+  // factory Shape.star({
   //   BorderSide side = BorderSide.none,
   //   double points = 5,
   //   double innerRadiusRatio = 0.4,
@@ -914,7 +503,7 @@ class PuncherShape {
   //   /// [sizeBuilder] is a function that takes a [Size] and returns a [Size]
   //   Size Function(Size size)? sizeBuilder,
   // }) {
-  //   return PuncherShape(
+  //   return Shape(
   //     path: (_size) {
   //       var usedSize = size ?? sizeBuilder?.call(_size) ?? _size;
   //       var usedOffset = offset ??
@@ -943,9 +532,9 @@ class PuncherShape {
   //   );
   // }
 
-  // /// [PuncherShape.polygon] it uses [StarBorder.polygon] to draw a polygon shape.
+  // /// [Shape.polygon] it uses [StarBorder.polygon] to draw a polygon shape.
   // /// it allow all the properties of [StarBorder.polygon] to be used.
-  // factory PuncherShape.polygon({
+  // factory Shape.polygon({
   //   BorderSide side = BorderSide.none,
   //   double sides = 5,
   //   double pointRounding = 0,
@@ -954,7 +543,7 @@ class PuncherShape {
   //   Offset? offset,
   //   Size? size,
   // }) {
-  //   return PuncherShape(
+  //   return Shape(
   //     path: (_size) {
   //       var usedSize = size ?? _size;
   //       // if no offset is provided use the center of the widget.
@@ -984,10 +573,10 @@ class PuncherShape {
 
 /// [PuncherClipper] is a [CustomClipper] that clips a child widget with a
 /// puncher shape.
-/// it takes list of [PuncherShape]s to draw the puncher shape.
+/// it takes list of [Shape]s to draw the puncher shape.
 class PuncherClipper extends CustomClipper<Path> {
-  /// [shapes] is the list of [PuncherShape]s to draw the puncher shape.
-  final List<PuncherShape> shapes;
+  /// [shapes] is the list of [Shape]s to draw the puncher shape.
+  final List<Shape> shapes;
 
   // [inverse] is a bool that indicate if the shapes should be inverted.
   final bool inverse;

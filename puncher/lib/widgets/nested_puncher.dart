@@ -2,11 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:puncher/puncher.dart';
+import 'package:shaper/shaper.dart';
 
 /// [NestedPuncher] is widget take car for common use like nested avatars ans so on
 /// you can achieve the same result by using [Puncher] widget but this widget is
 /// for easy use and common use cases, also take care of the overlap between the shapes
-/// the most common use case is to use [CirclePuncherShape] with [CircleAvatar]
+/// the most common use case is to use [CircleShape] with [CircleAvatar]
 /// ```dart
 /// NestedPuncher(
 ///   radius: 50,
@@ -51,8 +52,8 @@ class NestedPuncher extends StatelessWidget {
   /// [outer] is the enable state of the outer shape
   final bool outer;
   /// [shape] is the shape of the puncher
-  /// for example [CirclePuncherShape] or [RectanglePuncherShape] ...
-  final PuncherShape? shape;
+  /// for example [CircleShape] or [RectangleShape] ...
+  final Shaper? shape;
   /// [margin] is the margin between the outer and inner shape
   final double margin;
   /// [child] is the child widget to be punched
@@ -60,7 +61,7 @@ class NestedPuncher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _shape = shape ?? CirclePuncherShape();
+    var _shape = shape ?? CircleShape();
     return Container(
       // color: Colors.yellow,
       height: radius,
@@ -153,8 +154,8 @@ class GroupNestedPuncher extends StatelessWidget {
   /// [outer] is the enable state of the outer shape
   final bool outer;
   /// [shape] is the shape of the puncher
-  /// for example [CirclePuncherShape] or [RectanglePuncherShape] ...
-  final PuncherShape? shape;
+  /// for example [CircleShape] or [RectangleShape] ...
+  final Shaper? shape;
   /// [margin] is the margin between the outer and inner shape
   final double margin;
   /// [children] is the list of child widget to be punched
@@ -164,7 +165,7 @@ class GroupNestedPuncher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _shape = shape ?? CirclePuncherShape();
+    var _shape = shape ?? CircleShape();
     return Flex(
       direction: axis,
       children: [

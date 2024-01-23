@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:puncher/puncher.dart';
+import 'package:shaper/shaper.dart';
 
 void main() {
   runApp(App());
@@ -56,7 +57,7 @@ class _AppState extends State<App> {
                           // ),
                           PuncherClip(
                             // invert: true,
-                            shape: StarPuncherShape(
+                            shape: StarShape(
                               
                             ),
                             // translate: const Offset(0, 0.5),
@@ -68,7 +69,7 @@ class _AppState extends State<App> {
                           ),
                           PuncherClip(
                             // invert: true,
-                            shape: PolygonPuncherShape(
+                            shape: PolygonShape(
                               sides: 8,
                             ),
                           )
@@ -117,7 +118,7 @@ class ExamplePainter extends CustomPainter {
     Path path = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
     for (final alignment in alignments) {
       canvas.drawPath(
-          CirclePuncherShape().build(
+          CircleShape().build(
             size,
             size: Size(60, 60),
             alignment: alignment,
@@ -128,7 +129,7 @@ class ExamplePainter extends CustomPainter {
     }
 
     canvas.drawPath(
-        CirclePuncherShape().path(Size(60, 60)), paint..color = Colors.red);
+        CircleShape().path(Size(60, 60)), paint..color = Colors.red);
 
     // draw rectangle fill canvas
     canvas.drawRect(

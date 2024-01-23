@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:motif/motif.dart';
 import 'package:puncher/puncher.dart';
 import 'package:shaper/shaper.dart';
 
@@ -34,14 +36,14 @@ class _AppState extends State<App> {
 
   double radius = 50;
   double overlap = 0.5;
-  double margin = 4;
+  double margin = 1;
   bool enabled = true;
   bool inner = true;
   bool outer = true;
   bool inverseEnabled = false;
 
   var decorations = [
-    BoxDecoration(
+    const BoxDecoration(
       gradient: LinearGradient(
         colors: [
           Colors.cyan,
@@ -49,7 +51,7 @@ class _AppState extends State<App> {
         ],
       ),
     ),
-    BoxDecoration(
+    const BoxDecoration(
       gradient: LinearGradient(
         colors: [
           Colors.yellow,
@@ -57,7 +59,7 @@ class _AppState extends State<App> {
         ],
       ),
     ),
-    BoxDecoration(
+    const BoxDecoration(
       gradient: LinearGradient(
         colors: [
           Colors.green,
@@ -65,7 +67,7 @@ class _AppState extends State<App> {
         ],
       ),
     ),
-    BoxDecoration(
+    const BoxDecoration(
       gradient: LinearGradient(
         colors: [
           Colors.purple,
@@ -73,7 +75,7 @@ class _AppState extends State<App> {
         ],
       ),
     ),
-    BoxDecoration(
+    const BoxDecoration(
       gradient: LinearGradient(
         colors: [
           Colors.deepOrange,
@@ -91,11 +93,12 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark(),
       home: Scaffold(
         appBar: AppBar(title: const Text('Crescent Difference Example')),
         body: Stack(
           children: [
-            Positioned.fill(child: TransparentPattern()),
+            Positioned.fill(child: StarMotif()),
             Positioned.fill(
               child: SingleChildScrollView(
                 child: Column(
@@ -126,7 +129,7 @@ class _AppState extends State<App> {
                         selectedShape
                       },
                     ),
-                
+
                     const SizedBox(height: 50),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -140,12 +143,13 @@ class _AppState extends State<App> {
                           Builder(
                             builder: (context) {
                               Widget child = Container(
-                                decoration:decoration,
+                                decoration: decoration,
                               );
                               return Stack(
                                 clipBehavior: Clip.none,
                                 children: [
                                   NestedPuncher(
+                                    // debug: true,
                                     radius: radius,
                                     overlap: overlap,
                                     enabled: enabled,
@@ -205,7 +209,7 @@ class _AppState extends State<App> {
                           ),
                         ],
                       ),
-                    
+
                     // decorations select (list of circular buttons)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -232,13 +236,15 @@ class _AppState extends State<App> {
                                             width: 2,
                                           )
                                         : null,
-                                        boxShadow: decoration == this.decoration?[
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(.2),
-                                            blurRadius: 4,
-                                            offset: const Offset(0, 2),
-                                          )
-                                        ]:null,
+                                    boxShadow: decoration == this.decoration
+                                        ? [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(.2),
+                                              blurRadius: 4,
+                                              offset: const Offset(0, 2),
+                                            )
+                                          ]
+                                        : null,
                                   ),
                                 ),
                               );
@@ -283,12 +289,13 @@ class _AppState extends State<App> {
                       children: [
                         const Text('margin'),
                         Slider(
-                          value: margin,
+                          value: margin * 100,
                           min: 0,
-                          max: 50,
+                          max: 200,
+                          // divisions: 10,
                           onChanged: (value) {
                             setState(() {
-                              margin = value;
+                              margin = value / 100;
                             });
                           },
                         ),
@@ -389,9 +396,10 @@ class NestedPuncher extends StatelessWidget {
     this.overlap = 0.5,
     this.enabled = true,
     this.shape,
-    this.margin = 4,
+    this.margin = 1.0,
     this.inner = true,
     this.outer = true,
+    this.debug = false,
     this.punchers = const [],
     required this.child,
   });
@@ -400,6 +408,7 @@ class NestedPuncher extends StatelessWidget {
   final double radius;
   final double overlap;
   final bool enabled;
+  final bool debug;
   final bool inner;
   final bool outer;
   final Shaper? shape;
@@ -420,6 +429,7 @@ class NestedPuncher extends StatelessWidget {
             textDirection: Directionality.maybeOf(context) ?? TextDirection.ltr,
             start: 0,
             child: Puncher(
+              debug: debug,
               enabled: enabled,
               punchers: [
                 ...punchers,
@@ -444,105 +454,5 @@ class NestedPuncher extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class ExamplePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.stroke;
-
-    // list of all possible alignments
-
-    // list of all possible alignments
-    final alignments = [
-      Alignment.topLeft,
-      Alignment.topCenter,
-      Alignment.topRight,
-      Alignment.centerLeft,
-      Alignment.center,
-      Alignment.centerRight,
-      Alignment.bottomLeft,
-      Alignment.bottomCenter,
-      Alignment.bottomRight,
-    ];
-    Path path = Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height));
-    for (final alignment in alignments) {
-      canvas.drawPath(
-          CircleShape().build(
-            size,
-            size: const Size(60, 60),
-            alignment: alignment,
-            // scale
-            transform: Matrix4.identity()..scale(2.0, 2.0),
-          ),
-          paint);
-    }
-
-    canvas.drawPath(CircleShape().path(const Size(60, 60)), paint..color = Colors.red);
-
-    // draw rectangle fill canvas
-    canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.width, size.height),
-      Paint()
-        ..color = Colors.red
-        ..style = PaintingStyle.stroke,
-    );
-    // draw line center
-    canvas.drawLine(
-      Offset(size.width / 2, 0),
-      Offset(size.width / 2, size.height),
-      Paint()
-        ..color = Colors.red
-        ..style = PaintingStyle.stroke,
-    );
-    // draw line center
-    canvas.drawLine(
-      Offset(0, size.height / 2),
-      Offset(size.width, size.height / 2),
-      Paint()
-        ..color = Colors.red
-        ..style = PaintingStyle.stroke,
-    );
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-class TransparentPattern extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: PatternPainter(),
-    );
-  }
-}
-
-class PatternPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color.fromARGB(255, 122, 122, 122).withOpacity(0.1)
-      ..style = PaintingStyle.fill;
-    Size cubeSize = const Size(10, 10);
-
-    for (int i = 0; i < size.width / cubeSize.width; i++) {
-      for (int j = 0; j < size.height / cubeSize.height; j++) {
-        bool isTransparent = (i + j) % 2 == 0;
-        if (isTransparent) {
-          canvas.drawRect(Rect.fromLTWH(i * cubeSize.width, j * cubeSize.height, cubeSize.width, cubeSize.height), paint);
-        }
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
   }
 }

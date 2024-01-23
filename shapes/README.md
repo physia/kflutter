@@ -1,39 +1,28 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Shapes for flutter
+a very flexible and customizable flutter shapes package
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+## List of shapes
+you can use any of these shapes in your flutter app
+- stars (any type, any number of points.. rouded, sharp, etc)
+- circles
+- rectangles (rounded, sharp, etc)
+- polygons (any number of points)
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+## Other projects?
 
-## Features
+check my other projects:
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+1. [osrm](https://pub.dev/packages/osrm): Open Source Routing Machine (OSRM) client for Dart.
+2. [indexed](https://pub.dev/packages/indexed): indexed widget, allow you to order the items inside stack, sothing like `z-index`.
+3. [kplayer](https://pub.dev/packages/kplayer): audio player that support all platforms.
+4. [puncher](https://pub.dev/packages/puncher): puncher is a flutter package that helps you to create a puncher widget.
+5. [flutter_map_cached_tile_provider](https://pub.dev/packages/flutter_map_cached_tile_provider): cache for `flutter_map` plugin.
+6. [latlng_picker](https://pub.dev/packages/latlng_picker): loaction picker for `flutter_map` plugin.
+7. [motif](https://pub.dev/packages/motif): patterns for flutter.
+8. [shaper](https://pub.dev/packages/shaper): shapes for flutter.
 
-## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+## Support/Job?
 
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
-```
-
-## Additional information
-
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+contact me: mohamadlounnas@gmail.com
