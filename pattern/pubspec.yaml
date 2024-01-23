@@ -1,0 +1,31 @@
+name: motif
+description: "beautiful, patters for flutter"
+version: 0.0.4
+homepage: https://github.com/physia/kflutter
+repository: https://github.com/physia/kflutter
+
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  shaper:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+
+
+screenshots:
+  - https://github.com/dart-lang/pub-dev/assets/22839194/ecf52570-fac8-4613-a6c2-5bb6bf5768ad
