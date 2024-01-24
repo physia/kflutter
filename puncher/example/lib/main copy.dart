@@ -93,12 +93,12 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark(),
+      // theme: ThemeData.dark(),
       home: Scaffold(
         appBar: AppBar(title: const Text('Crescent Difference Example')),
         body: Stack(
           children: [
-            Positioned.fill(child: StarMotif()),
+            Positioned.fill(child: TransparentMotif()),
             Positioned.fill(
               child: SingleChildScrollView(
                 child: Column(

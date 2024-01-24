@@ -22,7 +22,6 @@ for advanced patterns, you can use `Motif` widget and create your own pattern.
 if you would like to use painterm use `MotifPainter` for more options.
 
 
-
 ## Other projects?
 
 check my other projects:

@@ -1,6 +1,6 @@
 name: motif
 description: "beautiful, patters for flutter"
-version: 0.0.4
+version: 0.0.6
 homepage: https://github.com/physia/kflutter
 repository: https://github.com/physia/kflutter
 
@@ -26,6 +26,6 @@ dev_dependencies:
 flutter:
 
 
-
 screenshots:
-  - https://github.com/dart-lang/pub-dev/assets/22839194/ecf52570-fac8-4613-a6c2-5bb6bf5768ad
+  - description: 'screenshot.'
+    path: screenshot.png
