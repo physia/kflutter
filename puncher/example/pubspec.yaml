@@ -13,7 +13,6 @@ dependencies:
   puncher:
     path: ../
   motif:
-    path: /Users/mohamad/Desktop/projects/kflutter/pattern
   shaper:
 
 dev_dependencies:

@@ -126,10 +126,11 @@ packages:
   motif:
     dependency: "direct main"
     description:
-      path: "/Users/mohamad/Desktop/projects/kflutter/pattern"
-      relative: false
-    source: path
-    version: "0.0.2"
+      name: motif
+      sha256: "7747aa4050099ebce580352e0d6378452ba9d469f1f0c3219c325318fc38a07c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   path:
     dependency: transitive
     description:
@@ -144,15 +145,15 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.4"
   shaper:
     dependency: "direct main"
     description:
       name: shaper
-      sha256: a1df3045438aab570c061a1f94b66868706cda707fd9a7782f7f50035a21f4bb
+      sha256: "005ddc391eb1f833d2e905154837a2729567d3f54476ceb52957646fe4223bd4"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.4"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -223,5 +224,5 @@ packages:
     source: hosted
     version: "13.0.0"
 sdks:
-  dart: ">=3.4.0-24.0.dev <4.0.0"
+  dart: ">=3.2.0 <4.0.0"
   flutter: ">=3.18.0-18.0.pre.54"
