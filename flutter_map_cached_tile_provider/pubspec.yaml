@@ -1,10 +1,10 @@
 name: flutter_map_cached_tile_provider
 description: "cached tile provider for flutter_map"
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/physia/kflutter
 
 environment:
-  sdk: '>=3.3.0-102.0.dev <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:

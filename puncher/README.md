@@ -1,3 +1,5 @@
+<img src="https://github.com/physia/kflutter/assets/22839194/4e2b8a7e-b5d4-4f87-88c4-e1b6c1f11a06" width=800>
+
 # Puncher
   this package allow to to punch a hole in any widget using flutter's `CustomClipper` class.
 you can also use `PuncherShape` wish contains some pre-defined shapes or use your custom shape by passing a `Path` to the `PuncherShape` or extend the `PuncherShape` class and override the `path` method.
@@ -44,6 +46,29 @@ ClipPath(
 )
 ```
 
+## Widgets
+
+`NestedPuncher` take car of the canses like nested avatars, it just do margin calculation for you.
+but its better to use `GroupNestedPuncher` wish is more flexible and allow you to add any widget to the group.
+```dart
+GroupNestedPuncher(
+  radius: 50,
+  overlap: 0.5,
+  children: [
+    CircleAvatar(
+      radius: 50,
+      backgroundImage: NetworkImage(
+          'https://avatars.githubusercontent.com/u/19484515?v=4'),
+    ),
+    CircleAvatar(
+      radius: 50,
+      backgroundImage: NetworkImage(
+          'https://avatars.githubusercontent.com/u/19484515?v=4'),
+    ),
+  ],
+);
+```
+this take care of everything if you case just nested avatars.
 
 ## Other projects?
 

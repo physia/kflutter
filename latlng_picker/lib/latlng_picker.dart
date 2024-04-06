@@ -63,7 +63,7 @@ class _LatLngPickerState extends State<LatLngPicker> {
       );
   late StreamSubscription<MapEvent> _mapEventSubscription;
   late LatLng _currentMarker = options.initialCenter;
-  List<LatLng> _markers = [];
+  final List<LatLng> _markers = [];
 
   @override
   void initState() {
@@ -359,7 +359,6 @@ Future<List<LatLng>?> showLatLngPickerDialog({
   RouteSettings? routeSettings,
   Offset? anchorPoint,
   TraversalEdgeBehavior? traversalEdgeBehavior,
-
 }) async {
   return await showDialog<List<LatLng>>(
     context: context,

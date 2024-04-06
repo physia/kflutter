@@ -1,9 +1,8 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:motif/motif.dart';
 import 'package:puncher/puncher.dart';
+import 'package:puncher/widgets/nested_puncher.dart';
 import 'package:shaper/shaper.dart';
 
 void main() {
@@ -16,24 +15,81 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  /// List of motifs
-  Map<IconData, Widget> motifs = {
-    Icons.star: const StarMotif(
-      bounds: Size(20, 20),
-      side: BorderSide.none,
+  bool inverse = false;
+
+  /// List of shapes
+  Map<IconData, Shaper> shapes = {
+    Icons.circle: CircleShape(),
+    Icons.star: StarShape(
       points: 5,
-      innerRadiusRatio: 0.4,
-      pointRounding: 0,
-      valleyRounding: 0,
-      rotation: 0,
-      squash: 0,
+      innerRadiusRatio: .5,
+      pointRounding: .5,
     ),
-    Icons.square_outlined: const TransparentMotif(),
-    Icons.grid_3x3_outlined: const UPMapMotif(),
-    Icons.waves_outlined: const SinosoidalMotif(),
+    Icons.polyline: PolygonShape(
+      sides: 6,
+    ),
+    Icons.square: RectShape(
+      borderRadius: BorderRadius.circular(10),
+    ),
   };
 
-  int selectedMotif = 0;
+  IconData selectedShape = Icons.circle;
+
+  double radius = 50;
+  double overlap = 0.5;
+  double margin = 1;
+  bool enabled = true;
+  bool inner = true;
+  bool outer = true;
+  bool inverseEnabled = false;
+
+  var decorations = [
+    const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Colors.cyan,
+          Colors.blue,
+        ],
+      ),
+    ),
+    const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Colors.yellow,
+          Colors.orange,
+        ],
+      ),
+    ),
+    const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Colors.green,
+          Colors.blue,
+        ],
+      ),
+    ),
+    const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Colors.purple,
+          Colors.pink,
+        ],
+      ),
+    ),
+    const BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Colors.deepOrange,
+          Colors.orange,
+        ],
+      ),
+    ),
+  ];
+
+  late BoxDecoration decoration = decorations.first;
+
+  // borderRaidus for the rectangle shape
+  BorderRadius borderRadius = BorderRadius.circular(10);
 
   @override
   Widget build(BuildContext context) {
@@ -43,41 +99,54 @@ class _AppState extends State<App> {
         // appBar: AppBar(title: const Text('Crescent Difference Example')),
         body: Stack(
           children: [
-            Positioned.fill(
-              child: motifs.values.elementAt(selectedMotif),
-            ),
+            Positioned.fill(child: TransparentMotif()),
             Positioned.fill(
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 30),
-                    // SizedBox(
-                    //   height: 100,
-                    //   width: 100,
-                    //   child: CustomPaint(
-                    //     painter: ExamplePainter(),
-                    //   ),
-                    // ),
-                    SegmentedButton(
-                      segments: [
-                        for (int i = 0; i < motifs.length; i++)
-                          ButtonSegment(
-                            icon: Icon(motifs.keys.elementAt(i)),
-                            value: i,
-                          )
-                      ],
-                      onSelectionChanged: (value) {
-                        setState(() {
-                          selectedMotif = value.first;
-                        });
-                      },
-                      selected: {
-                        selectedMotif,
-                      },
+                    Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Puncher(
+                        punchers: [
+                              // const edge = 6.0;
+    // const holeSize = 12.0;
+    // final holes = Path();
+    // for (var y = edge; y < size.height; y += edge + holeSize) {
+    //   holes.addOval(Rect.fromLTWH(edge, y, holeSize, holeSize));
+    //   holes.addOval(Rect.fromLTWH(size.width - edge - holeSize, y, holeSize, holeSize));
+    // }
+    // return Path.combine(PathOperation.difference, Path()..addRect(Offset.zero & size), holes);  
+                          PuncherClip(
+                            shape: CircleShape(),
+                            margin: 1,
+                            translate: Offset(0, 0),
+                          ),
+                          
+                          PuncherClip(
+                            shape: PolygonShape(
+                              sides: 8,
+                            ),
+                            margin: margin,
+                            size: Size(100, 100),
+                            translate: Offset(
+                              (Directionality.maybeOf(context) == TextDirection.rtl ? -1 : 1) * overlap-0.3,
+                              0,
+                            ),
+                          ),
+                          PuncherClip.invert(
+                            shape: StarShape(
+                              points: 5,
+                              innerRadiusRatio: .5,
+                              pointRounding: .5,
+                            ),
+                            margin: margin,
+                          ),
+                        ],
+                        child: Image.network("https://images.theconversation.com/files/553010/original/file-20231010-25-rr34z3.jpg?ixlib=rb-1.1.0&rect=0%2C0%2C5760%2C3837&q=20&auto=format&w=320&fit=clip&dpr=2&usm=12&cs=strip"),
+                      ),
                     ),
-                    const SizedBox(height: 50),
                   ],
                 ),
               ),

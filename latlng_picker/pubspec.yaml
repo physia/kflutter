@@ -1,17 +1,18 @@
 name: latlng_picker
 description: "location picker for flutter using flutter_map"
-version: 0.0.4
-homepage:
+version: 0.0.6
+homepage: https://github.com/physia/kflutter
+repository: https://github.com/physia/kflutter
 
 environment:
-  sdk: '>=3.3.0-102.0.dev <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_map: ^6.1.0
-  flutter_map_cached_tile_provider: ^0.0.1
+  flutter_map_cached_tile_provider: ^0.0.2
   latlong2: ^0.9.0
 
 dev_dependencies:
