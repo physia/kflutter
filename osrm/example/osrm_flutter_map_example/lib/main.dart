@@ -155,7 +155,7 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
                     width: 80.0,
                     height: 80.0,
                     point: from,
-                    builder: (ctx) => const Icon(
+                    child:const Icon(
                       Icons.circle,
                       color: Colors.blue,
                     ),
@@ -164,7 +164,7 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
                     width: 80.0,
                     height: 80.0,
                     point: to,
-                    builder: (ctx) => const Icon(
+                    child:  const Icon(
                       Icons.circle,
                       color: Colors.red,
                     ),
@@ -177,7 +177,7 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
                       width: 80.0,
                       height: 30.0,
                       point: points[math.max(0, (points.length / 2).floor())],
-                      builder: (ctx) => Container(
+                      child:  Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
