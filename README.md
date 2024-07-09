@@ -22,5 +22,4 @@ contact me:
 
 ## Sponsor
  - https://www.buymeacoffee.com/mohamadlounnas
- - https://opencollective.com/mohamadlounnas
  - pontemwallet: 0x5f472255add62ed7963c3a9468077a1f46e9162cf7eda623b1d4f2a11ef609ca
