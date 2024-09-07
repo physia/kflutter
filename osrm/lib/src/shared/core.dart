@@ -217,12 +217,22 @@ abstract class OsrmResponse {
     this.message,
     this.dataVersion,
   });
+
+  @override
+  String toString() {
+    return 'OsrmResponse{code: $code, message: $message, dataVersion: $dataVersion}';
+  }
 }
 
 /// [OsrmResponseException] class for all OSRM response exceptions
 class OsrmResponseException extends OsrmResponse implements Exception {
   OsrmResponseException(
       {required super.code, required super.message, super.dataVersion});
+
+  @override
+  String toString() {
+    return 'OsrmResponseException{code: $code, message: $message, dataVersion: $dataVersion}';
+  }
 }
 
 /// [OsrmSource] interface for the source of the requests
@@ -265,10 +275,10 @@ class OsrmSource {
         );
       }
       throw Exception('Invalid response code: ${result.statusCode}');
-    // ignore: unused_catch_clause, no_leading_underscores_for_local_identifiers
+      // ignore: unused_catch_clause, no_leading_underscores_for_local_identifiers
     } on OsrmResponseException catch (_e) {
       rethrow;
-    // ignore: unused_catch_clause, no_leading_underscores_for_local_identifiers
+      // ignore: unused_catch_clause, no_leading_underscores_for_local_identifiers
     } on Exception catch (_e) {
       rethrow;
     }
