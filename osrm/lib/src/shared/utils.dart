@@ -16,7 +16,7 @@ import '../../osrm.dart';
 typedef ServerBuildFn = Uri Function(OsrmRequest options);
 
 /// LongLat
-typedef OsrmCoordinate = (double,double);
+typedef OsrmCoordinate = (double, double);
 
 class OsrmLocation {
   final double lat;
@@ -30,13 +30,13 @@ class OsrmLocation {
 extension OsrmCoordinateExtensions on OsrmCoordinate {
   /// Long Lat
   // ignore: prefer_interpolation_to_compose_strings
-  String toLongLatCoordinateString() => $1.toString()+','+$2.toString();
-  OsrmLocation toLocation() => OsrmLocation(lat:$2,lng:$1);
-  List<double> toCoordinateList() => [$1,$2];
-  Map<String,double> toCoordinateMap() => {
-    'lng': $1,
-    'lat': $2,
-  };
+  String toLongLatCoordinateString() => $1.toString() + ',' + $2.toString();
+  OsrmLocation toLocation() => OsrmLocation(lat: $2, lng: $1);
+  List<double> toCoordinateList() => [$1, $2];
+  Map<String, double> toCoordinateMap() => {
+        'lng': $1,
+        'lat': $2,
+      };
 }
 
 /// [OsrmAnnotation] enum for the annotation parameter
@@ -46,18 +46,25 @@ extension OsrmCoordinateExtensions on OsrmCoordinate {
 enum OsrmAnnotation {
   /// [true_] to return annotations
   true_,
+
   /// [false_] to not return annotations
   false_,
+
   /// [duration] to return annotations for duration
   duration,
+
   /// [nodes] to return annotations for nodes
   nodes,
+
   /// [distance] to return annotations for distance
   distance,
+
   /// [weight] to return annotations for weight
   weight,
+
   /// [datasources] to return annotations for datasources
   datasources,
+
   /// [speed] to return annotations for speed
   speed;
 
@@ -111,12 +118,11 @@ enum OsrmAnnotation {
 /// [Union] class for the union types
 /// Till dart supports union types we use this workaround
 /// for creating union type we extend this class and add the union value as dynamic field
-class Union<A,B> {
+class Union<A, B> {
   /// [value] the value of the union type
   final dynamic value;
-  const Union(this.value): assert(value is A || value is B);
+  const Union(this.value) : assert(value is A || value is B);
 }
-
 
 /// [OsrmAlternative] enum for the alternative parameter
 /// in reality this is a [bool] or [num] but dart does not support union types
@@ -125,14 +131,20 @@ class Union<A,B> {
 /// in case of adding num support we can use the [OsrmAlternative.number]
 class OsrmAlternative {
   const OsrmAlternative._(this.value);
+
   /// [true_] to return alternatives
-  static const OsrmAlternative true_ = OsrmAlternative._(Union<bool,num>(true));
+  static const OsrmAlternative true_ =
+      OsrmAlternative._(Union<bool, num>(true));
+
   /// [false_] to not return alternatives
-  static const OsrmAlternative false_ = OsrmAlternative._(Union<bool,num>(false));
+  static const OsrmAlternative false_ =
+      OsrmAlternative._(Union<bool, num>(false));
+
   /// [number] to return a specific number of alternatives
-  static OsrmAlternative number(int number) => OsrmAlternative._(Union<bool,num>(number));
-  
-  final Union<bool,num> value;
+  static OsrmAlternative number(int number) =>
+      OsrmAlternative._(Union<bool, num>(number));
+
+  final Union<bool, num> value;
   OsrmAlternative(this.value);
 
   /// [from] method to get the [OsrmAlternative] from a dynamic value
@@ -162,15 +174,16 @@ class OsrmAlternative {
   String toString() => name;
 }
 
-
 /// [OsrmGeometries] enum for the geometries parameter
 enum OsrmGeometries {
   /// [polyline] to return the route as polyline
   /// the encoded polyline is a string following the Google polyline algorithm
   polyline,
+
   /// [polyline6] to return the route as polyline6
   /// it is an encoded polyline with precision 1e6
   polyline6,
+
   /// [geojson] to return the route as geojson
   /// the geojson is a GeoJSON LineString
   geojson;
@@ -187,9 +200,8 @@ enum OsrmGeometries {
       default:
         throw ArgumentError('Invalid geometries: $geometries');
     }
-  }  
+  }
 }
-
 
 /// [OsrmOverview] enum for the overview parameter
 /// the underscore is added because the name `false` are reserved for dart
@@ -197,8 +209,10 @@ enum OsrmGeometries {
 enum OsrmOverview with EnumMixinHelper {
   /// [simplified] to return the overview as simplified
   simplified,
+
   /// [full] to return the overview as full
   full,
+
   /// [false_] to not return the overview
   false_;
 
@@ -217,7 +231,14 @@ enum OsrmOverview with EnumMixinHelper {
   }
 }
 
+/// [OsrmGaps] enum for the gaps parameter
+enum OsrmGaps {
+  /// [split] Allows the input track splitting based on huge timestamp gaps between points
+  split,
 
+  /// [ignore] Ignores huge timestamp gaps between points
+  ignore,
+}
 
 /// [EnumMixinHelper] mixin to get the name of an enum
 mixin EnumMixinHelper on Enum {
@@ -225,10 +246,11 @@ mixin EnumMixinHelper on Enum {
   String get name {
     // if the last part of the enum is an underscore we remove it
     final enumName = toString().split('.').last;
-    return enumName.endsWith('_') ? enumName.substring(0, enumName.length - 1) : enumName;
+    return enumName.endsWith('_')
+        ? enumName.substring(0, enumName.length - 1)
+        : enumName;
   }
 }
-
 
 /// [OsrmContinueStraight] enum for the continue_straight parameter
 /// the underscore is added because the name `false` are reserved for dart
@@ -237,8 +259,10 @@ mixin EnumMixinHelper on Enum {
 enum OsrmContinueStraight with EnumMixinHelper {
   /// [default] to return the continue_straight as default
   default_,
+
   /// [true_] to return the continue_straight as true
   true_,
+
   /// [false_] to return the continue_straight as false
   false_;
 
