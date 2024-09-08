@@ -1,6 +1,6 @@
 name: osrm
 description: Open Source Routing Machine (OSRM) client for Dart.
-version: 0.0.5
+version: 0.0.7
 repository: https://github.com/physia/kflutter/tree/main/osrm
 homepage: https://github.com/physia/kflutter/tree/main/osrm
 issue_tracker: https://github.com/flutter/flutter/issues?q=is:issue is:open label:"osrm"

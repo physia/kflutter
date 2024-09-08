@@ -108,28 +108,28 @@ class _FlutterMapOsrmExampleState extends State<FlutterMapOsrmExample> {
                 setState(() {});
                 getRoute();
               },
-              center: const LatLng(36.479960, 2.829099),
-              zoom: 13.0,
+              initialCenter: const LatLng(36.479960, 2.829099),
+              initialZoom: 13.0,
             ),
-            nonRotatedChildren: [
-              RichAttributionWidget(
-                animationConfig:
-                    const ScaleRAWA(), // Or `FadeRAWA` as is default
-                attributions: [
-                  TextSourceAttribution(
-                    'OpenStreetMap contributors',
-                    onTap: () => launchUrl(
-                        Uri.parse('https://openstreetmap.org/copyright')),
-                  ),
-                  /// @mohamadlounnas
-                  TextSourceAttribution(
-                    'Mohamad Lounnas',
-                    onTap: () => launchUrl(
-                        Uri.parse('mailto:mohamadlounnas@gmail.com')),
-                  ),
-                ],
-              ),
-            ],
+            // nonRotatedChildren: [
+            //   RichAttributionWidget(
+            //     animationConfig:
+            //         const ScaleRAWA(), // Or `FadeRAWA` as is default
+            //     attributions: [
+            //       TextSourceAttribution(
+            //         'OpenStreetMap contributors',
+            //         onTap: () => launchUrl(
+            //             Uri.parse('https://openstreetmap.org/copyright')),
+            //       ),
+            //       /// @mohamadlounnas
+            //       TextSourceAttribution(
+            //         'Mohamad Lounnas',
+            //         onTap: () => launchUrl(
+            //             Uri.parse('mailto:mohamadlounnas@gmail.com')),
+            //       ),
+            //     ],
+            //   ),
+            // ],
             children: [
               TileLayer(
                 urlTemplate:
