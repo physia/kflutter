@@ -57,6 +57,7 @@ export 'src/builders.dart';
 // Services
 export 'src/services/nearest.dart';
 export 'src/services/route.dart';
+export 'src/services/match.dart';
 export 'src/shared/core.dart';
 export 'src/shared/models.dart';
 export 'src/shared/utils.dart';
