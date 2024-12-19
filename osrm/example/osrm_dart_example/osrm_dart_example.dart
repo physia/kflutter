@@ -2,7 +2,14 @@ import 'package:osrm/osrm.dart';
 
 /// how to use the OSRM package to get a route between two coordinates.
 void main() async {
-  final osrm = Osrm();
+  final osrm = Osrm(
+    // optional you can use the default server builder
+    // or you can use your own server builder
+    // check the example in the example folder for more details
+    // source: OsrmSource(
+    //   serverBuilder: OsrmServerBuilder.defaultBuild,
+    // )
+  );
   // get the route
   final options =  RouteRequest(
       coordinates: [
